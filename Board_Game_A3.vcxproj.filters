@@ -21,12 +21,18 @@
     <ClInclude Include="XO_Classes.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="Numerical_TicTacToe.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="XO_Classes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="XO_Demo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Numerical_TicTacToe.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

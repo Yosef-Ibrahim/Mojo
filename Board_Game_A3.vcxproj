@@ -20,9 +20,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BoardGame_Classes.h" />
+    <ClInclude Include="Numerical_TicTacToe.h" />
     <ClInclude Include="XO_Classes.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Numerical_TicTacToe.cpp" />
     <ClCompile Include="XO_Classes.cpp" />
     <ClCompile Include="XO_Demo.cpp" />
   </ItemGroup>
