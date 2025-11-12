@@ -1,23 +1,22 @@
 ﻿  XO_Demo.cpp
-D:\Assignment 3\Board_Games-Assignment_3\BoardGame_Classes.h(93,18): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\Lenovo\Board_Games-Assignment_3\BoardGame_Classes.h(93,18): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
   (compiling source file 'XO_Demo.cpp')
-      D:\Assignment 3\Board_Games-Assignment_3\BoardGame_Classes.h(93,18):
+      C:\Users\Lenovo\Board_Games-Assignment_3\BoardGame_Classes.h(93,18):
       the template instantiation context (the oldest one first) is
-          D:\Assignment 3\Board_Games-Assignment_3\XO_Classes.h(20,22):
+          C:\Users\Lenovo\Board_Games-Assignment_3\XO_Classes.h(20,22):
           see reference to class template instantiation 'UI<char>' being compiled
-          D:\Assignment 3\Board_Games-Assignment_3\BoardGame_Classes.h(92,10):
+          C:\Users\Lenovo\Board_Games-Assignment_3\BoardGame_Classes.h(92,10):
           while compiling class template member function 'void UI<char>::display_board_matrix(const std::vector<std::vector<T,std::allocator<char>>,std::allocator<std::vector<T,std::allocator<char>>>> &)'
           with
           [
               T=char
           ]
-              D:\Assignment 3\Board_Games-Assignment_3\BoardGame_Classes.h(147,33):
+              C:\Users\Lenovo\Board_Games-Assignment_3\BoardGame_Classes.h(147,33):
               see the first reference to 'UI<char>::display_board_matrix' in 'GameManager<char>::run'
-              D:\Assignment 3\Board_Games-Assignment_3\XO_Demo.cpp(16,17):
+              C:\Users\Lenovo\Board_Games-Assignment_3\XO_Demo.cpp(17,17):
               see the first reference to 'GameManager<char>::run' in 'run_XO_Game'
   
-D:\Assignment 3\Board_Games-Assignment_3\BoardGame_Classes.h(94,18): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\Lenovo\Board_Games-Assignment_3\BoardGame_Classes.h(94,18): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
   (compiling source file 'XO_Demo.cpp')
   
-  LINK : D:\Assignment 3\Board_Games-Assignment_3\x64\Debug\Board_Game_A3.exe not found or not built by the last incremental link; performing full link
-  Board_Game_A3.vcxproj -> D:\Assignment 3\Board_Games-Assignment_3\x64\Debug\Board_Game_A3.exe
+  Board_Game_A3.vcxproj -> C:\Users\Lenovo\Board_Games-Assignment_3\x64\Debug\Board_Game_A3.exe

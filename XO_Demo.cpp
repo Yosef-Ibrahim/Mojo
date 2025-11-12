@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <limits>
 
 #include "BoardGame_Classes.h"
 #include "XO_Classes.h"
@@ -38,7 +39,12 @@ int main() {
         cout << "------------------------------\n";
         cout << "Enter your choice: ";
 
-        cin >> choice;
+        if (!(cin >> choice)) {
+            cout << "\n!!! Invalid choice. Please enter a number. !!!\n";
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            continue;
+        }
 
         if (choice == 1) {
             run_XO_Game();
