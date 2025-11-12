@@ -54,7 +54,6 @@ int main() {
         cout << "==============================\n";
         cout << "1: Play X-O Game\n";
         cout << "2: Play Numerical Tic-Tac-Toe\n";
-        cout << "3: Play Connect Four (Soon!)\n";
         cout << "0: Exit\n";
         cout << "------------------------------\n";
         cout << "Enter your choice: ";
@@ -73,9 +72,6 @@ int main() {
         }
         else if (choice == 2) {
             run_Numerical_TicTacToe_Game();
-        }
-        else if (choice == 3) {
-            cout << "This game is not implemented yet.\n";
         }
         else if (choice == 0) {
             cout << "Goodbye!\n";
