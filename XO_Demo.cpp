@@ -3,6 +3,7 @@
 #include <vector>
 #include <memory>
 #include <limits>
+#include <cstdlib> 
 
 #include "BoardGame_Classes.h"
 #include "XO_Classes.h"
@@ -30,6 +31,7 @@ int main() {
     int choice;
 
     while (true) {
+        system("cls");
         cout << "\n==============================\n";
         cout << "  Welcome to FCAI Games Menu  \n";
         cout << "==============================\n";
@@ -43,6 +45,8 @@ int main() {
             cout << "\n!!! Invalid choice. Please enter a number. !!!\n";
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "\nPress Enter to continue...";
+            cin.get();
             continue;
         }
 
@@ -59,6 +63,10 @@ int main() {
         else {
             cout << "Invalid choice. Please try again.\n";
         }
+
+        cout << "\nPress Enter to return to menu...";
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cin.get();
     }
 
     return 0;

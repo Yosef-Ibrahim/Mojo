@@ -5,6 +5,7 @@
 #include <vector>
 #include <iostream>
 #include <iomanip>
+#include <cstdlib> 
 using namespace std;
 
 template <typename T> class Player;
@@ -86,23 +87,33 @@ public:
     virtual Move<T>* get_move(Player<T>* currentPlayer) = 0;
 
     void display_welcome() {
+        cout << "========================================\n";
         cout << welcome_message << endl;
+        cout << "========================================\n";
     }
 
     void display_board_matrix(const vector<vector<T>>& matrix) {
         int rows = matrix.size();
         int cols = (rows > 0) ? matrix[0].size() : 0;
 
-        cout << "\n  ";
+        cout << "\n    ";
         for (int j = 0; j < cols; ++j) {
-            cout << setw(2) << j << " ";
+            cout << " " << j << "  ";
+        }
+        cout << "\n   +";
+        for (int j = 0; j < cols; ++j) {
+            cout << "---+";
         }
         cout << "\n";
 
         for (int i = 0; i < rows; ++i) {
-            cout << i << " ";
+            cout << " " << i << " |";
             for (int j = 0; j < cols; ++j) {
-                cout << setw(2) << matrix[i][j] << " ";
+                cout << " " << matrix[i][j] << " |";
+            }
+            cout << "\n   +";
+            for (int j = 0; j < cols; ++j) {
+                cout << "---+";
             }
             cout << "\n";
         }
@@ -143,6 +154,7 @@ public:
     GameManager(Board<T>* b, Player<T>** p, UI<T>* u) : boardPtr(b), players(p), ui(u) {}
 
     void run() {
+        system("cls");
         ui->display_welcome();
         ui->display_board_matrix(boardPtr->get_board_matrix());
 
@@ -151,9 +163,13 @@ public:
                 Player<T>* currentPlayer = players[i];
                 Move<T>* move = ui->get_move(currentPlayer);
 
-                while (!boardPtr->update_board(move))
+                while (!boardPtr->update_board(move)) {
+                    ui->display_message("\n!!! Invalid Move. Spot is taken or out of bounds. Try again. !!!");
                     move = ui->get_move(currentPlayer);
+                }
 
+                system("cls");
+                ui->display_welcome();
                 ui->display_board_matrix(boardPtr->get_board_matrix());
 
                 if (boardPtr->is_win(currentPlayer)) {
