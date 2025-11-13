@@ -195,12 +195,12 @@ Player<T>** UI<T>::setup_players() {
     vector<string> type_options = { "Human", "Computer" };
 
     string name1 = get_player_name("Player 1");
-    PlayerType typeO = get_player_type_choice("Player 1", type_options);
-    players[0] = create_player(name1, static_cast<T>('O'), typeO);
+    PlayerType typeX = get_player_type_choice("Player 1", type_options);
+    players[0] = create_player(name1, static_cast<T>('X'), typeX);
 
     string name2 = get_player_name("Player 2");
-    PlayerType typeX = get_player_type_choice("Player 2", type_options);
-    players[1] = create_player(name2, static_cast<T>('X'), typeX);
+    PlayerType typeO = get_player_type_choice("Player 2", type_options);
+    players[1] = create_player(name2, static_cast<T>('O'), typeO);
 
     return players;
 }
