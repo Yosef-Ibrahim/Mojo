@@ -9,7 +9,10 @@
 #include "XO_Classes.h"
 #include "Numerical_TicTacToe.h" 
 #include "FourByFour_Classes.h" // ملف اللعبة الجديدة
+<<<<<<< HEAD
 #include "sus_classes.h"
+=======
+>>>>>>> d0362c2e1ca755f79a425dddebdb1a309a615d77
 
 using namespace std;
 
@@ -65,6 +68,7 @@ void run_FourByFour_Game() {
     delete game_ui;
 }
 
+<<<<<<< HEAD
 
 
 // 4. دالة تشغيل لعبة SUS
@@ -106,6 +110,8 @@ void run_SUS_Game() {
     delete game_ui;
 }
 
+=======
+>>>>>>> d0362c2e1ca755f79a425dddebdb1a309a615d77
 // -----------------------------------------------------------------------------
 // Main Function
 // -----------------------------------------------------------------------------
@@ -122,7 +128,10 @@ int main() {
         cout << "1: Play X-O Game\n";
         cout << "2: Play Numerical Tic-Tac-Toe\n";
         cout << "3: Play 4x4 Tic-Tac-Toe\n";        // <-- الاختيار الجديد
+<<<<<<< HEAD
         cout << "4: Play SUS Game\n";
+=======
+>>>>>>> d0362c2e1ca755f79a425dddebdb1a309a615d77
         cout << "0: Exit\n";
         cout << "------------------------------\n";
         cout << "Enter your choice: ";
@@ -147,9 +156,12 @@ int main() {
         else if (choice == 3) {
             run_FourByFour_Game(); // <-- تشغيل اللعبة الجديدة
         }
+<<<<<<< HEAD
         else if (choice == 4) { 
             run_SUS_Game();
         }
+=======
+>>>>>>> d0362c2e1ca755f79a425dddebdb1a309a615d77
         else if (choice == 0) {
             cout << "Goodbye!\n";
             break;
