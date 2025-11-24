@@ -1,4 +1,4 @@
-#ifndef _BOARDGAME_CLASSES_H
+﻿#ifndef _BOARDGAME_CLASSES_H
 #define _BOARDGAME_CLASSES_H
 
 #include <string>
@@ -6,16 +6,18 @@
 #include <iostream>
 #include <iomanip>
 #include <cstdlib> 
+
 using namespace std;
 
 template <typename T> class Player;
 template <typename T> class Move;
 
+// التغيير الجديد: إضافة أنواع AI و RANDOM
 enum class PlayerType {
     HUMAN,
     COMPUTER,
-    AI,
-    RANDOM
+    AI,        // عشان البونص (MinMax)
+    RANDOM     // لاعب عشوائي
 };
 
 template <typename T>
@@ -139,6 +141,9 @@ public:
         }
         cout << "): ";
         cin >> choice;
+        // هنا بنرجع القيمة بناء على اختيار المستخدم
+        // 1 -> Human, 2 -> Random (Computer)
+        // ممكن بعدين نزود 3 -> AI
         return static_cast<PlayerType>(choice - 1);
     }
 };
@@ -194,13 +199,13 @@ Player<T>** UI<T>::setup_players() {
     Player<T>** players = new Player<T>*[2];
     vector<string> type_options = { "Human", "Computer" };
 
-    string name1 = get_player_name("Player 1");
+    string nameX = get_player_name("Player 1");
     PlayerType typeX = get_player_type_choice("Player 1", type_options);
-    players[0] = create_player(name1, static_cast<T>('X'), typeX);
+    players[0] = create_player(nameX, static_cast<T>('X'), typeX);
 
-    string name2 = get_player_name("Player 2");
+    string nameO = get_player_name("Player 2");
     PlayerType typeO = get_player_type_choice("Player 2", type_options);
-    players[1] = create_player(name2, static_cast<T>('O'), typeO);
+    players[1] = create_player(nameO, static_cast<T>('O'), typeO);
 
     return players;
 }

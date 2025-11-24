@@ -108,12 +108,12 @@ Move<char>* XO_UI::get_move(Player<char>* currentPlayer) {
 
         return new Move<char>(r, c, currentPlayer->get_symbol());
     }
-    else if (currentPlayer->get_type() == PlayerType::COMPUTER) {
+    else {
+        // AI or Random Computer
         int x = rand() % 3;
         int y = rand() % 3;
 
         cout << "Computer " << currentPlayer->get_name() << " chose (Row, Col): " << x << ", " << y << endl;
         return new Move<char>(x, y, currentPlayer->get_symbol());
     }
-    return nullptr;
 }

@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include <string>
 #include <vector>
 #include <memory>
@@ -7,9 +7,11 @@
 
 #include "BoardGame_Classes.h"
 #include "XO_Classes.h"
-#include "Numerical_TicTacToe.h"
+#include "Numerical_TicTacToe.h" // لازم نعمل include للعبة الجديدة
+
 using namespace std;
 
+// دالة تشغيل لعبة X-O
 void run_XO_Game() {
     UI<char>* game_ui = new XO_UI();
     Board<char>* xo_board = new X_O_Board();
@@ -18,6 +20,7 @@ void run_XO_Game() {
     GameManager<char> x_o_game(xo_board, players, game_ui);
     x_o_game.run();
 
+    // تنظيف الذاكرة
     delete xo_board;
     for (int i = 0; i < 2; ++i) {
         delete players[i];
@@ -26,6 +29,7 @@ void run_XO_Game() {
     delete game_ui;
 }
 
+// دالة تشغيل لعبة Numerical Tic-Tac-Toe
 void run_Numerical_TicTacToe_Game() {
     UI<int>* game_ui = new Numerical_TicTacToe_UI();
     Board<int>* num_board = new Numerical_TicTacToe_Board();
@@ -34,6 +38,7 @@ void run_Numerical_TicTacToe_Game() {
     GameManager<int> num_game(num_board, players, game_ui);
     num_game.run();
 
+    // تنظيف الذاكرة
     delete num_board;
     for (int i = 0; i < 2; ++i) {
         delete players[i];
@@ -48,7 +53,7 @@ int main() {
     int choice;
 
     while (true) {
-        system("cls");
+        system("cls"); // مسح الشاشة
         cout << "\n==============================\n";
         cout << "  Welcome to FCAI Games Menu  \n";
         cout << "==============================\n";
@@ -58,6 +63,7 @@ int main() {
         cout << "------------------------------\n";
         cout << "Enter your choice: ";
 
+        // التحقق من الإدخال (Robust Input Validation)
         if (!(cin >> choice)) {
             cout << "\n!!! Invalid choice. Please enter a number. !!!\n";
             cin.clear();
@@ -81,6 +87,7 @@ int main() {
             cout << "Invalid choice. Please try again.\n";
         }
 
+        // وقفة بعد نهاية اللعبة
         cout << "\nPress Enter to return to menu...";
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
         cin.get();
