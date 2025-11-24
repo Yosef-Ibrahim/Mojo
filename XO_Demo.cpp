@@ -7,11 +7,16 @@
 
 #include "BoardGame_Classes.h"
 #include "XO_Classes.h"
-#include "Numerical_TicTacToe.h" // لازم نعمل include للعبة الجديدة
+#include "Numerical_TicTacToe.h" 
+#include "FourByFour_Classes.h" // ملف اللعبة الجديدة
 
 using namespace std;
 
-// دالة تشغيل لعبة X-O
+// -----------------------------------------------------------------------------
+// دوال تشغيل الألعاب
+// -----------------------------------------------------------------------------
+
+// 1. دالة تشغيل لعبة X-O
 void run_XO_Game() {
     UI<char>* game_ui = new XO_UI();
     Board<char>* xo_board = new X_O_Board();
@@ -22,14 +27,12 @@ void run_XO_Game() {
 
     // تنظيف الذاكرة
     delete xo_board;
-    for (int i = 0; i < 2; ++i) {
-        delete players[i];
-    }
+    for (int i = 0; i < 2; ++i) delete players[i];
     delete[] players;
     delete game_ui;
 }
 
-// دالة تشغيل لعبة Numerical Tic-Tac-Toe
+// 2. دالة تشغيل لعبة Numerical Tic-Tac-Toe
 void run_Numerical_TicTacToe_Game() {
     UI<int>* game_ui = new Numerical_TicTacToe_UI();
     Board<int>* num_board = new Numerical_TicTacToe_Board();
@@ -40,13 +43,30 @@ void run_Numerical_TicTacToe_Game() {
 
     // تنظيف الذاكرة
     delete num_board;
-    for (int i = 0; i < 2; ++i) {
-        delete players[i];
-    }
+    for (int i = 0; i < 2; ++i) delete players[i];
     delete[] players;
     delete game_ui;
 }
 
+// 3. دالة تشغيل لعبة 4x4 Tic-Tac-Toe (اللعبة الجديدة)
+void run_FourByFour_Game() {
+    UI<char>* game_ui = new FourByFour_UI<char>();
+    Board<char>* board = new FourByFour_Board<char>();
+    Player<char>** players = game_ui->setup_players();
+
+    GameManager<char> game(board, players, game_ui);
+    game.run();
+
+    // تنظيف الذاكرة
+    delete board;
+    for (int i = 0; i < 2; ++i) delete players[i];
+    delete[] players;
+    delete game_ui;
+}
+
+// -----------------------------------------------------------------------------
+// Main Function
+// -----------------------------------------------------------------------------
 int main() {
     srand(static_cast<unsigned int>(time(0)));
 
@@ -59,6 +79,7 @@ int main() {
         cout << "==============================\n";
         cout << "1: Play X-O Game\n";
         cout << "2: Play Numerical Tic-Tac-Toe\n";
+        cout << "3: Play 4x4 Tic-Tac-Toe\n";        // <-- الاختيار الجديد
         cout << "0: Exit\n";
         cout << "------------------------------\n";
         cout << "Enter your choice: ";
@@ -73,11 +94,15 @@ int main() {
             continue;
         }
 
+        // توجيه الاختيار للدالة المناسبة
         if (choice == 1) {
             run_XO_Game();
         }
         else if (choice == 2) {
             run_Numerical_TicTacToe_Game();
+        }
+        else if (choice == 3) {
+            run_FourByFour_Game(); // <-- تشغيل اللعبة الجديدة
         }
         else if (choice == 0) {
             cout << "Goodbye!\n";
@@ -87,7 +112,7 @@ int main() {
             cout << "Invalid choice. Please try again.\n";
         }
 
-        // وقفة بعد نهاية اللعبة
+        // وقفة بعد نهاية اللعبة قبل العودة للقائمة
         cout << "\nPress Enter to return to menu...";
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
         cin.get();
