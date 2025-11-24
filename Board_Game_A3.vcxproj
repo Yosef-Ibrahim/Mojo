@@ -21,12 +21,14 @@
   <ItemGroup>
     <ClInclude Include="BoardGame_Classes.h" />
     <ClInclude Include="FourByFour_Classes.h" />
-    <ClInclude Include="FourByFour_Classes.h" />
     <ClInclude Include="Numerical_TicTacToe.h" />
+    <ClInclude Include="sus_classes.h" />
     <ClInclude Include="XO_Classes.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="FourByFour_Classes.cpp" />
     <ClCompile Include="Numerical_TicTacToe.cpp" />
+    <ClCompile Include="sus_classes.cpp" />
     <ClCompile Include="XO_Classes.cpp" />
     <ClCompile Include="XO_Demo.cpp" />
   </ItemGroup>

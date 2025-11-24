@@ -27,8 +27,8 @@
     <ClInclude Include="FourByFour_Classes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="FourByFour_Classes.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="sus_classes.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -39,6 +39,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Numerical_TicTacToe.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FourByFour_Classes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sus_classes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

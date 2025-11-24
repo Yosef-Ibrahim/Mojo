@@ -1,25 +1,26 @@
-﻿  Numerical_TicTacToe.cpp
-  XO_Classes.cpp
+﻿  sus_classes.cpp
+F:\Links\ass3_oop\Board_Games-Assignment_3\sus_classes.cpp(55,14): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+F:\Links\ass3_oop\Board_Games-Assignment_3\sus_classes.cpp(56,14): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
   XO_Demo.cpp
-C:\Users\Lenovo\Board_Games-Assignment_3\BoardGame_Classes.h(98,18): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+F:\Links\ass3_oop\Board_Games-Assignment_3\BoardGame_Classes.h(98,18): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
   (compiling source file 'XO_Demo.cpp')
-      C:\Users\Lenovo\Board_Games-Assignment_3\BoardGame_Classes.h(98,18):
+      F:\Links\ass3_oop\Board_Games-Assignment_3\BoardGame_Classes.h(98,18):
       the template instantiation context (the oldest one first) is
-          C:\Users\Lenovo\Board_Games-Assignment_3\Numerical_TicTacToe.h(21,39):
+          F:\Links\ass3_oop\Board_Games-Assignment_3\Numerical_TicTacToe.h(21,39):
           see reference to class template instantiation 'UI<int>' being compiled
-          C:\Users\Lenovo\Board_Games-Assignment_3\BoardGame_Classes.h(97,10):
+          F:\Links\ass3_oop\Board_Games-Assignment_3\BoardGame_Classes.h(97,10):
           while compiling class template member function 'void UI<int>::display_board_matrix(const std::vector<std::vector<T,std::allocator<T>>,std::allocator<std::vector<T,std::allocator<T>>>> &)'
           with
           [
               T=int
           ]
-              C:\Users\Lenovo\Board_Games-Assignment_3\BoardGame_Classes.h(164,33):
+              F:\Links\ass3_oop\Board_Games-Assignment_3\BoardGame_Classes.h(164,33):
               see the first reference to 'UI<int>::display_board_matrix' in 'GameManager<int>::run'
-              C:\Users\Lenovo\Board_Games-Assignment_3\XO_Demo.cpp(32,17):
+              F:\Links\ass3_oop\Board_Games-Assignment_3\XO_Demo.cpp(43,17):
               see the first reference to 'GameManager<int>::run' in 'run_Numerical_TicTacToe_Game'
   
-C:\Users\Lenovo\Board_Games-Assignment_3\BoardGame_Classes.h(99,18): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+F:\Links\ass3_oop\Board_Games-Assignment_3\BoardGame_Classes.h(99,18): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
   (compiling source file 'XO_Demo.cpp')
   
   Generating Code...
-  Board_Game_A3.vcxproj -> C:\Users\Lenovo\Board_Games-Assignment_3\x64\Debug\Board_Game_A3.exe
+  Board_Game_A3.vcxproj -> F:\Links\ass3_oop\Board_Games-Assignment_3\x64\Debug\Board_Game_A3.exe
