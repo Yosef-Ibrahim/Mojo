@@ -24,6 +24,12 @@
     <ClInclude Include="Numerical_TicTacToe.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="FourByFour_Classes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FourByFour_Classes.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="XO_Classes.cpp">

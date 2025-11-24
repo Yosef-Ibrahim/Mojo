@@ -15,7 +15,7 @@ C:\Users\Lenovo\Board_Games-Assignment_3\BoardGame_Classes.h(98,18): warning C42
           ]
               C:\Users\Lenovo\Board_Games-Assignment_3\BoardGame_Classes.h(164,33):
               see the first reference to 'UI<int>::display_board_matrix' in 'GameManager<int>::run'
-              C:\Users\Lenovo\Board_Games-Assignment_3\XO_Demo.cpp(39,17):
+              C:\Users\Lenovo\Board_Games-Assignment_3\XO_Demo.cpp(32,17):
               see the first reference to 'GameManager<int>::run' in 'run_Numerical_TicTacToe_Game'
   
 C:\Users\Lenovo\Board_Games-Assignment_3\BoardGame_Classes.h(99,18): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data

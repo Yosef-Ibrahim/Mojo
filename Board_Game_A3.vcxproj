@@ -20,6 +20,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BoardGame_Classes.h" />
+    <ClInclude Include="FourByFour_Classes.h" />
+    <ClInclude Include="FourByFour_Classes.h" />
     <ClInclude Include="Numerical_TicTacToe.h" />
     <ClInclude Include="XO_Classes.h" />
   </ItemGroup>
