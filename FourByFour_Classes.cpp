@@ -7,25 +7,34 @@
 using namespace std;
 
 // ==========================================
-// تنفيذ FourByFour_Board
+// 1. تنفيذ FourByFour_Board
 // ==========================================
 
 // Constructor (General)
 template <typename T>
 FourByFour_Board<T>::FourByFour_Board() : Board<T>(4, 4) {}
 
-// Constructor (Specialized for char)
+// Constructor (Specialized for char) - ترتيب القطع المتبادل
 template <>
 FourByFour_Board<char>::FourByFour_Board() : Board<char>(4, 4) {
-    // تصفير اللوحة
+    // 1. تصفير اللوحة
     for (int i = 0; i < 4; ++i) {
         for (int j = 0; j < 4; ++j) {
             board[i][j] = '.';
         }
     }
-    // وضع القطع الابتدائية (X فوق و O تحت)
-    for (int j = 0; j < 4; ++j) board[0][j] = 'X';
-    for (int j = 0; j < 4; ++j) board[3][j] = 'O';
+
+    // 2. وضع القطع بالتبادل (X O X O)
+    for (int j = 0; j < 4; ++j) {
+        if (j % 2 == 0) { // الأعمدة الزوجية (0, 2)
+            board[0][j] = 'X'; // فوق
+            board[3][j] = 'O'; // تحت
+        }
+        else { // الأعمدة الفردية (1, 3)
+            board[0][j] = 'O'; // فوق
+            board[3][j] = 'X'; // تحت
+        }
+    }
 }
 
 template <typename T>
@@ -52,11 +61,13 @@ bool FourByFour_Board<T>::update_board(Move<T>* move) {
     // 4. هل الحركة خطوة واحدة (أفقي أو رأسي)؟
     int row_diff = abs(to_r - from_r);
     int col_diff = abs(to_c - from_c);
+
+    // المجموع لازم يكون 1 (يعني اتحرك خطوة واحدة في اتجاه واحد)
     if ((row_diff + col_diff) != 1) return false;
 
     // تنفيذ الحركة
-    this->board[from_r][from_c] = '.';
-    this->board[to_r][to_c] = symbol;
+    this->board[from_r][from_c] = '.'; // فضي القديم
+    this->board[to_r][to_c] = symbol;  // املأ الجديد
     this->n_moves++;
     return true;
 }
@@ -64,7 +75,7 @@ bool FourByFour_Board<T>::update_board(Move<T>* move) {
 template <typename T>
 bool FourByFour_Board<T>::is_win(Player<T>* player) {
     T sym = player->get_symbol();
-    // فحص الصفوف
+    // فحص الصفوف (3 ورا بعض)
     for (int i = 0; i < 4; ++i) {
         for (int j = 0; j <= 1; ++j) {
             if (this->board[i][j] == sym && this->board[i][j + 1] == sym && this->board[i][j + 2] == sym) return true;
@@ -101,7 +112,7 @@ bool FourByFour_Board<T>::game_is_over(Player<T>* player) {
 }
 
 // ==========================================
-// تنفيذ FourByFour_UI
+// 2. تنفيذ FourByFour_UI
 // ==========================================
 
 template <typename T>
@@ -117,24 +128,30 @@ Move<T>* FourByFour_UI<T>::get_move(Player<T>* currentPlayer) {
     if (currentPlayer->get_type() == PlayerType::HUMAN) {
         int from_r, from_c, to_r, to_c;
         cout << "\n" << currentPlayer->get_name() << " (" << currentPlayer->get_symbol() << ") turn.\n";
+
+        // 1. طلب مكان القطعة
         while (true) {
             cout << "Select token to move (Row Col): ";
             cin >> from_r >> from_c;
             if (cin.fail()) { cin.clear(); cin.ignore(numeric_limits<streamsize>::max(), '\n'); continue; }
             break;
         }
+
+        // 2. طلب المكان الجديد
         while (true) {
             cout << "Select destination (Row Col): ";
             cin >> to_r >> to_c;
             if (cin.fail()) { cin.clear(); cin.ignore(numeric_limits<streamsize>::max(), '\n'); continue; }
             break;
         }
+
+        // التشفير (بنبعت رقمين مدمجين عشان الـ Move بياخد x,y بس)
         return new Move<T>(from_r * 10 + from_c, to_r * 10 + to_c, currentPlayer->get_symbol());
     }
     else {
-        // Simple Random AI
+        // Simple Random AI (بيحاول يلاقي حركة صحيحة)
         int from_r, from_c, to_r, to_c, attempts = 0;
-        while (attempts < 1000) {
+        while (attempts < 2000) {
             from_r = rand() % 4; from_c = rand() % 4;
             int dir = rand() % 4;
             to_r = from_r; to_c = from_c;
@@ -151,7 +168,7 @@ Move<T>* FourByFour_UI<T>::get_move(Player<T>* currentPlayer) {
 }
 
 // =============================================================
-// أهم جزء: Explicit Instantiation (عشان يشتغل مع char)
+// أهم جزء: Explicit Instantiation (عشان يربط الـ .h بالـ .cpp)
 // =============================================================
 template class FourByFour_Board<char>;
 template class FourByFour_UI<char>;
