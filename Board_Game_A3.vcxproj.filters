@@ -1,57 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
+    <ClCompile Include="FourByFour_Classes.cpp" />
+    <ClCompile Include="Numerical_TicTacToe.cpp" />
+    <ClCompile Include="sus_classes.cpp" />
+    <ClCompile Include="XO_Classes.cpp" />
+    <ClCompile Include="XO_Demo.cpp" />
+    <ClCompile Include="FiveByFive_Classes.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BoardGame_Classes.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="XO_Classes.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Numerical_TicTacToe.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FourByFour_Classes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-<<<<<<< HEAD
-    <ClInclude Include="sus_classes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-=======
->>>>>>> d0362c2e1ca755f79a425dddebdb1a309a615d77
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="XO_Classes.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="XO_Demo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Numerical_TicTacToe.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FourByFour_Classes.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-<<<<<<< HEAD
-    <ClCompile Include="sus_classes.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-=======
->>>>>>> d0362c2e1ca755f79a425dddebdb1a309a615d77
+    <ClInclude Include="BoardGame_Classes.h" />
+    <ClInclude Include="FourByFour_Classes.h" />
+    <ClInclude Include="Numerical_TicTacToe.h" />
+    <ClInclude Include="sus_classes.h" />
+    <ClInclude Include="XO_Classes.h" />
+    <ClInclude Include="FiveByFive_Classes.h" />
   </ItemGroup>
 </Project>

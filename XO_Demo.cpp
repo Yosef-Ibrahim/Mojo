@@ -8,7 +8,8 @@
 #include "BoardGame_Classes.h"
 #include "XO_Classes.h"
 #include "Numerical_TicTacToe.h" 
-#include "FourByFour_Classes.h" // ملف اللعبة الجديدة<<<<<<< HEAD
+#include "FourByFour_Classes.h"
+#include "FiveByFive_Classes.h"  // اللعبة الجديدة
 #include "sus_classes.h"
 
 using namespace std;
@@ -49,7 +50,7 @@ void run_Numerical_TicTacToe_Game() {
     delete game_ui;
 }
 
-// 3. دالة تشغيل لعبة 4x4 Tic-Tac-Toe (اللعبة الجديدة)
+// 3. دالة تشغيل لعبة 4x4 Tic-Tac-Toe
 void run_FourByFour_Game() {
     UI<char>* game_ui = new FourByFour_UI<char>();
     Board<char>* board = new FourByFour_Board<char>();
@@ -65,10 +66,43 @@ void run_FourByFour_Game() {
     delete game_ui;
 }
 
+// 4. دالة تشغيل لعبة 5x5 Tic-Tac-Toe (اللعبة الجديدة)
+void run_FiveByFive_Game() {
+    FiveByFive_UI<char>* game_ui = new FiveByFive_UI<char>();
+    FiveByFive_Board<char>* board = new FiveByFive_Board<char>();
+    Player<char>** players = game_ui->setup_players();
 
+    GameManager<char> game(board, players, game_ui);
+    game.run();
 
+    // بعد انتهاء اللعبة، نحسب عدد التسلسلات لكل لاعب
+    if (board->game_is_over(players[0])) {
+        int x_count = board->count_three_in_a_row('X');
+        int o_count = board->count_three_in_a_row('O');
 
-// 4. دالة تشغيل لعبة SUS
+        game_ui->display_message("\n*** GAME ENDED! ***");
+        game_ui->display_message("Player X three-in-a-row sequences: " + to_string(x_count));
+        game_ui->display_message("Player O three-in-a-row sequences: " + to_string(o_count));
+
+        if (x_count > o_count) {
+            game_ui->display_message(players[0]->get_name() + " (X) wins with more sequences!");
+        }
+        else if (o_count > x_count) {
+            game_ui->display_message(players[1]->get_name() + " (O) wins with more sequences!");
+        }
+        else {
+            game_ui->display_message("It's a tie! Both players have the same number of sequences.");
+        }
+    }
+
+    // تنظيف الذاكرة
+    delete board;
+    for (int i = 0; i < 2; ++i) delete players[i];
+    delete[] players;
+    delete game_ui;
+}
+
+// 5. دالة تشغيل لعبة SUS
 void run_SUS_Game() {
     SUS_UI* game_ui = new SUS_UI();
     SUS_Board* sus_board = new SUS_Board();
@@ -80,9 +114,6 @@ void run_SUS_Game() {
     sus_game.run();
 
     // ************* منطق الفوز بلعبة SUS *************
-    // اللعبة تنتهي في "تعادل" (is_draw) عندما تمتلئ اللوحة.
-    // بعد نهاية اللعبة، نحتسب النقاط لتحديد الفائز.
-
     if (sus_board->game_is_over(players[0])) {
         int total_sus = calculate_all_sus_sequences(sus_board->get_board_matrix());
 
@@ -90,9 +121,6 @@ void run_SUS_Game() {
         game_ui->display_message("Total 'S-U-S' sequences found on board: " + to_string(total_sus));
 
         if (total_sus > 0) {
-            // بما أن منطق احتساب النقاط وتحديد من هو اللاعب الذي أكمل التسلسل معقد جداً 
-            // ولا يمكن تنفيذه بسهولة في الـ Framework الحالي، نكتفي بإعلان العدد.
-            // (هذا يجب أن يتم تحديده من قبل المدرس)
             game_ui->display_message("Winner determination requires specific scoring logic (which player created the most S-U-S).");
         }
         else {
@@ -120,18 +148,16 @@ int main() {
         cout << "\n==============================\n";
         cout << "  Welcome to FCAI Games Menu  \n";
         cout << "==============================\n";
-        cout << "1: Play X-O Game\n";
+        cout << "1: Play X-O Game (3x3)\n";
         cout << "2: Play Numerical Tic-Tac-Toe\n";
-        cout << "3: Play 4x4 Tic-Tac-Toe\n";        // <-- الاختيار الجديد
-
-        cout << "4: Play SUS Game\n";
-
-
+        cout << "3: Play 4x4 Tic-Tac-Toe\n";
+        cout << "4: Play 5x5 Tic-Tac-Toe\n";       // <-- الاختيار الجديد
+        cout << "5: Play SUS Game\n";
         cout << "0: Exit\n";
         cout << "------------------------------\n";
         cout << "Enter your choice: ";
 
-        // التحقق من الإدخال (Robust Input Validation)
+        // التحقق من الإدخال
         if (!(cin >> choice)) {
             cout << "\n!!! Invalid choice. Please enter a number. !!!\n";
             cin.clear();
@@ -149,13 +175,14 @@ int main() {
             run_Numerical_TicTacToe_Game();
         }
         else if (choice == 3) {
-            run_FourByFour_Game(); // <-- تشغيل اللعبة الجديدة
+            run_FourByFour_Game();
         }
-        else if (choice == 4) { 
+        else if (choice == 4) {
+            run_FiveByFive_Game(); // <-- تشغيل اللعبة الجديدة
+        }
+        else if (choice == 5) {
             run_SUS_Game();
         }
-
-
         else if (choice == 0) {
             cout << "Goodbye!\n";
             break;
