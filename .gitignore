@@ -1,1 +1,18 @@
-.vs/ 
+# Visual Studio
+.vs/
+*.vcxproj.user
+
+# Build folders
+Debug/
+Release/
+x64/
+
+# Binary files
+*.exe
+*.obj
+*.pdb
+*.ilk
+*.ipch
+*.tlog
+*.log
+*.db
