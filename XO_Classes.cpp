@@ -75,37 +75,24 @@ Move<char>* XO_UI::get_move(Player<char>* currentPlayer) {
         int r, c;
 
         while (true) {
-            cout << currentPlayer->get_name() << ", enter Row number (0, 1, or 2): ";
-            if (!(cin >> r)) {
-                cout << "\n!!! That's not a number. Please enter a valid number. !!!\n";
-                cin.clear();
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                continue;
-            }
-            if (r < 0 || r > 2) {
-                cout << "\n!!! Out of Range. Please enter a number between 0 and 2. !!!\n";
-                continue;
-            }
-            break;
-        }
+            cout << currentPlayer->get_name()
+                << ", enter Row and Column numbers (0 1 2), separated by space: ";
 
-        while (true) {
-            cout << currentPlayer->get_name() << ", enter Column number (0, 1, or 2): ";
-            if (!(cin >> c)) {
-                cout << "\n!!! That's not a number. Please enter a valid number. !!!\n";
+            if (!(cin >> r >> c)) { 
+                cout << "\n!!! Invalid input. Please enter two numbers. !!!\n";
                 cin.clear();
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 continue;
             }
-            if (c < 0 || c > 2) {
-                cout << "\n!!! Out of Range. Please enter a number between 0 and 2. !!!\n";
+
+            if (r < 0 || r > 2 || c < 0 || c > 2) {
+                cout << "\n!!! Out of range. Both numbers must be between 0 and 2. !!!\n";
                 continue;
             }
             break;
         }
 
         cout << endl;
-
         return new Move<char>(r, c, currentPlayer->get_symbol());
     }
     else {
@@ -113,7 +100,8 @@ Move<char>* XO_UI::get_move(Player<char>* currentPlayer) {
         int x = rand() % 3;
         int y = rand() % 3;
 
-        cout << "Computer " << currentPlayer->get_name() << " chose (Row, Col): " << x << ", " << y << endl;
+        cout << "Computer " << currentPlayer->get_name()
+            << " chose (Row, Col): " << x << ", " << y << endl;
         return new Move<char>(x, y, currentPlayer->get_symbol());
     }
 }

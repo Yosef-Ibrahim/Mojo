@@ -4,7 +4,7 @@
 #include <memory>
 #include <limits>
 #include <cstdlib> 
-
+#include "Misere.h"
 #include "BoardGame_Classes.h"
 #include "XO_Classes.h"
 #include "Numerical_TicTacToe.h" 
@@ -102,6 +102,22 @@ void run_FiveByFive_Game() {
     delete game_ui;
 }
 
+void run_Misere_Game() {
+    UI<char>* game_ui = new Misere_UI();
+    Board<char>* misere_board = new Misere_Board();
+    Player<char>** players = game_ui->setup_players();
+
+    GameManager<char> misere(misere_board, players, game_ui);
+    misere.run();
+
+    // تنظيف الذاكرة
+    delete misere_board;
+    for (int i = 0; i < 2; ++i) delete players[i];
+    delete[] players;
+    delete game_ui;
+}
+
+
 // 5. دالة تشغيل لعبة SUS
 void run_SUS_Game() {
     SUS_UI* game_ui = new SUS_UI();
@@ -153,6 +169,7 @@ int main() {
         cout << "3: Play 4x4 Tic-Tac-Toe\n";
         cout << "4: Play 5x5 Tic-Tac-Toe\n";       // <-- الاختيار الجديد
         cout << "5: Play SUS Game\n";
+        cout << "6: Play Misere Tic Tac Toe Game\n";
         cout << "0: Exit\n";
         cout << "------------------------------\n";
         cout << "Enter your choice: ";
@@ -183,6 +200,9 @@ int main() {
         else if (choice == 5) {
             run_SUS_Game();
         }
+         else if (choice == 6) {
+             run_Misere_Game();
+         }
         else if (choice == 0) {
             cout << "Goodbye!\n";
             break;

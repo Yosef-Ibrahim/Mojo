@@ -7,6 +7,7 @@
     <ClCompile Include="XO_Classes.cpp" />
     <ClCompile Include="XO_Demo.cpp" />
     <ClCompile Include="FiveByFive_Classes.cpp" />
+    <ClCompile Include="Misere.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BoardGame_Classes.h" />
@@ -15,5 +16,6 @@
     <ClInclude Include="sus_classes.h" />
     <ClInclude Include="XO_Classes.h" />
     <ClInclude Include="FiveByFive_Classes.h" />
+    <ClInclude Include="Misere.h" />
   </ItemGroup>
 </Project>
