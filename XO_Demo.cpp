@@ -9,8 +9,9 @@
 #include "XO_Classes.h"
 #include "Numerical_TicTacToe.h" 
 #include "FourByFour_Classes.h"
-#include "FiveByFive_Classes.h"  // اللعبة الجديدة
+#include "FiveByFive_Classes.h"
 #include "sus_classes.h"
+#include "Infinity_TicTacToe.h"  // الملف الجديد
 
 using namespace std;
 
@@ -66,7 +67,7 @@ void run_FourByFour_Game() {
     delete game_ui;
 }
 
-// 4. دالة تشغيل لعبة 5x5 Tic-Tac-Toe (اللعبة الجديدة)
+// 4. دالة تشغيل لعبة 5x5 Tic-Tac-Toe
 void run_FiveByFive_Game() {
     FiveByFive_UI<char>* game_ui = new FiveByFive_UI<char>();
     FiveByFive_Board<char>* board = new FiveByFive_Board<char>();
@@ -102,6 +103,7 @@ void run_FiveByFive_Game() {
     delete game_ui;
 }
 
+
 void run_Misere_Game() {
     UI<char>* game_ui = new Misere_UI();
     Board<char>* misere_board = new Misere_Board();
@@ -117,8 +119,7 @@ void run_Misere_Game() {
     delete game_ui;
 }
 
-
-// 5. دالة تشغيل لعبة SUS
+// 6. دالة تشغيل لعبة SUS
 void run_SUS_Game() {
     SUS_UI* game_ui = new SUS_UI();
     SUS_Board* sus_board = new SUS_Board();
@@ -151,6 +152,25 @@ void run_SUS_Game() {
     delete game_ui;
 }
 
+// 7. دالة تشغيل لعبة Infinity Tic-Tac-Toe (الجديدة)
+void run_Infinity_TicTacToe_Game() {
+    Infinity_TicTacToe_UI<char>* game_ui = new Infinity_TicTacToe_UI<char>();
+    Infinity_TicTacToe_Board<char>* board = new Infinity_TicTacToe_Board<char>();
+    Player<char>** players = game_ui->setup_players();
+
+    // ربط الـ UI بالـ Board عشان اللاعب العشوائي يقدر يشوف الحركات المتاحة
+    game_ui->set_board(board);
+
+    GameManager<char> game(board, players, game_ui);
+    game.run();
+
+    // تنظيف الذاكرة
+    delete board;
+    for (int i = 0; i < 2; ++i) delete players[i];
+    delete[] players;
+    delete game_ui;
+}
+
 // -----------------------------------------------------------------------------
 // Main Function
 // -----------------------------------------------------------------------------
@@ -167,9 +187,10 @@ int main() {
         cout << "1: Play X-O Game (3x3)\n";
         cout << "2: Play Numerical Tic-Tac-Toe\n";
         cout << "3: Play 4x4 Tic-Tac-Toe\n";
-        cout << "4: Play 5x5 Tic-Tac-Toe\n";       // <-- الاختيار الجديد
+        cout << "4: Play 5x5 Tic-Tac-Toe\n";
         cout << "5: Play SUS Game\n";
         cout << "6: Play Misere Tic Tac Toe Game\n";
+        cout << "7: Play Infinity Tic-Tac-Toe\n";  
         cout << "0: Exit\n";
         cout << "------------------------------\n";
         cout << "Enter your choice: ";
@@ -195,14 +216,17 @@ int main() {
             run_FourByFour_Game();
         }
         else if (choice == 4) {
-            run_FiveByFive_Game(); // <-- تشغيل اللعبة الجديدة
+            run_FiveByFive_Game();
         }
         else if (choice == 5) {
             run_SUS_Game();
         }
-         else if (choice == 6) {
-             run_Misere_Game();
-         }
+        else if (choice == 6) {
+            run_Misere_Game();
+        }
+        else if (choice == 7) {
+            run_Infinity_TicTacToe_Game(); 
+        }
         else if (choice == 0) {
             cout << "Goodbye!\n";
             break;
