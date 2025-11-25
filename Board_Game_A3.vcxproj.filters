@@ -9,6 +9,7 @@
     <ClCompile Include="FiveByFive_Classes.cpp" />
     <ClCompile Include="Misere.cpp" />
     <ClCompile Include="Infinity_TicTacToe.cpp" />
+    <ClCompile Include="Obstacles_Classes.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BoardGame_Classes.h" />
@@ -19,5 +20,6 @@
     <ClInclude Include="FiveByFive_Classes.h" />
     <ClInclude Include="Misere.h" />
     <ClInclude Include="Infinity_TicTacToe.h" />
+    <ClInclude Include="Obstacles_Classes.h" />
   </ItemGroup>
 </Project>

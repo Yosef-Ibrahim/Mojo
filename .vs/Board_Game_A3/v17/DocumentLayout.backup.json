@@ -1,37 +1,45 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\Assignment 3\\Board_Games-Assignment_3\\",
+  "WorkspaceRootPath": "C:\\Users\\Lenovo\\Board_Games-Assignment_3\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|D:\\Assignment 3\\Board_Games-Assignment_3\\Infinity_TicTacToe.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|solutionrelative:Infinity_TicTacToe.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|D:\\Assignment 3\\Board_Games-Assignment_3\\XO_Demo.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|C:\\Users\\Lenovo\\Board_Games-Assignment_3\\XO_Demo.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|solutionrelative:XO_Demo.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|D:\\Assignment 3\\Board_Games-Assignment_3\\Infinity_TicTacToe.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|C:\\Users\\Lenovo\\Board_Games-Assignment_3\\Obstacles_Classes.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|solutionrelative:Obstacles_Classes.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|C:\\Users\\Lenovo\\Board_Games-Assignment_3\\Obstacles_Classes.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|solutionrelative:Obstacles_Classes.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|C:\\Users\\Lenovo\\Board_Games-Assignment_3\\Infinity_TicTacToe.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|solutionrelative:Infinity_TicTacToe.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|C:\\Users\\Lenovo\\Board_Games-Assignment_3\\Infinity_TicTacToe.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|solutionrelative:Infinity_TicTacToe.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|D:\\Assignment 3\\Board_Games-Assignment_3\\Misere.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|C:\\Users\\Lenovo\\Board_Games-Assignment_3\\Misere.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|solutionrelative:Misere.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|D:\\Assignment 3\\Board_Games-Assignment_3\\Misere.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|C:\\Users\\Lenovo\\Board_Games-Assignment_3\\Misere.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|solutionrelative:Misere.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|D:\\Assignment 3\\Board_Games-Assignment_3\\BoardGame_Classes.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|C:\\Users\\Lenovo\\Board_Games-Assignment_3\\BoardGame_Classes.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|solutionrelative:BoardGame_Classes.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|D:\\Assignment 3\\Board_Games-Assignment_3\\XO_Classes.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|C:\\Users\\Lenovo\\Board_Games-Assignment_3\\XO_Classes.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|solutionrelative:XO_Classes.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|D:\\Assignment 3\\Board_Games-Assignment_3\\XO_Classes.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|C:\\Users\\Lenovo\\Board_Games-Assignment_3\\XO_Classes.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|solutionrelative:XO_Classes.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
@@ -42,7 +50,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 7,
           "Children": [
             {
               "$type": "Bookmark",
@@ -50,37 +58,50 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
+              "Title": "Obstacles_Classes.cpp",
+              "DocumentMoniker": "C:\\Users\\Lenovo\\Board_Games-Assignment_3\\Obstacles_Classes.cpp",
+              "RelativeDocumentMoniker": "Obstacles_Classes.cpp",
+              "ToolTip": "C:\\Users\\Lenovo\\Board_Games-Assignment_3\\Obstacles_Classes.cpp",
+              "RelativeToolTip": "Obstacles_Classes.cpp",
+              "ViewState": "AgIAAJ8AAAAAAAAAAAAuwK8AAAAiAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-11-25T22:57:37.074Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Obstacles_Classes.h",
+              "DocumentMoniker": "C:\\Users\\Lenovo\\Board_Games-Assignment_3\\Obstacles_Classes.h",
+              "RelativeDocumentMoniker": "Obstacles_Classes.h",
+              "ToolTip": "C:\\Users\\Lenovo\\Board_Games-Assignment_3\\Obstacles_Classes.h",
+              "RelativeToolTip": "Obstacles_Classes.h",
+              "ViewState": "AgIAAAcAAAAAAAAAAAAuwCAAAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-11-25T22:57:33.288Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": "Infinity_TicTacToe.cpp",
-              "DocumentMoniker": "D:\\Assignment 3\\Board_Games-Assignment_3\\Infinity_TicTacToe.cpp",
+              "DocumentMoniker": "C:\\Users\\Lenovo\\Board_Games-Assignment_3\\Infinity_TicTacToe.cpp",
               "RelativeDocumentMoniker": "Infinity_TicTacToe.cpp",
-              "ToolTip": "D:\\Assignment 3\\Board_Games-Assignment_3\\Infinity_TicTacToe.cpp*",
-              "RelativeToolTip": "Infinity_TicTacToe.cpp*",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAALYAAAAAAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\Lenovo\\Board_Games-Assignment_3\\Infinity_TicTacToe.cpp",
+              "RelativeToolTip": "Infinity_TicTacToe.cpp",
+              "ViewState": "AgIAAKUAAAAAAAAAAAAAAK0AAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2025-11-25T03:58:39.7Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Infinity_TicTacToe.h",
-              "DocumentMoniker": "D:\\Assignment 3\\Board_Games-Assignment_3\\Infinity_TicTacToe.h",
-              "RelativeDocumentMoniker": "Infinity_TicTacToe.h",
-              "ToolTip": "D:\\Assignment 3\\Board_Games-Assignment_3\\Infinity_TicTacToe.h",
-              "RelativeToolTip": "Infinity_TicTacToe.h",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACcAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2025-11-25T03:57:29.826Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 7,
               "Title": "BoardGame_Classes.h",
-              "DocumentMoniker": "D:\\Assignment 3\\Board_Games-Assignment_3\\BoardGame_Classes.h",
+              "DocumentMoniker": "C:\\Users\\Lenovo\\Board_Games-Assignment_3\\BoardGame_Classes.h",
               "RelativeDocumentMoniker": "BoardGame_Classes.h",
-              "ToolTip": "D:\\Assignment 3\\Board_Games-Assignment_3\\BoardGame_Classes.h",
+              "ToolTip": "C:\\Users\\Lenovo\\Board_Games-Assignment_3\\BoardGame_Classes.h",
               "RelativeToolTip": "BoardGame_Classes.h",
               "ViewState": "AgIAAKsAAAAAAAAAAAApwCsAAAACAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
@@ -88,24 +109,23 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 5,
               "Title": "Misere.cpp",
-              "DocumentMoniker": "D:\\Assignment 3\\Board_Games-Assignment_3\\Misere.cpp",
+              "DocumentMoniker": "C:\\Users\\Lenovo\\Board_Games-Assignment_3\\Misere.cpp",
               "RelativeDocumentMoniker": "Misere.cpp",
-              "ToolTip": "D:\\Assignment 3\\Board_Games-Assignment_3\\Misere.cpp",
+              "ToolTip": "C:\\Users\\Lenovo\\Board_Games-Assignment_3\\Misere.cpp",
               "RelativeToolTip": "Misere.cpp",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAHQAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2025-11-25T02:38:50.272Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-25T02:38:50.272Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 6,
               "Title": "Misere.h",
-              "DocumentMoniker": "D:\\Assignment 3\\Board_Games-Assignment_3\\Misere.h",
+              "DocumentMoniker": "C:\\Users\\Lenovo\\Board_Games-Assignment_3\\Misere.h",
               "RelativeDocumentMoniker": "Misere.h",
-              "ToolTip": "D:\\Assignment 3\\Board_Games-Assignment_3\\Misere.h",
+              "ToolTip": "C:\\Users\\Lenovo\\Board_Games-Assignment_3\\Misere.h",
               "RelativeToolTip": "Misere.h",
               "ViewState": "AgIAAAIAAAAAAAAAAAAUwBcAAAACAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
@@ -113,11 +133,36 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 0,
+              "Title": "XO_Demo.cpp",
+              "DocumentMoniker": "C:\\Users\\Lenovo\\Board_Games-Assignment_3\\XO_Demo.cpp",
+              "RelativeDocumentMoniker": "XO_Demo.cpp",
+              "ToolTip": "C:\\Users\\Lenovo\\Board_Games-Assignment_3\\XO_Demo.cpp*",
+              "RelativeToolTip": "XO_Demo.cpp*",
+              "ViewState": "AgIAALAAAAAAAAAAAAAAANEAAAA0AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-11-12T08:14:10.595Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Infinity_TicTacToe.h",
+              "DocumentMoniker": "C:\\Users\\Lenovo\\Board_Games-Assignment_3\\Infinity_TicTacToe.h",
+              "RelativeDocumentMoniker": "Infinity_TicTacToe.h",
+              "ToolTip": "C:\\Users\\Lenovo\\Board_Games-Assignment_3\\Infinity_TicTacToe.h",
+              "RelativeToolTip": "Infinity_TicTacToe.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-11-25T03:57:29.826Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
               "Title": "XO_Classes.cpp",
-              "DocumentMoniker": "D:\\Assignment 3\\Board_Games-Assignment_3\\XO_Classes.cpp",
+              "DocumentMoniker": "C:\\Users\\Lenovo\\Board_Games-Assignment_3\\XO_Classes.cpp",
               "RelativeDocumentMoniker": "XO_Classes.cpp",
-              "ToolTip": "D:\\Assignment 3\\Board_Games-Assignment_3\\XO_Classes.cpp",
+              "ToolTip": "C:\\Users\\Lenovo\\Board_Games-Assignment_3\\XO_Classes.cpp",
               "RelativeToolTip": "XO_Classes.cpp",
               "ViewState": "AgIAACEAAAAAAAAAAAAAAC0AAAASAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
@@ -125,24 +170,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "XO_Demo.cpp",
-              "DocumentMoniker": "D:\\Assignment 3\\Board_Games-Assignment_3\\XO_Demo.cpp",
-              "RelativeDocumentMoniker": "XO_Demo.cpp",
-              "ToolTip": "D:\\Assignment 3\\Board_Games-Assignment_3\\XO_Demo.cpp",
-              "RelativeToolTip": "XO_Demo.cpp",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAAGkAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2025-11-12T08:14:10.595Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 9,
               "Title": "XO_Classes.h",
-              "DocumentMoniker": "D:\\Assignment 3\\Board_Games-Assignment_3\\XO_Classes.h",
+              "DocumentMoniker": "C:\\Users\\Lenovo\\Board_Games-Assignment_3\\XO_Classes.h",
               "RelativeDocumentMoniker": "XO_Classes.h",
-              "ToolTip": "D:\\Assignment 3\\Board_Games-Assignment_3\\XO_Classes.h",
+              "ToolTip": "C:\\Users\\Lenovo\\Board_Games-Assignment_3\\XO_Classes.h",
               "RelativeToolTip": "XO_Classes.h",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAADAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",

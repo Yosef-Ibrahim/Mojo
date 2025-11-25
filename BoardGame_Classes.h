@@ -141,9 +141,6 @@ public:
         }
         cout << "): ";
         cin >> choice;
-        // هنا بنرجع القيمة بناء على اختيار المستخدم
-        // 1 -> Human, 2 -> Random (Computer)
-        // ممكن بعدين نزود 3 -> AI
         return static_cast<PlayerType>(choice - 1);
     }
 };
@@ -159,7 +156,7 @@ public:
     GameManager(Board<T>* b, Player<T>** p, UI<T>* u) : boardPtr(b), players(p), ui(u) {}
 
     void run() {
-        system("cls");
+        // system("cls"); // <--- (1) لغينا مسح الشاشة في البداية
         ui->display_welcome();
         ui->display_board_matrix(boardPtr->get_board_matrix());
 
@@ -173,8 +170,9 @@ public:
                     move = ui->get_move(currentPlayer);
                 }
 
-                system("cls");
-                ui->display_welcome();
+                // system("cls"); // <--- (2) لغينا مسح الشاشة هنا عشان تشوف الحركات القديمة
+
+                // هنعرض اللوحة الجديدة تحت القديمة عادي
                 ui->display_board_matrix(boardPtr->get_board_matrix());
 
                 if (boardPtr->is_win(currentPlayer)) {

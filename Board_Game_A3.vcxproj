@@ -25,6 +25,7 @@
     <ClInclude Include="Infinity_TicTacToe.h" />
     <ClInclude Include="Misere.h" />
     <ClInclude Include="Numerical_TicTacToe.h" />
+    <ClInclude Include="Obstacles_Classes.h" />
     <ClInclude Include="sus_classes.h" />
     <ClInclude Include="XO_Classes.h" />
   </ItemGroup>
@@ -34,6 +35,7 @@
     <ClCompile Include="Infinity_TicTacToe.cpp" />
     <ClCompile Include="Misere.cpp" />
     <ClCompile Include="Numerical_TicTacToe.cpp" />
+    <ClCompile Include="Obstacles_Classes.cpp" />
     <ClCompile Include="sus_classes.cpp" />
     <ClCompile Include="XO_Classes.cpp" />
     <ClCompile Include="XO_Demo.cpp" />
