@@ -8,7 +8,6 @@ using namespace std;
 
 template <typename T>
 Infinity_TicTacToe_Board<T>::Infinity_TicTacToe_Board() : Board<T>(3, 3) {
-    
     for (int i = 0; i < 3; ++i) {
         for (int j = 0; j < 3; ++j) {
             this->board[i][j] = static_cast<T>(' ');
@@ -22,7 +21,7 @@ bool Infinity_TicTacToe_Board<T>::update_board(Move<T>* move) {
     int y = move->get_y();
     T symbol = move->get_symbol();
 
-   
+
     if (x < 0 || x >= 3 || y < 0 || y >= 3) {
         return false;
     }
@@ -32,19 +31,19 @@ bool Infinity_TicTacToe_Board<T>::update_board(Move<T>* move) {
         return false;
     }
 
-    
+
     this->board[x][y] = symbol;
     this->n_moves++;
 
-    
-    move_history.push_back(make_pair(x, y));
 
- 
-    if (move_history.size() > 3) {
-        pair<int, int> oldest = move_history.front();
-        move_history.pop_front();
+    player_moves[symbol].push_back(make_pair(x, y));
 
-        
+
+    if (player_moves[symbol].size() > 3) {
+        pair<int, int> oldest = player_moves[symbol].front();
+        player_moves[symbol].pop_front();
+
+
         this->board[oldest.first][oldest.second] = static_cast<T>(' ');
         this->n_moves--;
     }
@@ -54,7 +53,7 @@ bool Infinity_TicTacToe_Board<T>::update_board(Move<T>* move) {
 
 template <typename T>
 bool Infinity_TicTacToe_Board<T>::check_win_for_symbol(T symbol) {
-  
+
     for (int i = 0; i < 3; ++i) {
         if (this->board[i][0] == symbol &&
             this->board[i][1] == symbol &&
@@ -63,7 +62,7 @@ bool Infinity_TicTacToe_Board<T>::check_win_for_symbol(T symbol) {
         }
     }
 
-    
+
     for (int j = 0; j < 3; ++j) {
         if (this->board[0][j] == symbol &&
             this->board[1][j] == symbol &&
@@ -79,7 +78,7 @@ bool Infinity_TicTacToe_Board<T>::check_win_for_symbol(T symbol) {
         return true;
     }
 
-  
+
     if (this->board[0][2] == symbol &&
         this->board[1][1] == symbol &&
         this->board[2][0] == symbol) {
@@ -120,7 +119,7 @@ pair<int, int> Infinity_TicTacToe_RandomPlayer<T>::get_random_move(Board<T>* boa
     vector<pair<int, int>> available_moves;
     auto board_matrix = board->get_board_matrix();
 
-   
+
     for (int i = 0; i < 3; ++i) {
         for (int j = 0; j < 3; ++j) {
             if (board_matrix[i][j] == static_cast<T>(' ')) {
@@ -129,13 +128,13 @@ pair<int, int> Infinity_TicTacToe_RandomPlayer<T>::get_random_move(Board<T>* boa
         }
     }
 
-  
+
     if (!available_moves.empty()) {
         int random_index = rand() % available_moves.size();
         return available_moves[random_index];
     }
 
-    return make_pair(-1, -1); 
+    return make_pair(-1, -1);
 }
 
 
@@ -163,7 +162,7 @@ Move<T>* Infinity_TicTacToe_UI<T>::get_move(Player<T>* currentPlayer) {
         cin >> x >> y;
     }
     else {
-        // اللاعب العشوائي
+
         auto* random_player = dynamic_cast<Infinity_TicTacToe_RandomPlayer<T>*>(currentPlayer);
         if (random_player && board_ptr) {
             pair<int, int> random_move = random_player->get_random_move(board_ptr);

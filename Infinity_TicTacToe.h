@@ -1,16 +1,18 @@
-#ifndef _INFINITY_TICTACTOE_H
+﻿#ifndef _INFINITY_TICTACTOE_H
 #define _INFINITY_TICTACTOE_H
 
 #include "BoardGame_Classes.h"
 #include <deque>
 #include <utility>
+#include <map>
 
 using namespace std;
 
 template <typename T>
 class Infinity_TicTacToe_Board : public Board<T> {
 private:
-    deque<pair<int, int>> move_history; 
+    // تتبع نقلات كل لاعب على حدة
+    map<T, deque<pair<int, int>>> player_moves;
 
     bool check_win_for_symbol(T symbol);
 
