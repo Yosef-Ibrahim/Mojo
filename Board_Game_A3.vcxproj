@@ -26,6 +26,7 @@
     <ClInclude Include="Misere.h" />
     <ClInclude Include="Numerical_TicTacToe.h" />
     <ClInclude Include="Obstacles_Classes.h" />
+    <ClInclude Include="Pyramid_TicTacToe.h" />
     <ClInclude Include="sus_classes.h" />
     <ClInclude Include="XO_Classes.h" />
   </ItemGroup>
@@ -36,6 +37,7 @@
     <ClCompile Include="Misere.cpp" />
     <ClCompile Include="Numerical_TicTacToe.cpp" />
     <ClCompile Include="Obstacles_Classes.cpp" />
+    <ClCompile Include="Pyramid_TicTacToe.cpp" />
     <ClCompile Include="sus_classes.cpp" />
     <ClCompile Include="XO_Classes.cpp" />
     <ClCompile Include="XO_Demo.cpp" />

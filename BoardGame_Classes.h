@@ -12,14 +12,17 @@ using namespace std;
 template <typename T> class Player;
 template <typename T> class Move;
 
-// التغيير الجديد: إضافة أنواع AI و RANDOM
+// أنواع اللاعبين (تم إضافة AI و Random)
 enum class PlayerType {
     HUMAN,
     COMPUTER,
-    AI,        // عشان البونص (MinMax)
-    RANDOM     // لاعب عشوائي
+    AI,
+    RANDOM
 };
 
+// -----------------------------------------------------------------------------
+// Class: Board
+// -----------------------------------------------------------------------------
 template <typename T>
 class Board {
 protected:
@@ -43,6 +46,9 @@ public:
     virtual bool game_is_over(Player<T>* player) = 0;
 };
 
+// -----------------------------------------------------------------------------
+// Class: Move
+// -----------------------------------------------------------------------------
 template <typename T>
 class Move {
 protected:
@@ -58,6 +64,9 @@ public:
     T get_symbol() const { return symbol; }
 };
 
+// -----------------------------------------------------------------------------
+// Class: Player
+// -----------------------------------------------------------------------------
 template <typename T>
 class Player {
 protected:
@@ -74,6 +83,9 @@ public:
     PlayerType get_type() const { return type; }
 };
 
+// -----------------------------------------------------------------------------
+// Class: UI
+// -----------------------------------------------------------------------------
 template <typename T>
 class UI {
 protected:
@@ -89,31 +101,54 @@ public:
     virtual Move<T>* get_move(Player<T>* currentPlayer) = 0;
 
     void display_welcome() {
-        cout << "========================================\n";
-        cout << welcome_message << endl;
+        cout << "\n========================================\n";
+        cout << "  " << welcome_message << "\n";
         cout << "========================================\n";
     }
 
+    // دالة العرض المحسنة (New Visuals)
     void display_board_matrix(const vector<vector<T>>& matrix) {
         int rows = matrix.size();
         int cols = (rows > 0) ? matrix[0].size() : 0;
 
-        cout << "\n    ";
+        // 1. رسم الهرم بتصميم الصناديق المتراصة (أنظف وأوضح)
+        if (rows == 3 && cols == 5) {
+            cout << "\n";
+            // دليل الأعمدة
+            cout << "                      0   1   2   3   4" << endl;
+            cout << "                          +---+" << endl;
+            // الصف 0 (القمة - خانة واحدة في العمود 2)
+            cout << " 0                        | " << matrix[0][2] << " |" << endl;
+
+            // الصف 1 (الوسط - 3 خانات في الأعمدة 1, 2, 3)
+            cout << "                      +---+---+---+" << endl;
+            cout << " 1                    | " << matrix[1][1] << " | " << matrix[1][2] << " | " << matrix[1][3] << " |" << endl;
+
+            // الصف 2 (القاعدة - 5 خانات كاملة)
+            cout << "                  +---+---+---+---+---+" << endl;
+            cout << " 2                | " << matrix[2][0] << " | " << matrix[2][1] << " | " << matrix[2][2] << " | " << matrix[2][3] << " | " << matrix[2][4] << " |" << endl;
+            cout << "                  +---+---+---+---+---+" << endl;
+            cout << endl;
+            return;
+        }
+
+        // 2. العرض العادي لباقي الألعاب (Grid) مع ترقيم الصفوف والأعمدة
+        cout << "\n     ";
         for (int j = 0; j < cols; ++j) {
             cout << " " << j << "  ";
         }
-        cout << "\n   +";
+        cout << "\n    +";
         for (int j = 0; j < cols; ++j) {
             cout << "---+";
         }
         cout << "\n";
 
         for (int i = 0; i < rows; ++i) {
-            cout << " " << i << " |";
+            cout << "  " << i << " |"; // رقم الصف
             for (int j = 0; j < cols; ++j) {
                 cout << " " << matrix[i][j] << " |";
             }
-            cout << "\n   +";
+            cout << "\n    +";
             for (int j = 0; j < cols; ++j) {
                 cout << "---+";
             }
@@ -145,6 +180,9 @@ public:
     }
 };
 
+// -----------------------------------------------------------------------------
+// Class: GameManager
+// -----------------------------------------------------------------------------
 template <typename T>
 class GameManager {
 private:
@@ -156,7 +194,6 @@ public:
     GameManager(Board<T>* b, Player<T>** p, UI<T>* u) : boardPtr(b), players(p), ui(u) {}
 
     void run() {
-        // system("cls"); // <--- (1) لغينا مسح الشاشة في البداية
         ui->display_welcome();
         ui->display_board_matrix(boardPtr->get_board_matrix());
 
@@ -170,9 +207,7 @@ public:
                     move = ui->get_move(currentPlayer);
                 }
 
-                // system("cls"); // <--- (2) لغينا مسح الشاشة هنا عشان تشوف الحركات القديمة
-
-                // هنعرض اللوحة الجديدة تحت القديمة عادي
+                // عرض اللوحة الجديدة (بدون مسح القديم عشان التاريخ يفضل موجود)
                 ui->display_board_matrix(boardPtr->get_board_matrix());
 
                 if (boardPtr->is_win(currentPlayer)) {
