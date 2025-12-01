@@ -9,14 +9,15 @@
 
 using namespace std;
 
+// Forward declarations
 template <typename T> class Player;
 template <typename T> class Move;
 
-// أنواع اللاعبين (تم إضافة AI و Random)
+// أنواع اللاعبين المتاحة
 enum class PlayerType {
     HUMAN,
-    COMPUTER,
-    AI,
+    COMPUTER,  // Random
+    AI,        // Smart AI (Minimax)
     RANDOM
 };
 
@@ -106,12 +107,12 @@ public:
         cout << "========================================\n";
     }
 
-    // دالة العرض المحسنة (New Visuals)
+    // دالة العرض (تدعم الهرم والشبكات العادية)
     void display_board_matrix(const vector<vector<T>>& matrix) {
         int rows = matrix.size();
         int cols = (rows > 0) ? matrix[0].size() : 0;
 
-        // 1. رسم الهرم بتصميم الصناديق المتراصة (أنظف وأوضح)
+        // 1. رسم الهرم بتصميم الصناديق (أنظف وأوضح)
         if (rows == 3 && cols == 5) {
             cout << "\n";
             // دليل الأعمدة
@@ -132,26 +133,18 @@ public:
             return;
         }
 
-        // 2. العرض العادي لباقي الألعاب (Grid) مع ترقيم الصفوف والأعمدة
+        // 2. رسم الشبكة العادية لباقي الألعاب
         cout << "\n     ";
-        for (int j = 0; j < cols; ++j) {
-            cout << " " << j << "  ";
-        }
+        for (int j = 0; j < cols; ++j) cout << " " << j << "  ";
         cout << "\n    +";
-        for (int j = 0; j < cols; ++j) {
-            cout << "---+";
-        }
+        for (int j = 0; j < cols; ++j) cout << "---+";
         cout << "\n";
 
         for (int i = 0; i < rows; ++i) {
-            cout << "  " << i << " |"; // رقم الصف
-            for (int j = 0; j < cols; ++j) {
-                cout << " " << matrix[i][j] << " |";
-            }
+            cout << "  " << i << " |";
+            for (int j = 0; j < cols; ++j) cout << " " << matrix[i][j] << " |";
             cout << "\n    +";
-            for (int j = 0; j < cols; ++j) {
-                cout << "---+";
-            }
+            for (int j = 0; j < cols; ++j) cout << "---+";
             cout << "\n";
         }
         cout << endl;
@@ -207,7 +200,6 @@ public:
                     move = ui->get_move(currentPlayer);
                 }
 
-                // عرض اللوحة الجديدة (بدون مسح القديم عشان التاريخ يفضل موجود)
                 ui->display_board_matrix(boardPtr->get_board_matrix());
 
                 if (boardPtr->is_win(currentPlayer)) {
@@ -227,10 +219,15 @@ public:
     }
 };
 
+// -----------------------------------------------------------------------------
+// UI Implementation (تم تعديلها لإضافة خيار AI)
+// -----------------------------------------------------------------------------
 template <typename T>
 Player<T>** UI<T>::setup_players() {
     Player<T>** players = new Player<T>*[2];
-    vector<string> type_options = { "Human", "Computer" };
+
+    // 👈 هنا الإضافة: خيارات اللاعبين تشمل Smart AI
+    vector<string> type_options = { "Human", "Random Computer", "Smart AI" };
 
     string nameX = get_player_name("Player 1");
     PlayerType typeX = get_player_type_choice("Player 1", type_options);

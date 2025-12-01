@@ -8,11 +8,11 @@
 // استدعاء ملفات الألعاب
 #include "BoardGame_Classes.h"
 #include "XO_Classes.h"
-#include "Pyramid_TicTacToe.h"       // Game 1
+#include "Pyramid_TicTacToe.h"       // 👈 تم التصحيح: كان Pyramid_XO.h
 #include "FiveByFive_Classes.h"      // Game 3
 #include "Misere.h"                  // Game 6
 #include "FourByFour_Classes.h"      // Game 7
-#include "Numerical_TicTacToe.h"     // Game 5 (الترتيب اختلف في الـ Menu حسب الـ PDF)
+#include "Numerical_TicTacToe.h"     // Game 5
 #include "sus_classes.h"             // Game 9
 #include "Obstacles_Classes.h"       // Game 10
 #include "Infinity_TicTacToe.h"      // Game 11
@@ -80,7 +80,7 @@ void show_game_rules() {
 }
 
 // =============================================================================
-//  Part 2: Run Functions
+//  Part 2: Run Functions for Each Game
 // =============================================================================
 
 // 1. Pyramid Tic-Tac-Toe
