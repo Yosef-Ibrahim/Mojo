@@ -17,6 +17,7 @@
 #include "Obstacles_Classes.h"       // Game 10
 #include "Infinity_TicTacToe.h"      // Game 11
 #include "Four_In_A_Row_UI.h"        // Game 2
+#include "Diamond_TicTacToe.h"
 
 
 
@@ -44,6 +45,7 @@ void show_game_rules() {
         cout << "9. SUS Game\n";
         cout << "10. Obstacles Tic-Tac-Toe\n";
         cout << "11. Infinity Tic-Tac-Toe\n";
+        cout << "12. Diamond Tic-Tac-Toe\n";
         cout << "0. Return to Main Menu\n";
         cout << "--------------------------------------------\n";
         cout << "Enter choice: ";
@@ -74,6 +76,8 @@ void show_game_rules() {
         case 9: cout << "[ SUS ]\nForm 'S-U-S' sequences. The player with the most sequences wins.\n"; break;
         case 10: cout << "[ Obstacles ]\n6x6 grid. Computer blocks cells randomly after every round.\n"; break;
         case 11: cout << "[ Infinity ]\nOnly 3 moves per player. The 4th move erases the oldest one.\n"; break;
+        case 12: cout << " Rules: Players take turns placing their 'X' or 'O' in empty cells\n "
+            << "Winning Condition : A player wins by simultaneously completing a line of three marks an a line of four marks.The two lines must be in different directions(e.g., one horizontal, one diagonal) but can share one, common mark." << endl; break;
         default: cout << "Invalid selection.\n";
         }
         cout << "\nPress Enter to go back...";
@@ -192,14 +196,30 @@ void run_Obstacles_Game() {
 
 // 11. Infinity Tic-Tac-Toe
 void run_Infinity_TicTacToe_Game() {
-    Infinity_TicTacToe_UI<char>* ui = new Infinity_TicTacToe_UI<char>();
-    Infinity_TicTacToe_Board<char>* b = new Infinity_TicTacToe_Board<char>();
+    Infinity_UI* ui = new Infinity_UI();
+    Infinity_Board* b = new Infinity_Board();
     Player<char>** p = ui->setup_players();
-    ui->set_board(b);
+
     GameManager<char> game(b, p, ui);
     game.run();
-    delete b; for (int i = 0; i < 2; ++i) delete p[i]; delete[] p; delete ui;
+    delete b;
+    for (int i = 0; i < 2; ++i) delete p[i];
+    delete[] p;
+    delete ui;
 }
+// 12. Diamond Tic-Tac-Toe
+void run_Diamond_Game() {
+    Diamond_UI* ui = new Diamond_UI();
+    Diamond_Board* b = new Diamond_Board();
+    Player<char>** p = ui->setup_players();
+    GameManager<char> game(b, p, ui);
+    game.run();
+    delete b;
+    for (int i = 0; i < 2; ++i) delete p[i];
+    delete[] p;
+    delete ui;
+}
+
 
 // =============================================================================
 //  Part 3: Main Menu (Ordered per PDF)
@@ -224,6 +244,7 @@ int main() {
         cout << "9. SUS Game\n";
         cout << "10. Obstacles Tic-Tac-Toe\n";
         cout << "11. Infinity Tic-Tac-Toe\n";
+        cout << "12. Diamond Tic-Tac-Toe\n";
         cout << "--------------------------------------------\n";
         cout << "12. Game Rules & Instructions [?]\n";
         cout << "0.  Exit\n";
@@ -248,7 +269,8 @@ int main() {
         case 9: run_SUS_Game(); break;
         case 10: run_Obstacles_Game(); break;
         case 11: run_Infinity_TicTacToe_Game(); break;
-        case 12: show_game_rules(); break;
+        case 12: run_Diamond_Game(); break;
+        case 13: show_game_rules(); break;
         case 0: cout << "Goodbye!\n"; return 0;
         default: cout << "Invalid choice!\n";
         }

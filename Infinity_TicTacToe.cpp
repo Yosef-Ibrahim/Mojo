@@ -1,186 +1,97 @@
-﻿#include "Infinity_TicTacToe.h"
-#include <iostream>
+﻿#include <iostream>
 #include <cstdlib>
 #include <ctime>
+#include "Infinity_TicTacToe.h"
 
 using namespace std;
 
-
-template <typename T>
-Infinity_TicTacToe_Board<T>::Infinity_TicTacToe_Board() : Board<T>(3, 3) {
-    for (int i = 0; i < 3; ++i) {
-        for (int j = 0; j < 3; ++j) {
-            this->board[i][j] = static_cast<T>(' ');
-        }
-    }
+Infinity_Board::Infinity_Board() : Board(3, 3) {
+    for (auto& row : board)
+        for (auto& cell : row)
+            cell = blank_symbol;
 }
 
-template <typename T>
-bool Infinity_TicTacToe_Board<T>::update_board(Move<T>* move) {
+bool Infinity_Board::update_board(Move<char>* move) {
     int x = move->get_x();
     int y = move->get_y();
-    T symbol = move->get_symbol();
+    char mark = move->get_symbol();
 
-
-    if (x < 0 || x >= 3 || y < 0 || y >= 3) {
+    if (x < 0 || x >= rows || y < 0 || y >= columns || board[x][y] != blank_symbol)
         return false;
-    }
+
+    board[x][y] = toupper(mark);
+    n_moves++;
+    moveHistory.push_back(new Move<char>(x, y, mark));
+    moveCounter++;
 
 
-    if (this->board[x][y] != static_cast<T>(' ')) {
-        return false;
-    }
-
-
-    this->board[x][y] = symbol;
-    this->n_moves++;
-
-
-    player_moves[symbol].push_back(make_pair(x, y));
-
-
-    if (player_moves[symbol].size() > 3) {
-        pair<int, int> oldest = player_moves[symbol].front();
-        player_moves[symbol].pop_front();
-
-
-        this->board[oldest.first][oldest.second] = static_cast<T>(' ');
-        this->n_moves--;
+    if (moveCounter >= 3) {
+        removeOldestMove();
+        moveCounter = 0;
     }
 
     return true;
 }
 
-template <typename T>
-bool Infinity_TicTacToe_Board<T>::check_win_for_symbol(T symbol) {
+void Infinity_Board::removeOldestMove() {
+    if (moveHistory.empty()) return;
 
-    for (int i = 0; i < 3; ++i) {
-        if (this->board[i][0] == symbol &&
-            this->board[i][1] == symbol &&
-            this->board[i][2] == symbol) {
+    Move<char>* oldest = moveHistory.front();
+    int x = oldest->get_x();
+    int y = oldest->get_y();
+
+    board[x][y] = blank_symbol;
+    moveHistory.pop_front();
+    delete oldest;
+}
+
+bool Infinity_Board::is_win(Player<char>* player) {
+    char sym = player->get_symbol();
+    auto all_equal = [&](char a, char b, char c) {
+        return a == b && b == c && a != blank_symbol && a == sym;
+        };
+
+    for (int i = 0; i < 3; i++) {
+        if (all_equal(board[i][0], board[i][1], board[i][2]) ||
+            all_equal(board[0][i], board[1][i], board[2][i]))
             return true;
-        }
     }
 
-
-    for (int j = 0; j < 3; ++j) {
-        if (this->board[0][j] == symbol &&
-            this->board[1][j] == symbol &&
-            this->board[2][j] == symbol) {
-            return true;
-        }
-    }
-
-
-    if (this->board[0][0] == symbol &&
-        this->board[1][1] == symbol &&
-        this->board[2][2] == symbol) {
+    if (all_equal(board[0][0], board[1][1], board[2][2]) ||
+        all_equal(board[0][2], board[1][1], board[2][0]))
         return true;
-    }
-
-
-    if (this->board[0][2] == symbol &&
-        this->board[1][1] == symbol &&
-        this->board[2][0] == symbol) {
-        return true;
-    }
 
     return false;
 }
 
-template <typename T>
-bool Infinity_TicTacToe_Board<T>::is_win(Player<T>* player) {
-    return check_win_for_symbol(player->get_symbol());
+bool Infinity_Board::is_draw(Player<char>* player) {
+
+    return n_moves >= 9 && !is_win(player);
 }
 
-template <typename T>
-bool Infinity_TicTacToe_Board<T>::is_draw(Player<T>* player) {
-
-    return false;
+bool Infinity_Board::game_is_over(Player<char>* player) {
+    return is_win(player) || is_draw(player);
 }
 
-template <typename T>
-bool Infinity_TicTacToe_Board<T>::game_is_over(Player<T>* player) {
-    return is_win(player);
+Infinity_UI::Infinity_UI() : UI<char>("Welcome to Infinity Tic-Tac-Toe", 3) {}
+
+Player<char>* Infinity_UI::create_player(string& name, char symbol, PlayerType type) {
+    cout << "Creating " << (type == PlayerType::HUMAN ? "human" : "computer")
+        << " player: " << name << " (" << symbol << ")\n";
+    return new Player<char>(name, symbol, type);
 }
 
-
-template <typename T>
-Infinity_TicTacToe_Player<T>::Infinity_TicTacToe_Player(string name, T symbol, PlayerType type)
-    : Player<T>(name, symbol, type) {}
-
-
-template <typename T>
-Infinity_TicTacToe_RandomPlayer<T>::Infinity_TicTacToe_RandomPlayer(string name, T symbol)
-    : Infinity_TicTacToe_Player<T>(name, symbol, PlayerType::RANDOM) {}
-
-template <typename T>
-pair<int, int> Infinity_TicTacToe_RandomPlayer<T>::get_random_move(Board<T>* board) {
-    vector<pair<int, int>> available_moves;
-    auto board_matrix = board->get_board_matrix();
-
-
-    for (int i = 0; i < 3; ++i) {
-        for (int j = 0; j < 3; ++j) {
-            if (board_matrix[i][j] == static_cast<T>(' ')) {
-                available_moves.push_back(make_pair(i, j));
-            }
-        }
-    }
-
-
-    if (!available_moves.empty()) {
-        int random_index = rand() % available_moves.size();
-        return available_moves[random_index];
-    }
-
-    return make_pair(-1, -1);
-}
-
-
-template <typename T>
-Infinity_TicTacToe_UI<T>::Infinity_TicTacToe_UI()
-    : UI<T>("Welcome to Infinity Tic-Tac-Toe!", 3), board_ptr(nullptr) {}
-
-template <typename T>
-Player<T>* Infinity_TicTacToe_UI<T>::create_player(string& name, T symbol, PlayerType type) {
-    if (type == PlayerType::HUMAN) {
-        return new Infinity_TicTacToe_Player<T>(name, symbol, PlayerType::HUMAN);
-    }
-    else {
-        return new Infinity_TicTacToe_RandomPlayer<T>(name, symbol);
-    }
-}
-
-template <typename T>
-Move<T>* Infinity_TicTacToe_UI<T>::get_move(Player<T>* currentPlayer) {
+Move<char>* Infinity_UI::get_move(Player<char>* player) {
     int x, y;
-
-    if (currentPlayer->get_type() == PlayerType::HUMAN) {
-        cout << "\n" << currentPlayer->get_name()
-            << " (" << currentPlayer->get_symbol() << "), enter your move (row column): ";
+    if (player->get_type() == PlayerType::HUMAN) {
+        cout << "\n" << player->get_name() << ", enter your move (Row Column from 0 to 2): ";
         cin >> x >> y;
     }
     else {
 
-        auto* random_player = dynamic_cast<Infinity_TicTacToe_RandomPlayer<T>*>(currentPlayer);
-        if (random_player && board_ptr) {
-            pair<int, int> random_move = random_player->get_random_move(board_ptr);
-            x = random_move.first;
-            y = random_move.second;
-            cout << "\n" << currentPlayer->get_name()
-                << " (Computer) chose: Row " << x << ", Column " << y << endl;
-        }
-        else {
-            x = y = -1;
-        }
+        x = rand() % 3;
+        y = rand() % 3;
+        cout << "\nComputer chooses: " << x << " " << y << endl;
     }
-
-    return new Move<T>(x, y, currentPlayer->get_symbol());
+    return new Move<char>(x, y, player->get_symbol());
 }
-
-
-template class Infinity_TicTacToe_Board<char>;
-template class Infinity_TicTacToe_Player<char>;
-template class Infinity_TicTacToe_RandomPlayer<char>;
-template class Infinity_TicTacToe_UI<char>;

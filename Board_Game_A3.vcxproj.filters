@@ -11,6 +11,8 @@
     <ClCompile Include="Infinity_TicTacToe.cpp" />
     <ClCompile Include="Obstacles_Classes.cpp" />
     <ClCompile Include="Pyramid_TicTacToe.cpp" />
+    <ClCompile Include="Four_In_A_Row_UI.cpp" />
+    <ClCompile Include="Diamond_TicTacToe.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BoardGame_Classes.h" />
@@ -23,5 +25,7 @@
     <ClInclude Include="Infinity_TicTacToe.h" />
     <ClInclude Include="Obstacles_Classes.h" />
     <ClInclude Include="Pyramid_TicTacToe.h" />
+    <ClInclude Include="Four_In_A_Row_UI.h" />
+    <ClInclude Include="Diamond_TicTacToe.h" />
   </ItemGroup>
 </Project>

@@ -20,8 +20,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BoardGame_Classes.h" />
+    <ClInclude Include="Diamond_TicTacToe.h" />
     <ClInclude Include="FiveByFive_Classes.h" />
     <ClInclude Include="FourByFour_Classes.h" />
+    <ClInclude Include="Four_In_A_Row_UI.h" />
     <ClInclude Include="Infinity_TicTacToe.h" />
     <ClInclude Include="Misere.h" />
     <ClInclude Include="Numerical_TicTacToe.h" />
@@ -31,8 +33,10 @@
     <ClInclude Include="XO_Classes.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Diamond_TicTacToe.cpp" />
     <ClCompile Include="FiveByFive_Classes.cpp" />
     <ClCompile Include="FourByFour_Classes.cpp" />
+    <ClCompile Include="Four_In_A_Row_UI.cpp" />
     <ClCompile Include="Infinity_TicTacToe.cpp" />
     <ClCompile Include="Misere.cpp" />
     <ClCompile Include="Numerical_TicTacToe.cpp" />

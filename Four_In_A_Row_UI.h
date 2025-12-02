@@ -1,4 +1,4 @@
-#ifndef FOUR_IN_A_ROW_UI_H
+﻿#ifndef FOUR_IN_A_ROW_UI_H
 #define FOUR_IN_A_ROW_UI_H
 
 #include "BoardGame_Classes.h"
@@ -7,6 +7,8 @@ using namespace std;
 //UI
 class Four_In_A_Row_UI : public UI<char>
 {
+private:
+	Board<char>* boardPtr;  
 
 public:
 	Four_In_A_Row_UI(Board<char>* board);

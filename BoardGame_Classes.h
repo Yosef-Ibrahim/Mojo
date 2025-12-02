@@ -108,7 +108,7 @@ public:
     }
 
     // دالة العرض (تدعم الهرم والشبكات العادية)
-    void display_board_matrix(const vector<vector<T>>& matrix) {
+   virtual void display_board_matrix(const vector<vector<T>>& matrix) const {
         int rows = matrix.size();
         int cols = (rows > 0) ? matrix[0].size() : 0;
 
