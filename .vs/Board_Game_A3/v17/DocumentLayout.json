@@ -1,25 +1,41 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\Assignment 3\\Board_Games-Assignment_3\\",
+  "WorkspaceRootPath": "C:\\Users\\moham\\Documents\\BoardGames\\Board_Games-Assignment_3\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|D:\\Assignment 3\\Board_Games-Assignment_3\\XO_Demo.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|C:\\Users\\moham\\Documents\\BoardGames\\Board_Games-Assignment_3\\XO_Demo.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|solutionrelative:XO_Demo.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|D:\\Assignment 3\\Board_Games-Assignment_3\\Memory_TicTacToe.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|C:\\Users\\moham\\Documents\\BoardGames\\Board_Games-Assignment_3\\Word_TicTacToe.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|solutionrelative:Word_TicTacToe.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|C:\\Users\\moham\\Documents\\BoardGames\\Board_Games-Assignment_3\\FiveByFive_Classes.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|solutionrelative:FiveByFive_Classes.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|C:\\Users\\moham\\Documents\\BoardGames\\Board_Games-Assignment_3\\FiveByFive_Classes.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|solutionrelative:FiveByFive_Classes.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|C:\\Users\\moham\\Documents\\BoardGames\\Board_Games-Assignment_3\\Word_TicTacToe.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|solutionrelative:Word_TicTacToe.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|C:\\Users\\moham\\Documents\\BoardGames\\Board_Games-Assignment_3\\Memory_TicTacToe.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|solutionrelative:Memory_TicTacToe.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|D:\\Assignment 3\\Board_Games-Assignment_3\\Memory_TicTacToe.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|C:\\Users\\moham\\Documents\\BoardGames\\Board_Games-Assignment_3\\Memory_TicTacToe.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|solutionrelative:Memory_TicTacToe.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|D:\\Assignment 3\\Board_Games-Assignment_3\\Misere.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|C:\\Users\\moham\\Documents\\BoardGames\\Board_Games-Assignment_3\\Misere.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|solutionrelative:Misere.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|D:\\Assignment 3\\Board_Games-Assignment_3\\Misere.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|C:\\Users\\moham\\Documents\\BoardGames\\Board_Games-Assignment_3\\Misere.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|solutionrelative:Misere.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
@@ -30,8 +46,12 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 8,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
@@ -39,67 +59,126 @@
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "Misere.cpp",
-              "DocumentMoniker": "D:\\Assignment 3\\Board_Games-Assignment_3\\Misere.cpp",
-              "RelativeDocumentMoniker": "Misere.cpp",
-              "ToolTip": "D:\\Assignment 3\\Board_Games-Assignment_3\\Misere.cpp",
-              "RelativeToolTip": "Misere.cpp",
-              "ViewState": "AgIAAAQAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2025-12-02T09:11:05.599Z",
-              "EditorCaption": ""
+              "Title": "FiveByFive_Classes.h",
+              "DocumentMoniker": "C:\\Users\\moham\\Documents\\BoardGames\\Board_Games-Assignment_3\\FiveByFive_Classes.h",
+              "RelativeDocumentMoniker": "FiveByFive_Classes.h",
+              "ToolTip": "C:\\Users\\moham\\Documents\\BoardGames\\Board_Games-Assignment_3\\FiveByFive_Classes.h",
+              "RelativeToolTip": "FiveByFive_Classes.h",
+              "ViewState": "AgIAABsAAAAAAAAAAAAkwDMAAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-12-02T17:00:40.922Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 4,
+              "Title": "Word_TicTacToe.h",
+              "DocumentMoniker": "C:\\Users\\moham\\Documents\\BoardGames\\Board_Games-Assignment_3\\Word_TicTacToe.h",
+              "RelativeDocumentMoniker": "Word_TicTacToe.h",
+              "ToolTip": "C:\\Users\\moham\\Documents\\BoardGames\\Board_Games-Assignment_3\\Word_TicTacToe.h",
+              "RelativeToolTip": "Word_TicTacToe.h",
+              "ViewState": "AgIAABEAAAAAAAAAAAAuwEQAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-12-02T13:10:04.103Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Word_TicTacToe.cpp",
+              "DocumentMoniker": "C:\\Users\\moham\\Documents\\BoardGames\\Board_Games-Assignment_3\\Word_TicTacToe.cpp",
+              "RelativeDocumentMoniker": "Word_TicTacToe.cpp",
+              "ToolTip": "C:\\Users\\moham\\Documents\\BoardGames\\Board_Games-Assignment_3\\Word_TicTacToe.cpp",
+              "RelativeToolTip": "Word_TicTacToe.cpp",
+              "ViewState": "AgIAABIBAAAAAAAAAAAkwIoBAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-12-02T13:09:49.821Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "FiveByFive_Classes.cpp",
+              "DocumentMoniker": "C:\\Users\\moham\\Documents\\BoardGames\\Board_Games-Assignment_3\\FiveByFive_Classes.cpp",
+              "RelativeDocumentMoniker": "FiveByFive_Classes.cpp",
+              "ToolTip": "C:\\Users\\moham\\Documents\\BoardGames\\Board_Games-Assignment_3\\FiveByFive_Classes.cpp",
+              "RelativeToolTip": "FiveByFive_Classes.cpp",
+              "ViewState": "AgIAAFABAAAAAAAAAAAkwGgBAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-12-02T10:17:52.898Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Misere.cpp",
+              "DocumentMoniker": "C:\\Users\\moham\\Documents\\BoardGames\\Board_Games-Assignment_3\\Misere.cpp",
+              "RelativeDocumentMoniker": "Misere.cpp",
+              "ToolTip": "C:\\Users\\moham\\Documents\\BoardGames\\Board_Games-Assignment_3\\Misere.cpp",
+              "RelativeToolTip": "Misere.cpp",
+              "ViewState": "AgIAAAQAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-12-02T09:11:05.599Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
               "Title": "Misere.h",
-              "DocumentMoniker": "D:\\Assignment 3\\Board_Games-Assignment_3\\Misere.h",
+              "DocumentMoniker": "C:\\Users\\moham\\Documents\\BoardGames\\Board_Games-Assignment_3\\Misere.h",
               "RelativeDocumentMoniker": "Misere.h",
-              "ToolTip": "D:\\Assignment 3\\Board_Games-Assignment_3\\Misere.h",
+              "ToolTip": "C:\\Users\\moham\\Documents\\BoardGames\\Board_Games-Assignment_3\\Misere.h",
               "RelativeToolTip": "Misere.h",
               "ViewState": "AgIAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2025-12-02T09:10:49.995Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-02T09:10:49.995Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "XO_Demo.cpp",
-              "DocumentMoniker": "D:\\Assignment 3\\Board_Games-Assignment_3\\XO_Demo.cpp",
+              "DocumentMoniker": "C:\\Users\\moham\\Documents\\BoardGames\\Board_Games-Assignment_3\\XO_Demo.cpp",
               "RelativeDocumentMoniker": "XO_Demo.cpp",
-              "ToolTip": "D:\\Assignment 3\\Board_Games-Assignment_3\\XO_Demo.cpp",
+              "ToolTip": "C:\\Users\\moham\\Documents\\BoardGames\\Board_Games-Assignment_3\\XO_Demo.cpp",
               "RelativeToolTip": "XO_Demo.cpp",
-              "ViewState": "AgIAAFYBAAAAAAAAAAAUwCgBAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAJoBAAAAAAAAAAAkwLUBAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2025-12-02T08:55:48.289Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 5,
               "Title": "Memory_TicTacToe.cpp",
-              "DocumentMoniker": "D:\\Assignment 3\\Board_Games-Assignment_3\\Memory_TicTacToe.cpp",
+              "DocumentMoniker": "C:\\Users\\moham\\Documents\\BoardGames\\Board_Games-Assignment_3\\Memory_TicTacToe.cpp",
               "RelativeDocumentMoniker": "Memory_TicTacToe.cpp",
-              "ToolTip": "D:\\Assignment 3\\Board_Games-Assignment_3\\Memory_TicTacToe.cpp",
+              "ToolTip": "C:\\Users\\moham\\Documents\\BoardGames\\Board_Games-Assignment_3\\Memory_TicTacToe.cpp",
               "RelativeToolTip": "Memory_TicTacToe.cpp",
               "ViewState": "AgIAAHwAAAAAAAAAAAAUwIwAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2025-12-02T08:55:42.648Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-02T08:55:42.648Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 6,
               "Title": "Memory_TicTacToe.h",
-              "DocumentMoniker": "D:\\Assignment 3\\Board_Games-Assignment_3\\Memory_TicTacToe.h",
+              "DocumentMoniker": "C:\\Users\\moham\\Documents\\BoardGames\\Board_Games-Assignment_3\\Memory_TicTacToe.h",
               "RelativeDocumentMoniker": "Memory_TicTacToe.h",
-              "ToolTip": "D:\\Assignment 3\\Board_Games-Assignment_3\\Memory_TicTacToe.h",
+              "ToolTip": "C:\\Users\\moham\\Documents\\BoardGames\\Board_Games-Assignment_3\\Memory_TicTacToe.h",
               "RelativeToolTip": "Memory_TicTacToe.h",
               "ViewState": "AgIAABgAAAAAAAAAAAAUwCgAAAAGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2025-12-02T08:55:20.353Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-02T08:55:20.353Z"
+            }
+          ]
+        },
+        {
+          "DockedWidth": 25,
+          "SelectedChildIndex": -1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
             }
           ]
         }

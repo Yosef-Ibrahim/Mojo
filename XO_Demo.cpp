@@ -19,6 +19,7 @@
 #include "Four_In_A_Row_UI.h"
 #include "Diamond_TicTacToe.h"
 #include "Memory_TicTacToe.h"
+#include "Word_TicTacToe.h"
 
 using namespace std;
 
@@ -36,7 +37,7 @@ void show_game_rules() {
         cout << "1. Pyramid Tic-Tac-Toe\n";
         cout << "2. Four-in-a-row (Connect 4)\n";
         cout << "3. 5x5 Tic-Tac-Toe\n";
-        cout << "4. Wordle\n";
+        cout << "4. Word Tic-Tac-Toe\n";
         cout << "5. Numerical Tic-Tac-Toe\n";
         cout << "6. Misere Tic-Tac-Toe\n";
         cout << "7. 4x4 Tic-Tac-Toe\n";
@@ -66,16 +67,40 @@ void show_game_rules() {
             cout << "Board: Pyramid shape (1 top, 3 middle, 5 bottom).\n";
             cout << "Goal: Align 3 symbols consecutively (Horizontally, Vertically, or Diagonally).\n";
             break;
-        case 2: cout << "[ Connect 4 ]\nAlign 4 symbols vertically, horizontally, or diagonally.\n"; break;
-        case 3: cout << "[ 5x5 Tic-Tac-Toe ]\nCreate as many 3-in-a-row sequences as possible. Max score wins.\n"; break;
-        case 4: cout << "[ Wordle ]\nGuess the hidden 5-letter word in 6 tries.\n"; break;
-        case 5: cout << "[ Numerical ]\nUse numbers 1-9. First to make a line summing to 15 wins.\n"; break;
-        case 6: cout << "[ Misere ]\nAvoid getting 3 in a row. If you get 3 in a row, you LOSE.\n"; break;
-        case 7: cout << "[ 4x4 Tic-Tac-Toe ]\nMove your existing tokens to adjacent spots to form a line of 3.\n"; break;
-        case 8: cout << "[ Ultimate ]\nWin small boards to claim cells on the big board.\n"; break;
-        case 9: cout << "[ SUS ]\nForm 'S-U-S' sequences. The player with the most sequences wins.\n"; break;
-        case 10: cout << "[ Obstacles ]\n6x6 grid. Computer blocks cells randomly after every round.\n"; break;
-        case 11: cout << "[ Infinity ]\nOnly 3 moves per player. The 4th move erases the oldest one.\n"; break;
+        case 2:
+            cout << "[ Connect 4 ]\nAlign 4 symbols vertically, horizontally, or diagonally.\n";
+            break;
+        case 3:
+            cout << "[ 5x5 Tic-Tac-Toe ]\nCreate as many 3-in-a-row sequences as possible. Max score wins.\n";
+            break;
+        case 4:
+            cout << "[ Word Tic-Tac-Toe ]\n";
+            cout << "Board: 3x3 grid.\n";
+            cout << "Rules: Players place letters to form valid 3-letter words.\n";
+            cout << "Goal: First to form a valid word (horizontally, vertically, or diagonally) wins.\n";
+            cout << "Note: A dictionary file (dic.txt) is required with valid 3-letter words.\n";
+            break;
+        case 5:
+            cout << "[ Numerical ]\nUse numbers 1-9. First to make a line summing to 15 wins.\n";
+            break;
+        case 6:
+            cout << "[ Misere ]\nAvoid getting 3 in a row. If you get 3 in a row, you LOSE.\n";
+            break;
+        case 7:
+            cout << "[ 4x4 Tic-Tac-Toe ]\nMove your existing tokens to adjacent spots to form a line of 3.\n";
+            break;
+        case 8:
+            cout << "[ Ultimate ]\nWin small boards to claim cells on the big board.\n";
+            break;
+        case 9:
+            cout << "[ SUS ]\nForm 'S-U-S' sequences. The player with the most sequences wins.\n";
+            break;
+        case 10:
+            cout << "[ Obstacles ]\n6x6 grid. Computer blocks cells randomly after every round.\n";
+            break;
+        case 11:
+            cout << "[ Infinity ]\nOnly 3 moves per player. The 4th move erases the oldest one.\n";
+            break;
         case 12:
             cout << "[ Diamond Tic-Tac-Toe ]\n";
             cout << "Rules: Players take turns placing their 'X' or 'O' in empty cells\n";
@@ -83,12 +108,15 @@ void show_game_rules() {
             cout << "a line of three marks AND a line of four marks.\n";
             cout << "The two lines must be in different directions but can share one common mark.\n";
             break;
-        case 13: cout << "Rules: When a player places a mark, it is immediately hidden from view. Players must remember the\n"
-            << "positions of all marks to plan their strategy.\n"
-            << "Winning Condition : The first player to align three of their hidden marks in a row wins.\nThe game is a draw"
-            << "if the board fills without a winner\n";
-
-        default: cout << "Invalid selection.\n";
+        case 13:
+            cout << "[ Memory Tic-Tac-Toe ]\n";
+            cout << "Rules: When a player places a mark, it is immediately hidden from view. Players must remember the\n"
+                << "positions of all marks to plan their strategy.\n"
+                << "Winning Condition: The first player to align three of their hidden marks in a row wins.\n"
+                << "The game is a draw if the board fills without a winner.\n";
+            break;
+        default:
+            cout << "Invalid selection.\n";
         }
         cout << "\nPress Enter to go back...";
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
@@ -126,19 +154,30 @@ void run_Connect4_Game() {
     delete ui;
 }
 
-// 3. 5x5 Tic-Tac-Toe
+// 3. 5x5 Tic-Tac-Toe (UPDATED with AI support)
 void run_FiveByFive_Game() {
     FiveByFive_UI<char>* ui = new FiveByFive_UI<char>();
     FiveByFive_Board<char>* b = new FiveByFive_Board<char>();
+
+    // 🔥 Important: Link UI with Board for AI
+    ui->set_board(b);
+
     Player<char>** p = ui->setup_players();
     GameManager<char> game(b, p, ui);
     game.run();
+
     if (b->game_is_over(p[0])) {
         int x = b->count_three_in_a_row('X'), o = b->count_three_in_a_row('O');
-        cout << "\nScore - X: " << x << " | O: " << o << endl;
-        if (x > o) cout << "X Wins!\n";
-        else if (o > x) cout << "O Wins!\n";
-        else cout << "Draw!\n";
+        cout << "\n============================================\n";
+        cout << "              FINAL SCORE                   \n";
+        cout << "============================================\n";
+        cout << "Player X: " << x << " three-in-a-rows\n";
+        cout << "Player O: " << o << " three-in-a-rows\n";
+        cout << "--------------------------------------------\n";
+        if (x > o) cout << "🏆 Player X Wins!\n";
+        else if (o > x) cout << "🏆 Player O Wins!\n";
+        else cout << "🤝 It's a Draw!\n";
+        cout << "============================================\n";
     }
     delete b;
     for (int i = 0; i < 2; ++i) delete p[i];
@@ -146,9 +185,33 @@ void run_FiveByFive_Game() {
     delete ui;
 }
 
-// 4. Wordle (Not Implemented yet)
-void run_Wordle_Game() {
-    cout << "\n[Wordle] Not implemented yet.\n";
+// 4. Word Tic-Tac-Toe (UPDATED with AI support)
+void run_Word_Game() {
+    system("cls");
+    cout << "\n=======================================\n";
+    cout << "        WORD TIC-TAC-TOE               \n";
+    cout << "=======================================\n";
+    cout << "Goal: Form a valid 3-letter word!\n";
+    cout << "Place letters to create words horizontally,\n";
+    cout << "vertically, or diagonally.\n";
+    cout << "=======================================\n\n";
+
+    Word_UI* ui = new Word_UI();
+    Word_Board* board = new Word_Board();
+
+    // 🔥 Important: Link UI with Board for AI
+    ui->set_board(board);
+
+    Player<char>** players = ui->setup_players();
+
+    GameManager<char> game(board, players, ui);
+    game.run();
+
+    // Cleanup
+    delete board;
+    for (int i = 0; i < 2; ++i) delete players[i];
+    delete[] players;
+    delete ui;
 }
 
 // 5. Numerical Tic-Tac-Toe
@@ -268,6 +331,7 @@ void run_Diamond_Game() {
     delete ui;
 }
 
+// 13. Memory Tic-Tac-Toe
 void run_Memory_Game() {
     system("cls");
     cout << "\n=======================================\n";
@@ -299,18 +363,14 @@ void run_Memory_Game() {
     cin.ignore();
     cin.get();
     board->display_hidden_board();
+
     // تنظيف الذاكرة
     delete board;
     for (int i = 0; i < 2; ++i) delete players[i];
     delete[] players;
     delete ui;
-
-    // إظهار اللوحة المخفية في النهاية (للتجربة)
-    
-
-    // يمكنك إظهار اللوحة المخفية للتحقق
-  
 }
+
 // =============================================================================
 //  Part 3: Main Menu
 // =============================================================================
@@ -326,7 +386,7 @@ int main() {
         cout << "1. Pyramid Tic-Tac-Toe\n";
         cout << "2. Four-in-a-row (Connect 4)\n";
         cout << "3. 5x5 Tic-Tac-Toe\n";
-        cout << "4. Wordle\n";
+        cout << "4. Word Tic-Tac-Toe\n";
         cout << "5. Numerical Tic-Tac-Toe\n";
         cout << "6. Misere Tic-Tac-Toe\n";
         cout << "7. 4x4 Tic-Tac-Toe\n";
@@ -355,7 +415,7 @@ int main() {
         case 1: run_Pyramid_Game(); break;
         case 2: run_Connect4_Game(); break;
         case 3: run_FiveByFive_Game(); break;
-        case 4: run_Wordle_Game(); break;
+        case 4: run_Word_Game(); break;
         case 5: run_Numerical_TicTacToe_Game(); break;
         case 6: run_Misere_Game(); break;
         case 7: run_FourByFour_Game(); break;
@@ -364,7 +424,7 @@ int main() {
         case 10: run_Obstacles_Game(); break;
         case 11: run_Infinity_TicTacToe_Game(); break;
         case 12: run_Diamond_Game(); break;
-        case 13: run_Memory_Game(); break; // أو الرقم المناسب
+        case 13: run_Memory_Game(); break;
         case 14: show_game_rules(); break;
         case 0: cout << "Goodbye!\n"; return 0;
         default: cout << "Invalid choice!\n";

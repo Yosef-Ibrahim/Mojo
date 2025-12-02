@@ -14,6 +14,7 @@
     <ClCompile Include="Four_In_A_Row_UI.cpp" />
     <ClCompile Include="Diamond_TicTacToe.cpp" />
     <ClCompile Include="Memory_TicTacToe.cpp" />
+    <ClCompile Include="Word_TicTacToe.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BoardGame_Classes.h" />
@@ -29,5 +30,6 @@
     <ClInclude Include="Four_In_A_Row_UI.h" />
     <ClInclude Include="Diamond_TicTacToe.h" />
     <ClInclude Include="Memory_TicTacToe.h" />
+    <ClInclude Include="Word_TicTacToe.h" />
   </ItemGroup>
 </Project>
