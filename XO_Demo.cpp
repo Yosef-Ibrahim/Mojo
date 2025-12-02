@@ -8,18 +8,16 @@
 // استدعاء ملفات الألعاب
 #include "BoardGame_Classes.h"
 #include "XO_Classes.h"
-#include "Pyramid_TicTacToe.h"       // 👈 تم التصحيح: كان Pyramid_XO.h
-#include "FiveByFive_Classes.h"      // Game 3
-#include "Misere.h"                  // Game 6
-#include "FourByFour_Classes.h"      // Game 7
-#include "Numerical_TicTacToe.h"     // Game 5
-#include "sus_classes.h"             // Game 9
-#include "Obstacles_Classes.h"       // Game 10
-#include "Infinity_TicTacToe.h"      // Game 11
-#include "Four_In_A_Row_UI.h"        // Game 2
+#include "Pyramid_TicTacToe.h"
+#include "FiveByFive_Classes.h"
+#include "Misere.h"
+#include "FourByFour_Classes.h"
+#include "Numerical_TicTacToe.h"
+#include "sus_classes.h"
+#include "Obstacles_Classes.h"
+#include "Infinity_TicTacToe.h"
+#include "Four_In_A_Row_UI.h"
 #include "Diamond_TicTacToe.h"
-
-
 
 using namespace std;
 
@@ -76,8 +74,13 @@ void show_game_rules() {
         case 9: cout << "[ SUS ]\nForm 'S-U-S' sequences. The player with the most sequences wins.\n"; break;
         case 10: cout << "[ Obstacles ]\n6x6 grid. Computer blocks cells randomly after every round.\n"; break;
         case 11: cout << "[ Infinity ]\nOnly 3 moves per player. The 4th move erases the oldest one.\n"; break;
-        case 12: cout << " Rules: Players take turns placing their 'X' or 'O' in empty cells\n "
-            << "Winning Condition : A player wins by simultaneously completing a line of three marks an a line of four marks.The two lines must be in different directions(e.g., one horizontal, one diagonal) but can share one, common mark." << endl; break;
+        case 12:
+            cout << "[ Diamond Tic-Tac-Toe ]\n";
+            cout << "Rules: Players take turns placing their 'X' or 'O' in empty cells\n";
+            cout << "Winning Condition: A player wins by simultaneously completing\n";
+            cout << "a line of three marks AND a line of four marks.\n";
+            cout << "The two lines must be in different directions but can share one common mark.\n";
+            break;
         default: cout << "Invalid selection.\n";
         }
         cout << "\nPress Enter to go back...";
@@ -97,21 +100,19 @@ void run_Pyramid_Game() {
     Player<char>** players = game_ui->setup_players();
     GameManager<char> game(board, players, game_ui);
     game.run();
-    delete board; for (int i = 0; i < 2; ++i) delete players[i]; delete[] players; delete game_ui;
+    delete board;
+    for (int i = 0; i < 2; ++i) delete players[i];
+    delete[] players;
+    delete game_ui;
 }
 
 // 2. Connect 4 
-void run_Connect4_Game() { 
+void run_Connect4_Game() {
     Board<char>* board = new Four_In_A_Row_Board();
-
     UI<char>* ui = new Four_In_A_Row_UI(board);
-
     Player<char>** players = ui->setup_players();
-
     GameManager<char> game(board, players, ui);
-
     game.run();
-
     delete board;
     for (int i = 0; i < 2; ++i) delete players[i];
     delete[] players;
@@ -128,13 +129,20 @@ void run_FiveByFive_Game() {
     if (b->game_is_over(p[0])) {
         int x = b->count_three_in_a_row('X'), o = b->count_three_in_a_row('O');
         cout << "\nScore - X: " << x << " | O: " << o << endl;
-        if (x > o) cout << "X Wins!\n"; else if (o > x) cout << "O Wins!\n"; else cout << "Draw!\n";
+        if (x > o) cout << "X Wins!\n";
+        else if (o > x) cout << "O Wins!\n";
+        else cout << "Draw!\n";
     }
-    delete b; for (int i = 0; i < 2; ++i) delete p[i]; delete[] p; delete ui;
+    delete b;
+    for (int i = 0; i < 2; ++i) delete p[i];
+    delete[] p;
+    delete ui;
 }
 
 // 4. Wordle (Not Implemented yet)
-void run_Wordle_Game() { cout << "\n[Wordle] Not implemented yet.\n"; }
+void run_Wordle_Game() {
+    cout << "\n[Wordle] Not implemented yet.\n";
+}
 
 // 5. Numerical Tic-Tac-Toe
 void run_Numerical_TicTacToe_Game() {
@@ -144,7 +152,10 @@ void run_Numerical_TicTacToe_Game() {
     ui->set_board(b);
     GameManager<int> game(b, p, ui);
     game.run();
-    delete b; for (int i = 0; i < 2; ++i) delete p[i]; delete[] p; delete ui;
+    delete b;
+    for (int i = 0; i < 2; ++i) delete p[i];
+    delete[] p;
+    delete ui;
 }
 
 // 6. Misere Tic-Tac-Toe
@@ -154,7 +165,10 @@ void run_Misere_Game() {
     Player<char>** p = ui->setup_players();
     GameManager<char> game(b, p, ui);
     game.run();
-    delete b; for (int i = 0; i < 2; ++i) delete p[i]; delete[] p; delete ui;
+    delete b;
+    for (int i = 0; i < 2; ++i) delete p[i];
+    delete[] p;
+    delete ui;
 }
 
 // 7. 4x4 Tic-Tac-Toe
@@ -164,11 +178,16 @@ void run_FourByFour_Game() {
     Player<char>** p = ui->setup_players();
     GameManager<char> game(b, p, ui);
     game.run();
-    delete b; for (int i = 0; i < 2; ++i) delete p[i]; delete[] p; delete ui;
+    delete b;
+    for (int i = 0; i < 2; ++i) delete p[i];
+    delete[] p;
+    delete ui;
 }
 
 // 8. Ultimate Tic-Tac-Toe (Not Implemented yet)
-void run_Ultimate_Game() { cout << "\n[Ultimate Tic-Tac-Toe] Not implemented yet.\n"; }
+void run_Ultimate_Game() {
+    cout << "\n[Ultimate Tic-Tac-Toe] Not implemented yet.\n";
+}
 
 // 9. SUS Game
 void run_SUS_Game() {
@@ -181,7 +200,10 @@ void run_SUS_Game() {
         int t = calculate_all_sus_sequences(b->get_board_matrix());
         cout << "\nTotal SUS: " << t << endl;
     }
-    delete b; for (int i = 0; i < 2; ++i) delete p[i]; delete[] p; delete ui;
+    delete b;
+    for (int i = 0; i < 2; ++i) delete p[i];
+    delete[] p;
+    delete ui;
 }
 
 // 10. Obstacles Tic-Tac-Toe
@@ -191,7 +213,10 @@ void run_Obstacles_Game() {
     Player<char>** p = ui->setup_players();
     GameManager<char> game(b, p, ui);
     game.run();
-    delete b; for (int i = 0; i < 2; ++i) delete p[i]; delete[] p; delete ui;
+    delete b;
+    for (int i = 0; i < 2; ++i) delete p[i];
+    delete[] p;
+    delete ui;
 }
 
 // 11. Infinity Tic-Tac-Toe
@@ -199,7 +224,6 @@ void run_Infinity_TicTacToe_Game() {
     Infinity_UI* ui = new Infinity_UI();
     Infinity_Board* b = new Infinity_Board();
     Player<char>** p = ui->setup_players();
-
     GameManager<char> game(b, p, ui);
     game.run();
     delete b;
@@ -207,22 +231,38 @@ void run_Infinity_TicTacToe_Game() {
     delete[] p;
     delete ui;
 }
-// 12. Diamond Tic-Tac-Toe
+
+// 12. Diamond Tic-Tac-Toe 🤖 مع Smart AI
 void run_Diamond_Game() {
-    Diamond_UI* ui = new Diamond_UI();
+    cout << "\n=======================================\n";
+    cout << "  Diamond Tic-Tac-Toe with Smart AI      ";
+    cout << "\n=========================================\n\n";
+
+    cout << "# WINNING CONDITION:\n";
+    cout << "---------------------------\n";
+    cout << "   Create BOTH a line of 3 AND a line of 4!\n";
+    cout << "   The lines must be in different directions.\n\n";
+
     Diamond_Board* b = new Diamond_Board();
+    Diamond_UI* ui = new Diamond_UI();
+
+    // 🔥 مهم جداً: ربط الـ UI مع الـ Board عشان الـ AI يشتغل صح
+    ui->set_board(b);
+
     Player<char>** p = ui->setup_players();
+
     GameManager<char> game(b, p, ui);
     game.run();
+
+    // تنظيف الذاكرة
     delete b;
     for (int i = 0; i < 2; ++i) delete p[i];
     delete[] p;
     delete ui;
 }
-
 
 // =============================================================================
-//  Part 3: Main Menu (Ordered per PDF)
+//  Part 3: Main Menu
 // =============================================================================
 int main() {
     srand(static_cast<unsigned int>(time(0)));
@@ -244,17 +284,20 @@ int main() {
         cout << "9. SUS Game\n";
         cout << "10. Obstacles Tic-Tac-Toe\n";
         cout << "11. Infinity Tic-Tac-Toe\n";
-        cout << "12. Diamond Tic-Tac-Toe\n";
+        cout << "12. Diamond Tic-Tac-Toe \n";
         cout << "--------------------------------------------\n";
-        cout << "12. Game Rules & Instructions [?]\n";
+        cout << "13. Game Rules & Instructions [?]\n";
         cout << "0.  Exit\n";
         cout << "--------------------------------------------\n";
         cout << "Enter your choice: ";
 
         if (!(cin >> choice)) {
             cout << "\nInvalid input.\n";
-            cin.clear(); cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Press Enter..."; cin.get(); continue;
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "Press Enter...";
+            cin.get();
+            continue;
         }
 
         switch (choice) {
