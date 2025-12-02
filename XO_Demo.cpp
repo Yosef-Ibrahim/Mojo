@@ -16,6 +16,9 @@
 #include "sus_classes.h"             // Game 9
 #include "Obstacles_Classes.h"       // Game 10
 #include "Infinity_TicTacToe.h"      // Game 11
+#include "Four_In_A_Row_UI.h"        // Game 2
+
+
 
 using namespace std;
 
@@ -93,8 +96,23 @@ void run_Pyramid_Game() {
     delete board; for (int i = 0; i < 2; ++i) delete players[i]; delete[] players; delete game_ui;
 }
 
-// 2. Connect 4 (Not Implemented yet)
-void run_Connect4_Game() { cout << "\n[Connect 4] Not implemented yet.\n"; }
+// 2. Connect 4 
+void run_Connect4_Game() { 
+    Board<char>* board = new Four_In_A_Row_Board();
+
+    UI<char>* ui = new Four_In_A_Row_UI(board);
+
+    Player<char>** players = ui->setup_players();
+
+    GameManager<char> game(board, players, ui);
+
+    game.run();
+
+    delete board;
+    for (int i = 0; i < 2; ++i) delete players[i];
+    delete[] players;
+    delete ui;
+}
 
 // 3. 5x5 Tic-Tac-Toe
 void run_FiveByFive_Game() {
