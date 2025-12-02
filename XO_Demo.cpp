@@ -18,6 +18,7 @@
 #include "Infinity_TicTacToe.h"
 #include "Four_In_A_Row_UI.h"
 #include "Diamond_TicTacToe.h"
+#include "Memory_TicTacToe.h"
 
 using namespace std;
 
@@ -44,6 +45,7 @@ void show_game_rules() {
         cout << "10. Obstacles Tic-Tac-Toe\n";
         cout << "11. Infinity Tic-Tac-Toe\n";
         cout << "12. Diamond Tic-Tac-Toe\n";
+        cout << "13. Memory Tic-Tac-Toe\n";
         cout << "0. Return to Main Menu\n";
         cout << "--------------------------------------------\n";
         cout << "Enter choice: ";
@@ -81,6 +83,11 @@ void show_game_rules() {
             cout << "a line of three marks AND a line of four marks.\n";
             cout << "The two lines must be in different directions but can share one common mark.\n";
             break;
+        case 13: cout << "Rules: When a player places a mark, it is immediately hidden from view. Players must remember the\n"
+            << "positions of all marks to plan their strategy.\n"
+            << "Winning Condition : The first player to align three of their hidden marks in a row wins.\nThe game is a draw"
+            << "if the board fills without a winner\n";
+
         default: cout << "Invalid selection.\n";
         }
         cout << "\nPress Enter to go back...";
@@ -261,6 +268,49 @@ void run_Diamond_Game() {
     delete ui;
 }
 
+void run_Memory_Game() {
+    system("cls");
+    cout << "\n=======================================\n";
+    cout << "     MEMORY TIC-TAC-TOE (Bonus)       \n";
+    cout << "=======================================\n\n";
+
+    cout << "RULES:\n";
+    cout << "1. Players take turns placing X or O\n";
+    cout << "2. Marks become HIDDEN after placement\n";
+    cout << "3. You must remember positions\n";
+    cout << "4. First to get 3 in a row WINS\n";
+    cout << "=======================================\n\n";
+
+    // إنشاء اللوحة والواجهة
+    Memory_Board* board = new Memory_Board();
+    Memory_UI* ui = new Memory_UI();
+
+    // ربط UI بالـ Board
+    ui->set_board(board);
+
+    // إعداد اللاعبين
+    Player<char>** players = ui->setup_players();
+
+    // بدء اللعبة
+    GameManager<char> game(board, players, ui);
+    game.run();
+
+    cout << "\nPress Enter to see the hidden board...";
+    cin.ignore();
+    cin.get();
+    board->display_hidden_board();
+    // تنظيف الذاكرة
+    delete board;
+    for (int i = 0; i < 2; ++i) delete players[i];
+    delete[] players;
+    delete ui;
+
+    // إظهار اللوحة المخفية في النهاية (للتجربة)
+    
+
+    // يمكنك إظهار اللوحة المخفية للتحقق
+  
+}
 // =============================================================================
 //  Part 3: Main Menu
 // =============================================================================
@@ -285,8 +335,9 @@ int main() {
         cout << "10. Obstacles Tic-Tac-Toe\n";
         cout << "11. Infinity Tic-Tac-Toe\n";
         cout << "12. Diamond Tic-Tac-Toe \n";
+        cout << "13. Memory Tic-Tac-Toe \n";
         cout << "--------------------------------------------\n";
-        cout << "13. Game Rules & Instructions [?]\n";
+        cout << "14. Game Rules & Instructions [?]\n";
         cout << "0.  Exit\n";
         cout << "--------------------------------------------\n";
         cout << "Enter your choice: ";
@@ -313,7 +364,8 @@ int main() {
         case 10: run_Obstacles_Game(); break;
         case 11: run_Infinity_TicTacToe_Game(); break;
         case 12: run_Diamond_Game(); break;
-        case 13: show_game_rules(); break;
+        case 13: run_Memory_Game(); break; // أو الرقم المناسب
+        case 14: show_game_rules(); break;
         case 0: cout << "Goodbye!\n"; return 0;
         default: cout << "Invalid choice!\n";
         }

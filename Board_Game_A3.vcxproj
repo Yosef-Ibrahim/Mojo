@@ -25,6 +25,7 @@
     <ClInclude Include="FourByFour_Classes.h" />
     <ClInclude Include="Four_In_A_Row_UI.h" />
     <ClInclude Include="Infinity_TicTacToe.h" />
+    <ClInclude Include="Memory_TicTacToe.h" />
     <ClInclude Include="Misere.h" />
     <ClInclude Include="Numerical_TicTacToe.h" />
     <ClInclude Include="Obstacles_Classes.h" />
@@ -38,6 +39,7 @@
     <ClCompile Include="FourByFour_Classes.cpp" />
     <ClCompile Include="Four_In_A_Row_UI.cpp" />
     <ClCompile Include="Infinity_TicTacToe.cpp" />
+    <ClCompile Include="Memory_TicTacToe.cpp" />
     <ClCompile Include="Misere.cpp" />
     <ClCompile Include="Numerical_TicTacToe.cpp" />
     <ClCompile Include="Obstacles_Classes.cpp" />

@@ -7,16 +7,20 @@
       "RelativeMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|solutionrelative:XO_Demo.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|D:\\Assignment 3\\Board_Games-Assignment_3\\Diamond_TicTacToe.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|solutionrelative:Diamond_TicTacToe.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|D:\\Assignment 3\\Board_Games-Assignment_3\\Memory_TicTacToe.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|solutionrelative:Memory_TicTacToe.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|D:\\Assignment 3\\Board_Games-Assignment_3\\Diamond_TicTacToe.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|solutionrelative:Diamond_TicTacToe.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|D:\\Assignment 3\\Board_Games-Assignment_3\\Memory_TicTacToe.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|solutionrelative:Memory_TicTacToe.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|D:\\Assignment 3\\Board_Games-Assignment_3\\BoardGame_Classes.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|solutionrelative:BoardGame_Classes.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|D:\\Assignment 3\\Board_Games-Assignment_3\\Misere.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|solutionrelative:Misere.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|D:\\Assignment 3\\Board_Games-Assignment_3\\Misere.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{9553B70A-8CC0-4253-8866-5E1BD511AE7B}|Board_Game_A3.vcxproj|solutionrelative:Misere.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
   "DocumentGroupContainers": [
@@ -26,7 +30,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Bookmark",
@@ -35,14 +39,28 @@
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "BoardGame_Classes.h",
-              "DocumentMoniker": "D:\\Assignment 3\\Board_Games-Assignment_3\\BoardGame_Classes.h",
-              "RelativeDocumentMoniker": "BoardGame_Classes.h",
-              "ToolTip": "D:\\Assignment 3\\Board_Games-Assignment_3\\BoardGame_Classes.h",
-              "RelativeToolTip": "BoardGame_Classes.h",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAOQAAAArAAAAAAAAAA==",
+              "Title": "Misere.cpp",
+              "DocumentMoniker": "D:\\Assignment 3\\Board_Games-Assignment_3\\Misere.cpp",
+              "RelativeDocumentMoniker": "Misere.cpp",
+              "ToolTip": "D:\\Assignment 3\\Board_Games-Assignment_3\\Misere.cpp",
+              "RelativeToolTip": "Misere.cpp",
+              "ViewState": "AgIAAAQAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-12-02T09:11:05.599Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Misere.h",
+              "DocumentMoniker": "D:\\Assignment 3\\Board_Games-Assignment_3\\Misere.h",
+              "RelativeDocumentMoniker": "Misere.h",
+              "ToolTip": "D:\\Assignment 3\\Board_Games-Assignment_3\\Misere.h",
+              "RelativeToolTip": "Misere.h",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2025-12-02T05:31:42.979Z"
+              "WhenOpened": "2025-12-02T09:10:49.995Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -50,37 +68,37 @@
               "Title": "XO_Demo.cpp",
               "DocumentMoniker": "D:\\Assignment 3\\Board_Games-Assignment_3\\XO_Demo.cpp",
               "RelativeDocumentMoniker": "XO_Demo.cpp",
-              "ToolTip": "D:\\Assignment 3\\Board_Games-Assignment_3\\XO_Demo.cpp",
-              "RelativeToolTip": "XO_Demo.cpp",
-              "ViewState": "AgIAAB0BAAAAAAAAAAAAAPEAAAAsAAAAAAAAAA==",
+              "ToolTip": "D:\\Assignment 3\\Board_Games-Assignment_3\\XO_Demo.cpp*",
+              "RelativeToolTip": "XO_Demo.cpp*",
+              "ViewState": "AgIAACABAAAAAAAAAAAUwCgBAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2025-11-12T08:14:10.595Z",
+              "WhenOpened": "2025-12-02T08:55:48.289Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "Diamond_TicTacToe.cpp",
-              "DocumentMoniker": "D:\\Assignment 3\\Board_Games-Assignment_3\\Diamond_TicTacToe.cpp",
-              "RelativeDocumentMoniker": "Diamond_TicTacToe.cpp",
-              "ToolTip": "D:\\Assignment 3\\Board_Games-Assignment_3\\Diamond_TicTacToe.cpp",
-              "RelativeToolTip": "Diamond_TicTacToe.cpp",
-              "ViewState": "AgIAAKICAAAAAAAAAAAowCwDAAABAAAAAAAAAA==",
+              "Title": "Memory_TicTacToe.cpp",
+              "DocumentMoniker": "D:\\Assignment 3\\Board_Games-Assignment_3\\Memory_TicTacToe.cpp",
+              "RelativeDocumentMoniker": "Memory_TicTacToe.cpp",
+              "ToolTip": "D:\\Assignment 3\\Board_Games-Assignment_3\\Memory_TicTacToe.cpp",
+              "RelativeToolTip": "Memory_TicTacToe.cpp",
+              "ViewState": "AgIAAHwAAAAAAAAAAAAUwIwAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2025-12-02T05:29:27.546Z",
+              "WhenOpened": "2025-12-02T08:55:42.648Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "Diamond_TicTacToe.h",
-              "DocumentMoniker": "D:\\Assignment 3\\Board_Games-Assignment_3\\Diamond_TicTacToe.h",
-              "RelativeDocumentMoniker": "Diamond_TicTacToe.h",
-              "ToolTip": "D:\\Assignment 3\\Board_Games-Assignment_3\\Diamond_TicTacToe.h",
-              "RelativeToolTip": "Diamond_TicTacToe.h",
-              "ViewState": "AgIAACoAAAAAAAAAAAAowDwAAAAGAAAAAAAAAA==",
+              "Title": "Memory_TicTacToe.h",
+              "DocumentMoniker": "D:\\Assignment 3\\Board_Games-Assignment_3\\Memory_TicTacToe.h",
+              "RelativeDocumentMoniker": "Memory_TicTacToe.h",
+              "ToolTip": "D:\\Assignment 3\\Board_Games-Assignment_3\\Memory_TicTacToe.h",
+              "RelativeToolTip": "Memory_TicTacToe.h",
+              "ViewState": "AgIAABgAAAAAAAAAAAAUwCgAAAAGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2025-12-02T05:28:39.075Z",
+              "WhenOpened": "2025-12-02T08:55:20.353Z",
               "EditorCaption": ""
             }
           ]
