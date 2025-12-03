@@ -36,8 +36,9 @@ private:
         int potential_lines;
 
         int get_score() const {
-            if (lines_of_3 > 0 && lines_of_4 > 0) return 10000;
-            return lines_of_4 * 100 + lines_of_3 * 50 + potential_lines * 10;
+            // ✅ تقييم بسيط وسريع
+            if (lines_of_3 > 0 && lines_of_4 > 0) return 100000; // فوز فوري
+            return lines_of_4 * 500 + lines_of_3 * 100;
         }
     };
 
@@ -55,7 +56,8 @@ public:
     Player<char>* create_player(std::string& name, char symbol, PlayerType type) override;
     Move<char>* get_move(Player<char>* player) override;
     void display_board_matrix(const std::vector<std::vector<char>>& matrix) const override;
-    Player<char>** setup_players() override { return UI<char>::setup_players(); }
-};
 
+    // 🔥 هذه هي الإضافة: دالة setup_players الخاصة بـ Diamond فقط
+    Player<char>** setup_players() override;
+};
 #endif

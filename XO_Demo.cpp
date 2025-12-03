@@ -242,13 +242,28 @@ void run_Numerical_TicTacToe_Game() {
     delete ui;
 }
 
-// 6. Misere Tic-Tac-Toe
+// 6. Misere Tic-Tac-Toe - مثل الألعاب الأخرى تماماً
 void run_Misere_Game() {
-    UI<char>* ui = new Misere_UI();
-    Board<char>* b = new Misere_Board();
+    system("cls");
+    cout << "\n=======================================\n";
+    cout << "  MISERE TIC-TAC-TOE (Avoid 3-in-a-row!)";
+    cout << "\n=======================================\n";
+
+    // إنشاء اللوحة والواجهة
+    Misere_Board* b = new Misere_Board();
+    Misere_UI* ui = new Misere_UI();
+
+    // ربط UI بالـ Board عشان الـ AI يشتغل
+    ui->set_board(b);
+
+    // إعداد اللاعبين باستخدام setup_players() اللي في UI
     Player<char>** p = ui->setup_players();
+
+    // تشغيل اللعبة
     GameManager<char> game(b, p, ui);
     game.run();
+
+    // تنظيف الذاكرة
     delete b;
     for (int i = 0; i < 2; ++i) delete p[i];
     delete[] p;
@@ -329,16 +344,12 @@ void run_Infinity_TicTacToe_Game() {
     delete ui;
 }
 
-// 12. Diamond Tic-Tac-Toe 🤖 مع Smart AI
+// 12. Diamond Tic-Tac-Toe  مع Smart AI
 void run_Diamond_Game() {
     cout << "\n=======================================\n";
     cout << "  Diamond Tic-Tac-Toe with Smart AI      ";
     cout << "\n=========================================\n\n";
 
-    cout << "# WINNING CONDITION:\n";
-    cout << "---------------------------\n";
-    cout << "   Create BOTH a line of 3 AND a line of 4!\n";
-    cout << "   The lines must be in different directions.\n\n";
 
     Diamond_Board* b = new Diamond_Board();
     Diamond_UI* ui = new Diamond_UI();
@@ -357,6 +368,7 @@ void run_Diamond_Game() {
     delete[] p;
     delete ui;
 }
+
 
 // 13. Memory Tic-Tac-Toe
 void run_Memory_Game() {

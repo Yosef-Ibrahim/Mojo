@@ -358,19 +358,15 @@ bool Diamond_Board::game_is_over(Player<char>* player) {
 // ============================================================================
 
 Diamond_UI::Diamond_UI() : UI<char>("=== Diamond Tic-Tac-Toe ===", 3), board_ref(nullptr) {
-    cout << "Goal: Create BOTH a line of 3 AND a line of 4 symbols!\n";
-    cout << "Only diamond-shaped cells are playable.\n\n";
+
 }
 
-Player<char>* Diamond_UI::create_player(string& name, char symbol, PlayerType type) {
+Player<char>* Diamond_UI::create_player(std::string& name, char symbol, PlayerType type) {
     if (type == PlayerType::AI) {
-        cout << "✨ Creating Smart AI player: " << name << " (" << symbol << ") 🤖\n";
+        cout << " Creating Smart AI player: " << name << " (" << symbol << ") \n";
     }
-    else if (type == PlayerType::RANDOM || type == PlayerType::COMPUTER) {
-        cout << "Creating Random Computer player: " << name << " (" << symbol << ")\n";
-    }
-    else {
-        cout << "Creating Human player: " << name << " (" << symbol << ")\n";
+    else { // Human فقط
+        cout << " Creating Human player: " << name << " (" << symbol << ")\n";
     }
     return new Player<char>(name, symbol, type);
 }
@@ -469,169 +465,25 @@ int Diamond_UI::count_potential_lines(char symbol, int length) {
 // تقييم وضع اللوحة
 Diamond_UI::BoardScore Diamond_UI::evaluate_position(char symbol) {
     BoardScore score;
-    score.lines_of_3 = 0;
-    score.lines_of_4 = 0;
+    score.lines_of_3 = board_ref->count_lines(symbol, 3);
+    score.lines_of_4 = board_ref->count_lines(symbol, 4);
+
+    // ✅ إلغاء حساب potential_lines (بياخد وقت طويل)
     score.potential_lines = 0;
-
-    if (!board_ref) return score;
-
-    // نجمع الخطوط حسب الاتجاه
-    int h_lines_3 = 0, v_lines_3 = 0, d1_lines_3 = 0, d2_lines_3 = 0;
-    int h_lines_4 = 0, v_lines_4 = 0, d1_lines_4 = 0, d2_lines_4 = 0;
-
-    auto& matrix = board_ref->get_board_matrix();
-
-    // حساب خطوط الـ 3
-    // Horizontal
-    for (int i = 0; i < 5; i++) {
-        for (int j = 0; j <= 2; j++) {
-            bool valid = true, is_line = true;
-            for (int k = 0; k < 3; k++) {
-                if (!board_ref->is_valid_cell(i, j + k)) { valid = false; break; }
-            }
-            if (valid) {
-                for (int k = 0; k < 3; k++) {
-                    if (matrix[i][j + k] != symbol) { is_line = false; break; }
-                }
-                if (is_line) h_lines_3++;
-            }
-        }
-    }
-
-    // Vertical
-    for (int j = 0; j < 5; j++) {
-        for (int i = 0; i <= 2; i++) {
-            bool valid = true, is_line = true;
-            for (int k = 0; k < 3; k++) {
-                if (!board_ref->is_valid_cell(i + k, j)) { valid = false; break; }
-            }
-            if (valid) {
-                for (int k = 0; k < 3; k++) {
-                    if (matrix[i + k][j] != symbol) { is_line = false; break; }
-                }
-                if (is_line) v_lines_3++;
-            }
-        }
-    }
-
-    // Diagonal (\)
-    for (int i = 0; i <= 2; i++) {
-        for (int j = 0; j <= 2; j++) {
-            bool valid = true, is_line = true;
-            for (int k = 0; k < 3; k++) {
-                if (!board_ref->is_valid_cell(i + k, j + k)) { valid = false; break; }
-            }
-            if (valid) {
-                for (int k = 0; k < 3; k++) {
-                    if (matrix[i + k][j + k] != symbol) { is_line = false; break; }
-                }
-                if (is_line) d1_lines_3++;
-            }
-        }
-    }
-
-    // Diagonal (/)
-    for (int i = 0; i <= 2; i++) {
-        for (int j = 2; j < 5; j++) {
-            bool valid = true, is_line = true;
-            for (int k = 0; k < 3; k++) {
-                if (!board_ref->is_valid_cell(i + k, j - k)) { valid = false; break; }
-            }
-            if (valid) {
-                for (int k = 0; k < 3; k++) {
-                    if (matrix[i + k][j - k] != symbol) { is_line = false; break; }
-                }
-                if (is_line) d2_lines_3++;
-            }
-        }
-    }
-
-    // حساب خطوط الـ 4
-    // Horizontal
-    for (int i = 0; i < 5; i++) {
-        for (int j = 0; j <= 1; j++) {
-            bool valid = true, is_line = true;
-            for (int k = 0; k < 4; k++) {
-                if (!board_ref->is_valid_cell(i, j + k)) { valid = false; break; }
-            }
-            if (valid) {
-                for (int k = 0; k < 4; k++) {
-                    if (matrix[i][j + k] != symbol) { is_line = false; break; }
-                }
-                if (is_line) h_lines_4++;
-            }
-        }
-    }
-
-    // Vertical
-    for (int j = 0; j < 5; j++) {
-        for (int i = 0; i <= 1; i++) {
-            bool valid = true, is_line = true;
-            for (int k = 0; k < 4; k++) {
-                if (!board_ref->is_valid_cell(i + k, j)) { valid = false; break; }
-            }
-            if (valid) {
-                for (int k = 0; k < 4; k++) {
-                    if (matrix[i + k][j] != symbol) { is_line = false; break; }
-                }
-                if (is_line) v_lines_4++;
-            }
-        }
-    }
-
-    // Diagonal (\)
-    for (int i = 0; i <= 1; i++) {
-        for (int j = 0; j <= 1; j++) {
-            bool valid = true, is_line = true;
-            for (int k = 0; k < 4; k++) {
-                if (!board_ref->is_valid_cell(i + k, j + k)) { valid = false; break; }
-            }
-            if (valid) {
-                for (int k = 0; k < 4; k++) {
-                    if (matrix[i + k][j + k] != symbol) { is_line = false; break; }
-                }
-                if (is_line) d1_lines_4++;
-            }
-        }
-    }
-
-    // Diagonal (/)
-    for (int i = 0; i <= 1; i++) {
-        for (int j = 3; j < 5; j++) {
-            bool valid = true, is_line = true;
-            for (int k = 0; k < 4; k++) {
-                if (!board_ref->is_valid_cell(i + k, j - k)) { valid = false; break; }
-            }
-            if (valid) {
-                for (int k = 0; k < 4; k++) {
-                    if (matrix[i + k][j - k] != symbol) { is_line = false; break; }
-                }
-                if (is_line) d2_lines_4++;
-            }
-        }
-    }
-
-    // التقييم الذكي: نحسب التركيبات الممكنة
-    score.lines_of_3 = h_lines_3 + v_lines_3 + d1_lines_3 + d2_lines_3;
-    score.lines_of_4 = h_lines_4 + v_lines_4 + d1_lines_4 + d2_lines_4;
-
-    // نحسب potential lines (خطوط قريبة من الاكتمال)
-    score.potential_lines = count_potential_lines(symbol, 3) + count_potential_lines(symbol, 4);
 
     return score;
 }
 
+
 // خوارزمية Minimax مع Alpha-Beta Pruning
-int Diamond_UI::minimax(int depth, bool is_maximizing, char ai_symbol, char opp_symbol, int alpha, int beta) {
+int Diamond_UI::minimax(int depth, bool is_maximizing, char ai_symbol,
+    char opp_symbol, int alpha, int beta) {
     // فحص حالات النهاية
     Player<char> temp_ai("temp", ai_symbol, PlayerType::AI);
     Player<char> temp_opp("temp", opp_symbol, PlayerType::AI);
 
-    // فوز = أعلى قيمة ممكنة
     if (board_ref->is_win(&temp_ai)) return 100000 - depth;
-    // خسارة = أقل قيمة ممكنة
     if (board_ref->is_win(&temp_opp)) return -100000 + depth;
-    // تعادل
     if (board_ref->is_draw(&temp_ai)) return 0;
 
     // وصلنا للعمق المحدد
@@ -644,6 +496,13 @@ int Diamond_UI::minimax(int depth, bool is_maximizing, char ai_symbol, char opp_
     vector<pair<int, int>> moves = board_ref->get_valid_moves();
     if (moves.empty()) return 0;
 
+    // ✅ Move Ordering: ترتيب الحركات من المركز للأطراف (تسريع Alpha-Beta)
+    sort(moves.begin(), moves.end(), [](const auto& a, const auto& b) {
+        int dist_a = abs(a.first - 2) + abs(a.second - 2);
+        int dist_b = abs(b.first - 2) + abs(b.second - 2);
+        return dist_a < dist_b;
+        });
+
     if (is_maximizing) {
         int max_eval = numeric_limits<int>::min();
 
@@ -651,14 +510,12 @@ int Diamond_UI::minimax(int depth, bool is_maximizing, char ai_symbol, char opp_
             int x = moves[i].first;
             int y = moves[i].second;
 
-            // نجرب الحركة
             auto& matrix = board_ref->get_board_matrix();
             char old_val = matrix[x][y];
             matrix[x][y] = ai_symbol;
 
             int eval = minimax(depth - 1, false, ai_symbol, opp_symbol, alpha, beta);
 
-            // نلغي الحركة
             matrix[x][y] = old_val;
 
             max_eval = max(max_eval, eval);
@@ -694,6 +551,9 @@ int Diamond_UI::minimax(int depth, bool is_maximizing, char ai_symbol, char opp_
 }
 
 // حركة الـ AI الذكي
+// ========== في Diamond_TicTacToe.cpp ==========
+// استبدل دالة get_ai_move بالكود ده:
+
 Move<char>* Diamond_UI::get_ai_move(Player<char>* player) {
     char ai_symbol = player->get_symbol();
     char opp_symbol = (ai_symbol == 'X') ? 'O' : 'X';
@@ -701,54 +561,70 @@ Move<char>* Diamond_UI::get_ai_move(Player<char>* player) {
     vector<pair<int, int>> moves = board_ref->get_valid_moves();
     if (moves.empty()) return nullptr;
 
-    cout << "\n🤖 AI is analyzing " << moves.size() << " possible moves..." << flush;
+    // ✅ 1. فحص الفوز الفوري (Instant Win Check)
+    for (auto& move : moves) {
+        auto& matrix = board_ref->get_board_matrix();
+        matrix[move.first][move.second] = ai_symbol;
+
+        Player<char> temp("test", ai_symbol, PlayerType::AI);
+        if (board_ref->is_win(&temp)) {
+            matrix[move.first][move.second] = '.';
+            cout << "\n AI found INSTANT WIN at (" << move.first << ", " << move.second << ")!\n";
+            return new Move<char>(move.first, move.second, ai_symbol);
+        }
+        matrix[move.first][move.second] = '.';
+    }
+
+    // ✅ 2. فحص منع فوز الخصم (Block Opponent Win)
+    for (auto& move : moves) {
+        auto& matrix = board_ref->get_board_matrix();
+        matrix[move.first][move.second] = opp_symbol;
+
+        Player<char> temp("test", opp_symbol, PlayerType::AI);
+        if (board_ref->is_win(&temp)) {
+            matrix[move.first][move.second] = '.';
+            cout << "\n AI BLOCKING opponent's win at (" << move.first << ", " << move.second << ")\n";
+            return new Move<char>(move.first, move.second, ai_symbol);
+        }
+        matrix[move.first][move.second] = '.';
+    }
+
+    // ✅ 3. عمق أقل حسب عدد الحركات المتبقية (Adaptive Depth)
+    int remaining_moves = moves.size();
+    int depth;
+
+    if (remaining_moves > 7) depth = 3;       // بداية اللعبة - سريع
+    else if (remaining_moves > 4) depth = 5;  // وسط اللعبة - متوسط
+    else depth = 7;                            // نهاية اللعبة - عميق
+
+    cout << "\n AI analyzing " << moves.size() << " moves (depth=" << depth << ")..." << flush;
 
     int best_score = numeric_limits<int>::min();
     pair<int, int> best_move = moves[0];
 
-    const int MAX_DEPTH = 7; // زودنا العمق شوية
-
-    for (size_t i = 0; i < moves.size(); i++) {
-        int x = moves[i].first;
-        int y = moves[i].second;
-
-        // نجرب الحركة
+    for (auto& move : moves) {
         auto& matrix = board_ref->get_board_matrix();
-        char old_val = matrix[x][y];
-        matrix[x][y] = ai_symbol;
+        matrix[move.first][move.second] = ai_symbol;
 
-        // نفحص لو الحركة دي مباشرة بتخلينا نكسب
-        Player<char> temp("test", ai_symbol, PlayerType::AI);
-        if (board_ref->is_win(&temp)) {
-            matrix[x][y] = old_val;
-            cout << " Found winning move! ✓\n";
-            cout << "🎯 AI chooses: (" << x << ", " << y << ") [WINNING MOVE! 🏆]\n";
-            return new Move<char>(x, y, ai_symbol);
-        }
-
-        int score = minimax(MAX_DEPTH - 1, false, ai_symbol, opp_symbol,
+        int score = minimax(depth - 1, false, ai_symbol, opp_symbol,
             numeric_limits<int>::min(), numeric_limits<int>::max());
 
-        // نلغي الحركة
-        matrix[x][y] = old_val;
+        matrix[move.first][move.second] = '.';
 
         if (score > best_score) {
             best_score = score;
-            best_move = moves[i];
+            best_move = move;
         }
     }
 
-    cout << " Done! ✓\n";
-    cout << "🎯 AI chooses: (" << best_move.first << ", " << best_move.second << ")";
+    cout << " Done!\n";
+    cout << " AI chooses: (" << best_move.first << ", " << best_move.second << ")";
 
-    if (best_score > 50000) cout << " [Winning strategy! 🏆]";
-    else if (best_score > 10000) cout << " [Very strong! 💪]";
-    else if (best_score > 1000) cout << " [Good position 👍]";
-    else if (best_score > 0) cout << " [Decent move]";
-    else if (best_score < -10000) cout << " [Defensive move 🛡️]";
+    if (best_score > 50000) cout << " [Winning!]";
+    else if (best_score > 1000) cout << " [Strong]";
+    else if (best_score > 0) cout << " [Good]";
 
-    cout << " [Score: " << best_score << "]\n";
-
+    cout << "\n";
     return new Move<char>(best_move.first, best_move.second, ai_symbol);
 }
 
@@ -756,24 +632,13 @@ Move<char>* Diamond_UI::get_move(Player<char>* player) {
     int x, y;
 
     if (player->get_type() == PlayerType::HUMAN) {
-        cout << "\n👤 " << player->get_name() << ", enter your move (row col, 0-4): ";
+        cout << "\n " << player->get_name() << ", enter your move (row col, 0-4): ";
         cin >> x >> y;
         return new Move<char>(x, y, player->get_symbol());
     }
-    else if (player->get_type() == PlayerType::AI) {
+    else { // AI فقط
         // حركة ذكية باستخدام Minimax
         return get_ai_move(player);
-    }
-    else {
-        // حركة عشوائية
-        auto& matrix = board_ref->get_board_matrix();
-        do {
-            x = rand() % 5;
-            y = rand() % 5;
-        } while (!board_ref->is_valid_cell(x, y) || matrix[x][y] != '.');
-
-        cout << "\n🎲 Computer " << player->get_name() << " chooses: (" << x << ", " << y << ")\n";
-        return new Move<char>(x, y, player->get_symbol());
     }
 }
 
@@ -810,4 +675,28 @@ void Diamond_UI::display_board_matrix(const vector<vector<char>>& matrix) const 
         cout << "\n";
     }
     cout << endl;
+}
+Player<char>** Diamond_UI::setup_players() {
+    Player<char>** players = new Player<char>*[2];
+
+    // 🔥 خيارات Diamond فقط: Human أو Smart AI
+    std::vector<std::string> type_options = { "Human", "Smart AI" };
+
+    std::string nameX = get_player_name("Player 1");
+    PlayerType typeX = get_player_type_choice("Player 1", type_options);
+    // تحويل Smart AI (الخيار 2) إلى PlayerType::AI
+    if (typeX == PlayerType::RANDOM || static_cast<int>(typeX) == 1) {
+        typeX = PlayerType::AI;
+    }
+    players[0] = create_player(nameX, 'X', typeX);
+
+    std::string nameO = get_player_name("Player 2");
+    PlayerType typeO = get_player_type_choice("Player 2", type_options);
+    // تحويل Smart AI (الخيار 2) إلى PlayerType::AI
+    if (typeO == PlayerType::RANDOM || static_cast<int>(typeO) == 1) {
+        typeO = PlayerType::AI;
+    }
+    players[1] = create_player(nameO, 'O', typeO);
+
+    return players;
 }
