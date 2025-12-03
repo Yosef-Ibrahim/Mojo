@@ -244,7 +244,7 @@ Move<char>* Misere_UI::get_move(Player<char>* currentPlayer) {
         return new Move<char>(best_move.first, best_move.second, currentPlayer->get_symbol());
     }
 }
-// 🔥 دالة setup_players الخاصة بـ Misere فقط (بدون Random Computer)
+//  دالة setup_players الخاصة بـ Misere فقط (بدون Random Computer)
 Player<char>** Misere_UI::setup_players() {
     Player<char>** players = new Player<char>*[2];
 

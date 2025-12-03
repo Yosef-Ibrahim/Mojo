@@ -1,4 +1,4 @@
-#include "Word_TicTacToe.h"
+﻿#include "Word_TicTacToe.h"
 #include <iostream>
 #include <iomanip>
 #include <limits>
@@ -130,31 +130,42 @@ Word_UI::Word_UI() : UI<char>("Welcome to Word Tic-Tac-Toe", 3) {
 
 Player<char>** Word_UI::setup_players() {
     Player<char>** players = new Player<char>*[2];
-    vector<string> type_options = { "Human", "Random Computer", "Smart AI" };
 
+    // خياران فقط: Human وComputer (Smart AI)
+    vector<string> type_options = { "Human", "Smart AI" };
+
+    // Player 1 (X)
     string name1 = get_player_name("Player 1");
     PlayerType type1 = get_player_type_choice("Player 1", type_options);
+    // تحويل Computer (الخيار 2) إلى PlayerType::AI
+    if (static_cast<int>(type1) == 1) {
+        type1 = PlayerType::AI;
+    }
     players[0] = create_player(name1, 'X', type1);
 
+    // Player 2 (O)
     string name2 = get_player_name("Player 2");
     PlayerType type2 = get_player_type_choice("Player 2", type_options);
+    // تحويل Computer (الخيار 2) إلى PlayerType::AI
+    if (static_cast<int>(type2) == 1) {
+        type2 = PlayerType::AI;
+    }
     players[1] = create_player(name2, 'O', type2);
 
     return players;
 }
 
+
 Player<char>* Word_UI::create_player(string& name, char symbol, PlayerType type) {
     if (type == PlayerType::AI) {
-        cout << "? Creating Smart AI player: " << name << " (" << symbol << ") ??\n";
-    }
-    else if (type == PlayerType::RANDOM || type == PlayerType::COMPUTER) {
-        cout << "Creating Random Computer player: " << name << " (" << symbol << ")\n";
+        cout << "Creating Smart AI player: " << name << " (" << symbol << ")\n";
     }
     else {
         cout << "Creating Human player: " << name << " (" << symbol << ")\n";
     }
     return new Player<char>(name, symbol, type);
 }
+
 
 // Check if placing a letter creates a winning word
 bool Word_UI::creates_winning_word(Word_Board* board, int row, int col, char letter) {
@@ -300,7 +311,7 @@ Move<char>* Word_UI::get_ai_move(Player<char>* player) {
     char ai_symbol = player->get_symbol();
     auto& matrix = boardPtr->get_board_matrix();
 
-    cout << "\n?? AI is thinking..." << flush;
+    cout << "\n AI is thinking..." << flush;
 
     // Common letters to try (ordered by frequency in English)
     string letters_to_try = "ETAOINSRHLDCUMFPGWYBVKXJQZ";
@@ -321,8 +332,8 @@ Move<char>* Word_UI::get_ai_move(Player<char>* player) {
 
                     // If we found a winning move, use it immediately
                     if (score >= 10000) {
-                        cout << " Found winning move! ?\n";
-                        cout << "?? AI places '" << letter << "' at (" << i << ", " << j << ") [WINNING MOVE! ??]\n";
+                        cout << " Found winning move! \n";
+                        cout << " AI places '" << letter << "' at (" << i << ", " << j << ") [WINNING MOVE! ]\n";
                         return new Move<char>(i, j, letter);
                     }
                 }
@@ -330,7 +341,7 @@ Move<char>* Word_UI::get_ai_move(Player<char>* player) {
         }
     }
 
-    cout << " Done! ?\n";
+    cout << " Done! \n";
 
     if (best_move.row == -1) {
         // Fallback: random move
@@ -338,16 +349,16 @@ Move<char>* Word_UI::get_ai_move(Player<char>* player) {
             for (int j = 0; j < 3; j++) {
                 if (matrix[i][j] == '.') {
                     char random_letter = letters_to_try[rand() % 10]; // Use common letters
-                    cout << "?? AI places '" << random_letter << "' at (" << i << ", " << j << ")\n";
+                    cout << " AI places '" << random_letter << "' at (" << i << ", " << j << ")\n";
                     return new Move<char>(i, j, random_letter);
                 }
             }
         }
     }
 
-    cout << "?? AI places '" << best_move.letter << "' at (" << best_move.row << ", " << best_move.col << ")";
-    if (best_move.score > 5000) cout << " [Defensive move ???]";
-    else if (best_move.score > 100) cout << " [Strategic move ??]";
+    cout << " AI places '" << best_move.letter << "' at (" << best_move.row << ", " << best_move.col << ")";
+    if (best_move.score > 5000) cout << " [Defensive move ]";
+    else if (best_move.score > 100) cout << " [Strategic move ]";
     cout << " [Score: " << best_move.score << "]\n";
 
     return new Move<char>(best_move.row, best_move.col, best_move.letter);
@@ -358,7 +369,7 @@ Move<char>* Word_UI::get_move(Player<char>* currentPlayer) {
         int x, y;
         char letter;
 
-        cout << "\n?? " << currentPlayer->get_name() << "'s turn\n";
+        cout << "\n" << currentPlayer->get_name() << "'s turn\n";
         cout << "Enter row (0-2): ";
         cin >> x;
         cout << "Enter column (0-2): ";
@@ -368,28 +379,8 @@ Move<char>* Word_UI::get_move(Player<char>* currentPlayer) {
 
         return new Move<char>(x, y, toupper(letter));
     }
-    else if (currentPlayer->get_type() == PlayerType::AI) {
-        // Smart AI
-        return get_ai_move(currentPlayer);
-    }
     else {
-        // Random computer
-        auto& matrix = boardPtr->get_board_matrix();
-        int x, y;
-
-        // Find random empty cell
-        do {
-            x = rand() % 3;
-            y = rand() % 3;
-        } while (matrix[x][y] != '.');
-
-        // Random common letter
-        string common = "ETAOINSRH";
-        char letter = common[rand() % common.length()];
-
-        cout << "\n?? Computer " << currentPlayer->get_name()
-            << " places '" << letter << "' at (" << x << ", " << y << ")\n";
-
-        return new Move<char>(x, y, letter);
+        // AI player (Smart AI)
+        return get_ai_move(currentPlayer);
     }
 }

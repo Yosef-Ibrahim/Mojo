@@ -226,15 +226,23 @@ template <typename T>
 Player<T>** UI<T>::setup_players() {
     Player<T>** players = new Player<T>*[2];
 
-    // 👈 هنا الإضافة: خيارات اللاعبين تشمل Smart AI
-    vector<string> type_options = { "Human", "Random Computer", "Smart AI" };
+    // 👈 خياران فقط Human وComputer (Random)
+    vector<string> type_options = { "Human", "Computer" };
 
     string nameX = get_player_name("Player 1");
     PlayerType typeX = get_player_type_choice("Player 1", type_options);
+    // تحويل Computer إلى PlayerType::COMPUTER (Random)
+    if (static_cast<int>(typeX) == 1) {
+        typeX = PlayerType::COMPUTER;
+    }
     players[0] = create_player(nameX, static_cast<T>('X'), typeX);
 
     string nameO = get_player_name("Player 2");
     PlayerType typeO = get_player_type_choice("Player 2", type_options);
+    // تحويل Computer إلى PlayerType::COMPUTER (Random)
+    if (static_cast<int>(typeO) == 1) {
+        typeO = PlayerType::COMPUTER;
+    }
     players[1] = create_player(nameO, static_cast<T>('O'), typeO);
 
     return players;

@@ -24,113 +24,26 @@
 using namespace std;
 
 // =============================================================================
-//  Part 1: Game Rules & Instructions Function
-// =============================================================================
-void show_game_rules() {
-    int choice;
-    while (true) {
-        system("cls");
-        cout << "\n============================================\n";
-        cout << "       GAME RULES & INSTRUCTIONS           \n";
-        cout << "============================================\n";
-        cout << "Which game do you want to learn about?\n";
-        cout << "1. Pyramid Tic-Tac-Toe\n";
-        cout << "2. Four-in-a-row (Connect 4)\n";
-        cout << "3. 5x5 Tic-Tac-Toe\n";
-        cout << "4. Word Tic-Tac-Toe\n";
-        cout << "5. Numerical Tic-Tac-Toe\n";
-        cout << "6. Misere Tic-Tac-Toe\n";
-        cout << "7. 4x4 Tic-Tac-Toe\n";
-        cout << "8. Ultimate Tic-Tac-Toe\n";
-        cout << "9. SUS Game\n";
-        cout << "10. Obstacles Tic-Tac-Toe\n";
-        cout << "11. Infinity Tic-Tac-Toe\n";
-        cout << "12. Diamond Tic-Tac-Toe\n";
-        cout << "13. Memory Tic-Tac-Toe\n";
-        cout << "0. Return to Main Menu\n";
-        cout << "--------------------------------------------\n";
-        cout << "Enter choice: ";
-
-        if (!(cin >> choice)) {
-            cin.clear(); cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            continue;
-        }
-
-        if (choice == 0) break;
-
-        system("cls");
-        cout << "\n--- Game Instructions ---\n\n";
-
-        switch (choice) {
-        case 1:
-            cout << "[ Pyramid Tic-Tac-Toe ]\n";
-            cout << "Board: Pyramid shape (1 top, 3 middle, 5 bottom).\n";
-            cout << "Goal: Align 3 symbols consecutively (Horizontally, Vertically, or Diagonally).\n";
-            break;
-        case 2:
-            cout << "[ Connect 4 ]\nAlign 4 symbols vertically, horizontally, or diagonally.\n";
-            break;
-        case 3:
-            cout << "[ 5x5 Tic-Tac-Toe ]\nCreate as many 3-in-a-row sequences as possible. Max score wins.\n";
-            break;
-        case 4:
-            cout << "[ Word Tic-Tac-Toe ]\n";
-            cout << "Board: 3x3 grid.\n";
-            cout << "Rules: Players place letters to form valid 3-letter words.\n";
-            cout << "Goal: First to form a valid word (horizontally, vertically, or diagonally) wins.\n";
-            cout << "Note: A dictionary file (dic.txt) is required with valid 3-letter words.\n";
-            break;
-        case 5:
-            cout << "[ Numerical ]\nUse numbers 1-9. First to make a line summing to 15 wins.\n";
-            break;
-        case 6:
-            cout << "[ Misere ]\nAvoid getting 3 in a row. If you get 3 in a row, you LOSE.\n";
-            break;
-        case 7:
-            cout << "[ 4x4 Tic-Tac-Toe ]\nMove your existing tokens to adjacent spots to form a line of 3.\n";
-            break;
-        case 8:
-            cout << "[ Ultimate ]\nWin small boards to claim cells on the big board.\n";
-            break;
-        case 9:
-            cout << "[ SUS ]\nForm 'S-U-S' sequences. The player with the most sequences wins.\n";
-            break;
-        case 10:
-            cout << "[ Obstacles ]\n6x6 grid. Computer blocks cells randomly after every round.\n";
-            break;
-        case 11:
-            cout << "[ Infinity ]\nOnly 3 moves per player. The 4th move erases the oldest one.\n";
-            break;
-        case 12:
-            cout << "[ Diamond Tic-Tac-Toe ]\n";
-            cout << "Rules: Players take turns placing their 'X' or 'O' in empty cells\n";
-            cout << "Winning Condition: A player wins by simultaneously completing\n";
-            cout << "a line of three marks AND a line of four marks.\n";
-            cout << "The two lines must be in different directions but can share one common mark.\n";
-            break;
-        case 13:
-            cout << "[ Memory Tic-Tac-Toe ]\n";
-            cout << "Rules: When a player places a mark, it is immediately hidden from view. Players must remember the\n"
-                << "positions of all marks to plan their strategy.\n"
-                << "Winning Condition: The first player to align three of their hidden marks in a row wins.\n"
-                << "The game is a draw if the board fills without a winner.\n";
-            break;
-        default:
-            cout << "Invalid selection.\n";
-        }
-        cout << "\nPress Enter to go back...";
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cin.get();
-    }
-}
-
-// =============================================================================
 //  Part 2: Run Functions for Each Game
 // =============================================================================
 
-// في ملف XO_Demo.cpp
-// استبدل دالة run_Pyramid_Game الموجودة عندك بدالة دي:
+void run_XO() {
 
+    srand(static_cast<unsigned int>(time(0)));
+    UI<char>* game_ui = new XO_UI();
+    Board<char>* xo_board = new X_O_Board();
+    Player<char>** players = game_ui->setup_players();
+    GameManager<char> x_o_game(xo_board, players, game_ui);
+
+    x_o_game.run();
+
+
+    delete xo_board;
+    for (int i = 0; i < 2; ++i) {
+        delete players[i];
+    }
+    delete[] players;
+}
 void run_Pyramid_Game() {
     cout << "\n----------------------------------------------------\n";
     cout << "           Pyramid Tic-Tac-Toe Game                 \n";
@@ -173,7 +86,7 @@ void run_FiveByFive_Game() {
     FiveByFive_UI<char>* ui = new FiveByFive_UI<char>();
     FiveByFive_Board<char>* b = new FiveByFive_Board<char>();
 
-    // 🔥 Important: Link UI with Board for AI
+    //  Important: Link UI with Board for AI
     ui->set_board(b);
 
     Player<char>** p = ui->setup_players();
@@ -188,9 +101,9 @@ void run_FiveByFive_Game() {
         cout << "Player X: " << x << " three-in-a-rows\n";
         cout << "Player O: " << o << " three-in-a-rows\n";
         cout << "--------------------------------------------\n";
-        if (x > o) cout << "🏆 Player X Wins!\n";
-        else if (o > x) cout << "🏆 Player O Wins!\n";
-        else cout << "🤝 It's a Draw!\n";
+        if (x > o) cout << " Player X Wins!\n";
+        else if (o > x) cout << " Player O Wins!\n";
+        else cout << " It's a Draw!\n";
         cout << "============================================\n";
     }
     delete b;
@@ -213,7 +126,7 @@ void run_Word_Game() {
     Word_UI* ui = new Word_UI();
     Word_Board* board = new Word_Board();
 
-    // 🔥 Important: Link UI with Board for AI
+    //  Important: Link UI with Board for AI
     ui->set_board(board);
 
     Player<char>** players = ui->setup_players();
@@ -435,10 +348,9 @@ int main() {
         cout << "11. Infinity Tic-Tac-Toe\n";
         cout << "12. Diamond Tic-Tac-Toe \n";
         cout << "13. Memory Tic-Tac-Toe \n";
-        cout << "--------------------------------------------\n";
-        cout << "14. Game Rules & Instructions [?]\n";
-        cout << "0.  Exit\n";
-        cout << "--------------------------------------------\n";
+        cout << "14. X-O game\n";
+        cout << "0. Exit \n";
+        cout << "------------------------------------------------\n";
         cout << "Enter your choice: ";
 
         if (!(cin >> choice)) {
@@ -464,7 +376,7 @@ int main() {
         case 11: run_Infinity_TicTacToe_Game(); break;
         case 12: run_Diamond_Game(); break;
         case 13: run_Memory_Game(); break;
-        case 14: show_game_rules(); break;
+        case 14: run_XO(); break;
         case 0: cout << "Goodbye!\n"; return 0;
         default: cout << "Invalid choice!\n";
         }

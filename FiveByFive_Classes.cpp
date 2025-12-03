@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <vector>
 
-using namespace std;
+using namespace std;    
 
 // ==========================================
 // 1. FiveByFive_Board Implementation
@@ -123,32 +123,80 @@ FiveByFive_UI<T>::FiveByFive_UI() : UI<T>("Welcome to 5x5 Tic-Tac-Toe", 5) {}
 template <typename T>
 Player<T>** FiveByFive_UI<T>::setup_players() {
     Player<T>** players = new Player<T>*[2];
-    vector<string> type_options = { "Human", "Random Computer", "Smart AI" };
+
+    // خياران فقط: Human وComputer (Smart AI)
+    vector<string> type_options = { "Human", "Smart AI" };
 
     string nameX = this->get_player_name("Player 1 (X)");
     PlayerType typeX = this->get_player_type_choice("Player 1", type_options);
+    // تحويل Computer (الخيار 2) إلى PlayerType::AI
+    if (static_cast<int>(typeX) == 1) {
+        typeX = PlayerType::AI;
+    }
     players[0] = create_player(nameX, static_cast<T>('X'), typeX);
 
     string nameO = this->get_player_name("Player 2 (O)");
     PlayerType typeO = this->get_player_type_choice("Player 2", type_options);
+    // تحويل Computer (الخيار 2) إلى PlayerType::AI
+    if (static_cast<int>(typeO) == 1) {
+        typeO = PlayerType::AI;
+    }
     players[1] = create_player(nameO, static_cast<T>('O'), typeO);
 
     return players;
 }
 
+
 template <typename T>
 Player<T>* FiveByFive_UI<T>::create_player(string& name, T symbol, PlayerType type) {
     if (type == PlayerType::AI) {
-        cout << "✨ Creating Smart AI player: " << name << " (" << symbol << ") 🤖\n";
-    }
-    else if (type == PlayerType::RANDOM || type == PlayerType::COMPUTER) {
-        cout << "Creating Random Computer player: " << name << " (" << symbol << ")\n";
+        cout << "Creating Smart AI player: " << name << " (" << symbol << ")\n";
     }
     else {
         cout << "Creating Human player: " << name << " (" << symbol << ")\n";
     }
     return new Player<T>(name, symbol, type);
 }
+
+template <typename T>
+Move<T>* FiveByFive_UI<T>::get_move(Player<T>* currentPlayer) {
+    if (currentPlayer->get_type() == PlayerType::HUMAN) {
+        int r, c;
+        cout << "\n" << currentPlayer->get_name() << " (" << currentPlayer->get_symbol() << ") turn.\n";
+
+        while (true) {
+            cout << "Enter Row (0-4): ";
+            cin >> r;
+            if (cin.fail() || r < 0 || r > 4) {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << "Invalid input! Please enter a number between 0 and 4.\n";
+                continue;
+            }
+            break;
+        }
+
+        while (true) {
+            cout << "Enter Column (0-4): ";
+            cin >> c;
+            if (cin.fail() || c < 0 || c > 4) {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << "Invalid input! Please enter a number between 0 and 4.\n";
+                continue;
+            }
+            break;
+        }
+
+        return new Move<T>(r, c, currentPlayer->get_symbol());
+    }
+    else {
+        // AI player (Smart AI)
+        return get_ai_move(currentPlayer);
+    }
+}
+
+
 
 // Check if a move creates a new three-in-a-row
 template <typename T>
@@ -234,7 +282,7 @@ Move<T>* FiveByFive_UI<T>::get_ai_move(Player<T>* player) {
     T opp_symbol = (ai_symbol == 'X') ? static_cast<T>('O') : static_cast<T>('X');
     auto& matrix = boardPtr->get_board_matrix();
 
-    cout << "\n🤖 AI is analyzing the board..." << flush;
+    cout << "\n AI is analyzing the board..." << flush;
 
     MoveEval best_move = { -1, -1, -999999 };
     vector<MoveEval> good_moves;
@@ -277,7 +325,7 @@ Move<T>* FiveByFive_UI<T>::get_ai_move(Player<T>* player) {
         }
     }
 
-    cout << " Done! ✓\n";
+    cout << " Done! \n";
 
     // If we have multiple good moves, pick one randomly for variety
     if (good_moves.size() > 1) {
@@ -290,68 +338,22 @@ Move<T>* FiveByFive_UI<T>::get_ai_move(Player<T>* player) {
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 5; j++) {
                 if (matrix[i][j] == '.') {
-                    cout << "🎯 AI chooses: (" << i << ", " << j << ")\n";
+                    cout << " AI chooses: (" << i << ", " << j << ")\n";
                     return new Move<T>(i, j, ai_symbol);
                 }
             }
         }
     }
 
-    cout << "🎯 AI chooses: (" << best_move.row << ", " << best_move.col << ")";
+    cout << " AI chooses: (" << best_move.row << ", " << best_move.col << ")";
 
-    if (best_move.score >= 1000) cout << " [Creates sequence! 🎯]";
-    else if (best_move.score >= 500) cout << " [Defensive move 🛡️]";
-    else if (best_move.score >= 100) cout << " [Strategic position 💡]";
+    if (best_move.score >= 1000) cout << " [Creates sequence! ]";
+    else if (best_move.score >= 500) cout << " [Defensive move ]";
+    else if (best_move.score >= 100) cout << " [Strategic position ]";
 
     cout << " [Score: " << best_move.score << "]\n";
 
     return new Move<T>(best_move.row, best_move.col, ai_symbol);
-}
-
-template <typename T>
-Move<T>* FiveByFive_UI<T>::get_move(Player<T>* currentPlayer) {
-    if (currentPlayer->get_type() == PlayerType::HUMAN) {
-        int r, c;
-        cout << "\n" << currentPlayer->get_name() << " (" << currentPlayer->get_symbol() << ") turn.\n";
-
-        while (true) {
-            cout << "Enter Row (0-4): ";
-            cin >> r;
-            if (cin.fail() || r < 0 || r > 4) {
-                cin.clear();
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                cout << "Invalid input! Please enter a number between 0 and 4.\n";
-                continue;
-            }
-            break;
-        }
-
-        while (true) {
-            cout << "Enter Column (0-4): ";
-            cin >> c;
-            if (cin.fail() || c < 0 || c > 4) {
-                cin.clear();
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                cout << "Invalid input! Please enter a number between 0 and 4.\n";
-                continue;
-            }
-            break;
-        }
-
-        return new Move<T>(r, c, currentPlayer->get_symbol());
-    }
-    else if (currentPlayer->get_type() == PlayerType::AI) {
-        // Smart AI
-        return get_ai_move(currentPlayer);
-    }
-    else {
-        // Random Computer Player
-        int r = rand() % 5;
-        int c = rand() % 5;
-        cout << "Computer " << currentPlayer->get_name()
-            << " chose (Row, Col): " << r << ", " << c << endl;
-        return new Move<T>(r, c, currentPlayer->get_symbol());
-    }
 }
 
 // =============================================================
