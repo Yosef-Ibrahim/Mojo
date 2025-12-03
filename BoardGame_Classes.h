@@ -93,6 +93,7 @@ protected:
     string welcome_message;
     int board_size;
 
+
 public:
     UI(string msg, int size) : welcome_message(msg), board_size(size) {}
     virtual ~UI() {}

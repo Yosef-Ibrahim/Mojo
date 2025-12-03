@@ -20,6 +20,7 @@
 #include "Diamond_TicTacToe.h"
 #include "Memory_TicTacToe.h"
 #include "Word_TicTacToe.h"
+#include "Ultimate_TicTacToe_Classes.h"
 
 using namespace std;
 
@@ -208,16 +209,40 @@ void run_FourByFour_Game() {
     delete players[1];
     delete[] players;
 }
-
-// 8. Ultimate Tic-Tac-Toe (Not Implemented yet)
+// Ultimate Tic-Tac-Toe
 void run_Ultimate_Game() {
-    cout << "\n[Ultimate Tic-Tac-Toe] Not implemented yet.\n";
+    cout << "\n----------------------------------------------------\n";
+    cout << "           Ultimate Tic-Tac-Toe Game                \n";
+    cout << "----------------------------------------------------\n";
+
+    // 1. إنشاء الكائنات
+    Ultimate_Board* board = new Ultimate_Board();
+    Ultimate_UI* ui = new Ultimate_UI();
+
+    // 2. ربط الـ UI بالبورد (ضروري عشان الكمبيوتر يشوف الأماكن الفاضية)
+    ui->set_board(board);
+
+    // 3. إعداد اللاعبين
+    Player<char>** players = ui->setup_players();
+
+    // 4. تشغيل اللعبة
+    GameManager<char> game(board, players, ui);
+    game.run();
+
+    // 5. تنظيف الذاكرة
+    delete board;
+    delete ui;
+    delete players[0];
+    delete players[1];
+    delete[] players;
 }
+
 
 // 9. SUS Game
 void run_SUS_Game() {
     SUS_UI* ui = new SUS_UI();
     SUS_Board* b = new SUS_Board();
+    
     Player<char>** p = ui->setup_players();
     GameManager<char> game(b, p, ui);
     game.run();

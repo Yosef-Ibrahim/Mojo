@@ -15,6 +15,7 @@
     <ClCompile Include="Diamond_TicTacToe.cpp" />
     <ClCompile Include="Memory_TicTacToe.cpp" />
     <ClCompile Include="Word_TicTacToe.cpp" />
+    <ClCompile Include="Ultimate_TicTacToe_Classes.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BoardGame_Classes.h" />
@@ -31,5 +32,6 @@
     <ClInclude Include="Diamond_TicTacToe.h" />
     <ClInclude Include="Memory_TicTacToe.h" />
     <ClInclude Include="Word_TicTacToe.h" />
+    <ClInclude Include="Ultimate_TicTacToe_Classes.h" />
   </ItemGroup>
 </Project>

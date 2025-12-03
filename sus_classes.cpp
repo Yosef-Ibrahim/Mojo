@@ -103,14 +103,89 @@ Player<char>** SUS_UI::setup_players() {
 
     return players;
 }
+// ==========================================
+// 3. تنفيذ دوال AI في SUS_Board
+vector<pair<int, int>> SUS_Board::get_legal_moves() {
+    vector<pair<int, int>> moves;
+    for (int r = 0; r < 3; r++)
+        for (int c = 0; c < 3; c++)
+            if (board[r][c] == blank_symbol)
+                moves.push_back({ r,c });
+    return moves;
+}
+
+void SUS_Board::make_move(int r, int c, char s) {
+    board[r][c] = s;
+}
+
+void SUS_Board::undo_move(int r, int c) {
+    board[r][c] = blank_symbol;
+}
+
+// تقييم اللوحة بناءً على عدد تسلسلات "S-U-S"
+int SUS_Board::evaluate_board(char aiSymbol, char humanSymbol) {
+    int aiScore = calculate_all_sus_sequences(board);
+    int humanScore = 0;
+
+    // احسبي لسلاسل U-S-U (لو عايزة تحسبيه)
+    // بسيبهوليك كده لو عايزة أفعّله اكتبيه وانا أزبطهولك
+
+    return aiScore - humanScore;
+}
+
+
+// الحصول على أفضل حركة للكمبيوتر باستخدام Minimax
+int SUS_Board::minimax(int depth, bool isMax, char aiSymbol, char humanSymbol) {
+    if (depth == 0 || get_legal_moves().empty())
+        return evaluate_board(aiSymbol, humanSymbol);
+
+    if (isMax) {
+        int best = -1e9;
+        for (auto& mv : get_legal_moves()) {
+            make_move(mv.first, mv.second, aiSymbol);
+            best = max(best, minimax(depth - 1, false, aiSymbol, humanSymbol));
+            undo_move(mv.first, mv.second);
+        }
+        return best;
+    }
+    else {
+        int best = 1e9;
+        for (auto& mv : get_legal_moves()) {
+            make_move(mv.first, mv.second, humanSymbol);
+            best = min(best, minimax(depth - 1, true, aiSymbol, humanSymbol));
+            undo_move(mv.first, mv.second);
+        }
+        return best;
+    }
+}
+
+// دالة للحصول على أفضل حركة للكمبيوتر
+pair<int, int> SUS_Board::get_best_ai_move(char aiSymbol, char humanSymbol) {
+    int bestScore = -1e9;
+    pair<int, int> bestMove = { -1,-1 };
+
+    for (auto& mv : get_legal_moves()) {
+        make_move(mv.first, mv.second, aiSymbol);
+
+        int score = minimax(5, false, aiSymbol, humanSymbol);
+
+        undo_move(mv.first, mv.second);
+
+        if (score > bestScore) {
+            bestScore = score;
+            bestMove = mv;
+        }
+    }
+
+    return bestMove;
+}
+
 
 Move<char>* SUS_UI::get_move(Player<char>* currentPlayer) {
     if (currentPlayer->get_type() == PlayerType::HUMAN) {
         int r, c;
-
         cout << "\n" << currentPlayer->get_name() << " (Symbol " << currentPlayer->get_symbol() << " - fixed), enter Row and Column (e.g., 0 2): ";
 
-        // التحقق من الإدخال
         while (!(cin >> r >> c)) {
             cout << "\n!!! Invalid input. Please enter numbers (Row Col). !!!\n";
             cin.clear();
@@ -121,13 +196,32 @@ Move<char>* SUS_UI::get_move(Player<char>* currentPlayer) {
         return new Move<char>(r, c, currentPlayer->get_symbol());
     }
     else {
-        // الكمبيوتر العشوائي (Random/Computer)
-        int r, c;
-        // هنا يجب أن يختار الكمبيوتر حركة صحيحة (لكن نعتمد على الـ Board للتحقق)
-        r = rand() % 3;
-        c = rand() % 3;
+        // ----- استخدم الـ board_ptr اللي ربطناه مسبقاً -----
+        SUS_Board* susBoard = nullptr;
+        if (board_ptr) {
+            susBoard = dynamic_cast<SUS_Board*>(board_ptr);
+        }
 
-        cout << "Computer " << currentPlayer->get_name() << " chose (Row, Col): " << r << ", " << c << endl;
-        return new Move<char>(r, c, currentPlayer->get_symbol());
+        if (!susBoard) {
+            // fallback آمن: لو ما فيش Board مربوط أو cast فشل => اختار حركة عشوائية
+            int r, c;
+            do {
+                r = rand() % 3;
+                c = rand() % 3;
+            } while (board_ptr && board_ptr->get_board_matrix()[r][c] != '.');
+
+            cout << "Computer (random fallback) chose (Row, Col): " << r << ", " << c << endl;
+            return new Move<char>(r, c, currentPlayer->get_symbol());
+        }
+
+        // لو عندنا SUS_Board صالح => خلّي الـ AI يشتغل
+        auto best = susBoard->get_best_ai_move(
+            currentPlayer->get_symbol(),
+            (currentPlayer->get_symbol() == 'S' ? 'U' : 'S')
+        );
+
+        cout << "Computer (AI) chose (Row, Col): " << best.first << ", " << best.second << endl;
+        return new Move<char>(best.first, best.second, currentPlayer->get_symbol());
     }
 }
+

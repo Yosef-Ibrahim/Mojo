@@ -46,12 +46,33 @@ template <typename T>
 bool FourByFour_Board<T>::is_win(Player<T>* player) {
     T sym = player->get_symbol();
     auto& b = this->board;
+
+    // 1. الفوز الأفقي والرأسي (زي ما كان موجود)
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j <= 1; j++) {
+            // أفقي (Rows)
             if (b[i][j] == sym && b[i][j + 1] == sym && b[i][j + 2] == sym) return true;
+            // رأسي (Columns)
             if (b[j][i] == sym && b[j + 1][i] == sym && b[j + 2][i] == sym) return true;
         }
     }
+
+    // 2. الفوز بالأقطار الرئيسية (Main Diagonals - من الشمال لليمين نازل)
+    // بنبدأ من الصف 0 و 1 بس، والعمود 0 و 1 بس، لأننا محتاجين 3 خانات
+    for (int i = 0; i <= 1; i++) {
+        for (int j = 0; j <= 1; j++) {
+            if (b[i][j] == sym && b[i + 1][j + 1] == sym && b[i + 2][j + 2] == sym) return true;
+        }
+    }
+
+    // 3. الفوز بالأقطار العكسية (Anti-Diagonals - من اليمين للشمال نازل)
+    // بنبدأ من الصف 0 و 1، والعمود 2 و 3 (عشان نرجع لورا)
+    for (int i = 0; i <= 1; i++) {
+        for (int j = 2; j <= 3; j++) {
+            if (b[i][j] == sym && b[i + 1][j - 1] == sym && b[i + 2][j - 2] == sym) return true;
+        }
+    }
+
     return false;
 }
 

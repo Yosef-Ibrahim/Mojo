@@ -8,7 +8,7 @@ using namespace std;
 class Four_In_A_Row_UI : public UI<char>
 {
 private:
-	Board<char>* boardPtr;  
+	Board<char>* boardPtr;
 
 public:
 	Four_In_A_Row_UI(Board<char>* board);
@@ -25,7 +25,7 @@ public:
 class Four_In_A_Row_Board : public Board<char>
 {
 public:
-	Four_In_A_Row_Board(int r = 6, int c = 7); 
+	Four_In_A_Row_Board(int r = 6, int c = 7);
 
 	bool update_board(Move<char>* move) override;
 	bool is_win(Player<char>* player) override;
@@ -33,6 +33,15 @@ public:
 	bool game_is_over(Player<char>* player) override;
 
 	int find_lowest_row(int column);
+
+	//AI functions
+	int evaluate_board(char aiSym);
+	int get_best_ai_move(char aiSym);
+	int minimax(int depth, bool maximizing, char aiSym, int alpha, int beta);
+	bool is_win_char(char sym);
+
 };
+
+
 
 #endif // FOUR_IN_A_ROW_UI_H

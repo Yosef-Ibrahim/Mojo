@@ -31,6 +31,7 @@
     <ClInclude Include="Obstacles_Classes.h" />
     <ClInclude Include="Pyramid_TicTacToe.h" />
     <ClInclude Include="sus_classes.h" />
+    <ClInclude Include="Ultimate_TicTacToe_Classes.h" />
     <ClInclude Include="Word_TicTacToe.h" />
     <ClInclude Include="XO_Classes.h" />
   </ItemGroup>
@@ -46,6 +47,7 @@
     <ClCompile Include="Obstacles_Classes.cpp" />
     <ClCompile Include="Pyramid_TicTacToe.cpp" />
     <ClCompile Include="sus_classes.cpp" />
+    <ClCompile Include="Ultimate_TicTacToe_Classes.cpp" />
     <ClCompile Include="Word_TicTacToe.cpp" />
     <ClCompile Include="XO_Classes.cpp" />
     <ClCompile Include="XO_Demo.cpp" />
