@@ -2,72 +2,42 @@
 #include <iostream>
 #include <iomanip>
 #include <limits> 
-#include <cmath> // عشان دالة abs
+#include <cmath>
 
 using namespace std;
 
-// ==========================================
-// 1. تنفيذ FourByFour_Board
-// ==========================================
-
-// Constructor (General)
+// --- Board Implementation ---
 template <typename T>
 FourByFour_Board<T>::FourByFour_Board() : Board<T>(4, 4) {}
 
-// Constructor (Specialized for char) - ترتيب القطع المتبادل
 template <>
 FourByFour_Board<char>::FourByFour_Board() : Board<char>(4, 4) {
-    // 1. تصفير اللوحة
-    for (int i = 0; i < 4; ++i) {
-        for (int j = 0; j < 4; ++j) {
+    for (int i = 0; i < 4; ++i)
+        for (int j = 0; j < 4; ++j)
             board[i][j] = '.';
-        }
-    }
 
-    // 2. وضع القطع بالتبادل (X O X O)
     for (int j = 0; j < 4; ++j) {
-        if (j % 2 == 0) { // الأعمدة الزوجية (0, 2)
-            board[0][j] = 'X'; // فوق
-            board[3][j] = 'O'; // تحت
-        }
-        else { // الأعمدة الفردية (1, 3)
-            board[0][j] = 'O'; // فوق
-            board[3][j] = 'X'; // تحت
-        }
+        if (j % 2 == 0) { board[0][j] = 'X'; board[3][j] = 'O'; }
+        else { board[0][j] = 'O'; board[3][j] = 'X'; }
     }
 }
 
 template <typename T>
 bool FourByFour_Board<T>::update_board(Move<T>* move) {
-    int encoded_from = move->get_x();
-    int encoded_to = move->get_y();
-    T symbol = move->get_symbol();
+    int from_code = move->get_x();
+    int to_code = move->get_y();
+    int from_r = from_code / 10, from_c = from_code % 10;
+    int to_r = to_code / 10, to_c = to_code % 10;
 
-    int from_r = encoded_from / 10;
-    int from_c = encoded_from % 10;
-    int to_r = encoded_to / 10;
-    int to_c = encoded_to % 10;
+    if (from_r < 0 || from_r > 3 || from_c < 0 || from_c > 3 ||
+        to_r < 0 || to_r > 3 || to_c < 0 || to_c > 3) return false;
 
-    // 1. التأكد من الحدود
-    if (from_r < 0 || from_r >= 4 || from_c < 0 || from_c >= 4 ||
-        to_r < 0 || to_r >= 4 || to_c < 0 || to_c >= 4) return false;
-
-    // 2. هل بيحرك قطعته؟
-    if (this->board[from_r][from_c] != symbol) return false;
-
-    // 3. هل المكان الجديد فاضي؟
+    if (this->board[from_r][from_c] != move->get_symbol()) return false;
     if (this->board[to_r][to_c] != '.') return false;
+    if (abs(from_r - to_r) + abs(from_c - to_c) != 1) return false;
 
-    // 4. هل الحركة خطوة واحدة (أفقي أو رأسي)؟
-    int row_diff = abs(to_r - from_r);
-    int col_diff = abs(to_c - from_c);
-
-    // المجموع لازم يكون 1 (يعني اتحرك خطوة واحدة في اتجاه واحد)
-    if ((row_diff + col_diff) != 1) return false;
-
-    // تنفيذ الحركة
-    this->board[from_r][from_c] = '.'; // فضي القديم
-    this->board[to_r][to_c] = symbol;  // املأ الجديد
+    this->board[to_r][to_c] = this->board[from_r][from_c];
+    this->board[from_r][from_c] = '.';
     this->n_moves++;
     return true;
 }
@@ -75,27 +45,11 @@ bool FourByFour_Board<T>::update_board(Move<T>* move) {
 template <typename T>
 bool FourByFour_Board<T>::is_win(Player<T>* player) {
     T sym = player->get_symbol();
-    // فحص الصفوف (3 ورا بعض)
-    for (int i = 0; i < 4; ++i) {
-        for (int j = 0; j <= 1; ++j) {
-            if (this->board[i][j] == sym && this->board[i][j + 1] == sym && this->board[i][j + 2] == sym) return true;
-        }
-    }
-    // فحص الأعمدة
-    for (int i = 0; i <= 1; ++i) {
-        for (int j = 0; j < 4; ++j) {
-            if (this->board[i][j] == sym && this->board[i + 1][j] == sym && this->board[i + 2][j] == sym) return true;
-        }
-    }
-    // فحص الأقطار
-    for (int i = 0; i <= 1; ++i) {
-        for (int j = 0; j <= 1; ++j) {
-            if (this->board[i][j] == sym && this->board[i + 1][j + 1] == sym && this->board[i + 2][j + 2] == sym) return true;
-        }
-    }
-    for (int i = 0; i <= 1; ++i) {
-        for (int j = 2; j < 4; ++j) {
-            if (this->board[i][j] == sym && this->board[i + 1][j - 1] == sym && this->board[i + 2][j - 2] == sym) return true;
+    auto& b = this->board;
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j <= 1; j++) {
+            if (b[i][j] == sym && b[i][j + 1] == sym && b[i][j + 2] == sym) return true;
+            if (b[j][i] == sym && b[j + 1][i] == sym && b[j + 2][i] == sym) return true;
         }
     }
     return false;
@@ -103,72 +57,149 @@ bool FourByFour_Board<T>::is_win(Player<T>* player) {
 
 template <typename T>
 bool FourByFour_Board<T>::is_draw(Player<T>* player) {
-    return false;
+    return (this->n_moves >= 50);
 }
 
 template <typename T>
 bool FourByFour_Board<T>::game_is_over(Player<T>* player) {
-    return is_win(player);
+    return is_win(player) || is_draw(player);
 }
 
-// ==========================================
-// 2. تنفيذ FourByFour_UI
-// ==========================================
+// --- UI Implementation ---
+template <typename T>
+FourByFour_UI<T>::FourByFour_UI() : UI<T>("4x4 Tic-Tac-Toe (Moving Pieces)", 4) {
+    this->boardPtr = nullptr;
+}
 
 template <typename T>
-FourByFour_UI<T>::FourByFour_UI() : UI<T>("Welcome to 4x4 Tic-Tac-Toe (Moving Tokens)", 4) {}
+void FourByFour_UI<T>::set_board(Board<T>* b) {
+    this->boardPtr = b;
+}
 
+// التعديل: string&
 template <typename T>
 Player<T>* FourByFour_UI<T>::create_player(string& name, T symbol, PlayerType type) {
     return new Player<T>(name, symbol, type);
+}
+
+// AI Minimax
+template <typename T>
+int FourByFour_UI<T>::minimax(Board<T>* board, int depth, bool isMaximizing, T aiSymbol, T humanSymbol, int alpha, int beta) {
+    Player<T> aiPlayer("AI", aiSymbol, PlayerType::AI);
+    Player<T> humanPlayer("Human", humanSymbol, PlayerType::HUMAN);
+
+    if (board->is_win(&aiPlayer)) return 1000 - depth;
+    if (board->is_win(&humanPlayer)) return -1000 + depth;
+    if (depth >= 3) return 0;
+
+    auto& b = board->get_board_matrix();
+
+    if (isMaximizing) {
+        int maxEval = -100000;
+        for (int r = 0; r < 4; ++r) {
+            for (int c = 0; c < 4; ++c) {
+                if (b[r][c] == aiSymbol) {
+                    int dr[] = { -1, 1, 0, 0 }, dc[] = { 0, 0, -1, 1 };
+                    for (int k = 0; k < 4; ++k) {
+                        int nr = r + dr[k], nc = c + dc[k];
+                        if (nr >= 0 && nr < 4 && nc >= 0 && nc < 4 && b[nr][nc] == '.') {
+                            b[nr][nc] = aiSymbol; b[r][c] = '.';
+                            int eval = minimax(board, depth + 1, false, aiSymbol, humanSymbol, alpha, beta);
+                            b[r][c] = aiSymbol; b[nr][nc] = '.';
+                            maxEval = max(maxEval, eval);
+                            alpha = max(alpha, eval);
+                            if (beta <= alpha) break;
+                        }
+                    }
+                }
+            }
+        }
+        return maxEval;
+    }
+    else {
+        int minEval = 100000;
+        for (int r = 0; r < 4; ++r) {
+            for (int c = 0; c < 4; ++c) {
+                if (b[r][c] == humanSymbol) {
+                    int dr[] = { -1, 1, 0, 0 }, dc[] = { 0, 0, -1, 1 };
+                    for (int k = 0; k < 4; ++k) {
+                        int nr = r + dr[k], nc = c + dc[k];
+                        if (nr >= 0 && nr < 4 && nc >= 0 && nc < 4 && b[nr][nc] == '.') {
+                            b[nr][nc] = humanSymbol; b[r][c] = '.';
+                            int eval = minimax(board, depth + 1, true, aiSymbol, humanSymbol, alpha, beta);
+                            b[r][c] = humanSymbol; b[nr][nc] = '.';
+                            minEval = min(minEval, eval);
+                            beta = min(beta, eval);
+                            if (beta <= alpha) break;
+                        }
+                    }
+                }
+            }
+        }
+        return minEval;
+    }
 }
 
 template <typename T>
 Move<T>* FourByFour_UI<T>::get_move(Player<T>* currentPlayer) {
     if (currentPlayer->get_type() == PlayerType::HUMAN) {
         int from_r, from_c, to_r, to_c;
-        cout << "\n" << currentPlayer->get_name() << " (" << currentPlayer->get_symbol() << ") turn.\n";
-
-        // 1. طلب مكان القطعة
+        cout << "\nTurn for " << currentPlayer->get_name() << " (" << currentPlayer->get_symbol() << ")\n";
         while (true) {
-            cout << "Select token to move (Row Col): ";
-            cin >> from_r >> from_c;
+            cout << "Select piece to move (Row Col): "; cin >> from_r >> from_c;
             if (cin.fail()) { cin.clear(); cin.ignore(numeric_limits<streamsize>::max(), '\n'); continue; }
             break;
         }
-
-        // 2. طلب المكان الجديد
         while (true) {
-            cout << "Select destination (Row Col): ";
-            cin >> to_r >> to_c;
+            cout << "Select destination (Row Col): "; cin >> to_r >> to_c;
             if (cin.fail()) { cin.clear(); cin.ignore(numeric_limits<streamsize>::max(), '\n'); continue; }
             break;
         }
-
-        // التشفير (بنبعت رقمين مدمجين عشان الـ Move بياخد x,y بس)
         return new Move<T>(from_r * 10 + from_c, to_r * 10 + to_c, currentPlayer->get_symbol());
     }
     else {
-        // Simple Random AI (بيحاول يلاقي حركة صحيحة)
-        int from_r, from_c, to_r, to_c, attempts = 0;
-        while (attempts < 2000) {
-            from_r = rand() % 4; from_c = rand() % 4;
-            int dir = rand() % 4;
-            to_r = from_r; to_c = from_c;
-            if (dir == 0) to_r--; else if (dir == 1) to_r++;
-            else if (dir == 2) to_c--; else if (dir == 3) to_c++;
+        cout << "\nComputer (AI) is thinking...\n";
+        T aiSymbol = currentPlayer->get_symbol();
+        T humanSymbol = (aiSymbol == 'X') ? 'O' : 'X';
 
-            if (to_r >= 0 && to_r < 4 && to_c >= 0 && to_c < 4) {
-                return new Move<T>(from_r * 10 + from_c, to_r * 10 + to_c, currentPlayer->get_symbol());
+        int bestFrom = -1, bestTo = -1;
+        int bestScore = -100000;
+        auto& b = this->boardPtr->get_board_matrix();
+
+        for (int r = 0; r < 4; ++r) {
+            for (int c = 0; c < 4; ++c) {
+                if (b[r][c] == aiSymbol) {
+                    int dr[] = { -1, 1, 0, 0 }, dc[] = { 0, 0, -1, 1 };
+                    for (int k = 0; k < 4; ++k) {
+                        int nr = r + dr[k], nc = c + dc[k];
+                        if (nr >= 0 && nr < 4 && nc >= 0 && nc < 4 && b[nr][nc] == '.') {
+                            b[nr][nc] = aiSymbol; b[r][c] = '.';
+                            int score = minimax(this->boardPtr, 0, false, aiSymbol, humanSymbol, -100000, 100000);
+                            b[r][c] = aiSymbol; b[nr][nc] = '.';
+                            if (score > bestScore) {
+                                bestScore = score;
+                                bestFrom = r * 10 + c;
+                                bestTo = nr * 10 + nc;
+                            }
+                        }
+                    }
+                }
             }
-            attempts++;
         }
-        return new Move<T>(0, 0, currentPlayer->get_symbol());
+
+        if (bestFrom == -1) {
+            while (true) {
+                int r = rand() % 4, c = rand() % 4;
+                if (b[r][c] == aiSymbol) {
+                    int k = rand() % 4, dr[] = { -1,1,0,0 }, dc[] = { 0,0,-1,1 };
+                    int nr = r + dr[k], nc = c + dc[k];
+                    if (nr >= 0 && nr < 4 && nc >= 0 && nc < 4 && b[nr][nc] == '.') return new Move<T>(r * 10 + c, nr * 10 + nc, aiSymbol);
+                }
+            }
+        }
+        return new Move<T>(bestFrom, bestTo, aiSymbol);
     }
 }
 
-// =============================================================
-// أهم جزء: Explicit Instantiation (عشان يربط الـ .h بالـ .cpp)
-// =============================================================
 template class FourByFour_Board<char>;
 template class FourByFour_UI<char>;

@@ -3,10 +3,11 @@
 
 #include "BoardGame_Classes.h"
 #include <string>
+#include <vector>
+#include <algorithm>
 
 using namespace std;
 
-// تعريف الكلاس FourByFour_Board
 template <typename T>
 class FourByFour_Board : public Board<T> {
 public:
@@ -17,14 +18,23 @@ public:
     bool game_is_over(Player<T>* player) override;
 };
 
-// تعريف الكلاس FourByFour_UI
 template <typename T>
 class FourByFour_UI : public UI<T> {
+private:
+    Board<T>* boardPtr;
+
 public:
     FourByFour_UI();
-    ~FourByFour_UI() {};
+
+    // دالة الربط
+    void set_board(Board<T>* b);
+
+    // string& ضرورية
     Player<T>* create_player(string& name, T symbol, PlayerType type) override;
+
     Move<T>* get_move(Player<T>* currentPlayer) override;
+
+    int minimax(Board<T>* board, int depth, bool isMaximizing, T aiSymbol, T humanSymbol, int alpha, int beta);
 };
 
-#endif // FOURBYFOUR_CLASSES_H
+#endif

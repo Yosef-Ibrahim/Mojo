@@ -128,17 +128,31 @@ void show_game_rules() {
 //  Part 2: Run Functions for Each Game
 // =============================================================================
 
-// 1. Pyramid Tic-Tac-Toe
+// في ملف XO_Demo.cpp
+// استبدل دالة run_Pyramid_Game الموجودة عندك بدالة دي:
+
 void run_Pyramid_Game() {
-    Pyramid_XO_UI<char>* game_ui = new Pyramid_XO_UI<char>();
+    cout << "\n----------------------------------------------------\n";
+    cout << "           Pyramid Tic-Tac-Toe Game                 \n";
+    cout << "----------------------------------------------------\n";
+
     Pyramid_XO_Board<char>* board = new Pyramid_XO_Board<char>();
-    Player<char>** players = game_ui->setup_players();
-    GameManager<char> game(board, players, game_ui);
-    game.run();
+    Pyramid_XO_UI<char>* ui = new Pyramid_XO_UI<char>();
+
+    ui->set_board(board);
+
+    Player<char>** players = ui->setup_players();
+
+    // GameManager بياخد 3 حاجات
+    GameManager<char> pyramid_game(board, players, ui);
+
+    pyramid_game.run();
+
     delete board;
-    for (int i = 0; i < 2; ++i) delete players[i];
+    delete ui;
+    delete players[0];
+    delete players[1];
     delete[] players;
-    delete game_ui;
 }
 
 // 2. Connect 4 
@@ -242,16 +256,29 @@ void run_Misere_Game() {
 }
 
 // 7. 4x4 Tic-Tac-Toe
+// في ملف XO_Demo.cpp
+// استبدل دالة run_FourByFour_Game بالموجودة دي:
+
 void run_FourByFour_Game() {
-    UI<char>* ui = new FourByFour_UI<char>();
-    Board<char>* b = new FourByFour_Board<char>();
-    Player<char>** p = ui->setup_players();
-    GameManager<char> game(b, p, ui);
+    cout << "\n----------------------------------------------------\n";
+    cout << "        4x4 Tic-Tac-Toe (Moving Pieces)             \n";
+    cout << "----------------------------------------------------\n";
+
+    FourByFour_Board<char>* board = new FourByFour_Board<char>();
+    FourByFour_UI<char>* ui = new FourByFour_UI<char>();
+
+    ui->set_board(board);
+
+    Player<char>** players = ui->setup_players();
+
+    GameManager<char> game(board, players, ui);
     game.run();
-    delete b;
-    for (int i = 0; i < 2; ++i) delete p[i];
-    delete[] p;
+
+    delete board;
     delete ui;
+    delete players[0];
+    delete players[1];
+    delete[] players;
 }
 
 // 8. Ultimate Tic-Tac-Toe (Not Implemented yet)
