@@ -240,16 +240,48 @@ void run_Ultimate_Game() {
 
 // 9. SUS Game
 void run_SUS_Game() {
+    cout << "\n----------------------------------------------------\n";
+    cout << "              SUS GAME (S-U-S Sequences)           \n";
+    cout << "----------------------------------------------------\n";
+    cout << "Goal: Form 'S-U-S' sequences (horizontal, vertical, diagonal)\n";
+    cout << "Player 1 always uses 'S', Player 2 always uses 'U'\n";
+    cout << "The player with more SUS sequences at the end WINS!\n";
+    cout << "----------------------------------------------------\n\n";
+
     SUS_UI* ui = new SUS_UI();
     SUS_Board* b = new SUS_Board();
-    
+
+    // ربط الـ UI بالـ Board
+    ui->set_board(b);
+
     Player<char>** p = ui->setup_players();
     GameManager<char> game(b, p, ui);
     game.run();
-    if (b->game_is_over(p[0])) {
-        int t = calculate_all_sus_sequences(b->get_board_matrix());
-        cout << "\nTotal SUS: " << t << endl;
+
+    // عرض النتيجة النهائية
+    cout << "\n============================================\n";
+    cout << "              FINAL RESULT                  \n";
+    cout << "============================================\n";
+
+    int s_score = b->get_s_score();
+    int u_score = b->get_u_score();
+
+    cout << "Player S (" << p[0]->get_name() << "): " << s_score << " SUS sequences\n";
+    cout << "Player U (" << p[1]->get_name() << "): " << u_score << " SUS sequences\n";
+    cout << "--------------------------------------------\n";
+
+    if (s_score > u_score) {
+        cout << "*** " << p[0]->get_name() << " (S) WINS! ***\n";
     }
+    else if (u_score > s_score) {
+        cout << "*** " << p[1]->get_name() << " (U) WINS! ***\n";
+    }
+    else {
+        cout << "*** It's a DRAW! ***\n";
+    }
+    cout << "============================================\n";
+
+    // تنظيف الذاكرة
     delete b;
     for (int i = 0; i < 2; ++i) delete p[i];
     delete[] p;
