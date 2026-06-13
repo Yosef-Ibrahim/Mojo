@@ -31,6 +31,7 @@ interface SocketContextType {
   mySymbol: string | null; // "1" (host) or "2" (guest)
   isMyTurn: boolean;
   connectionError: string | null;
+  onlineUsers: string[];
   createRoom: (gameType: string) => void;
   joinRoom: (roomId: string) => void;
   sendMove: (board: any, moves: any[], nextPlayerId: string, isGameOver: boolean, winnerSymbol: string | null) => void;
@@ -46,6 +47,13 @@ export const SocketProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   const [activeRoom, setActiveRoom] = useState<SocketRoom | null>(null);
   const [connectionStatus, setConnectionStatus] = useState<"disconnected" | "connecting" | "connected">("disconnected");
   const [connectionError, setConnectionError] = useState<string | null>(null);
+  const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (socket && connectionStatus === "connected" && user) {
+      socket.emit("user:online", { userId: user.id });
+    }
+  }, [socket, connectionStatus, user]);
 
   useEffect(() => {
     const newSocket = io(SOCKET_SERVER_URL, {
@@ -99,6 +107,10 @@ export const SocketProvider: React.FC<{ children: ReactNode }> = ({ children }) 
 
     newSocket.on("room:error", (err: { message: string }) => {
       setConnectionError(err.message);
+    });
+
+    newSocket.on("users:online_list", (users: string[]) => {
+      setOnlineUsers(users);
     });
 
     return () => {
@@ -171,6 +183,7 @@ export const SocketProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         mySymbol,
         isMyTurn,
         connectionError,
+        onlineUsers,
         createRoom,
         joinRoom,
         sendMove,

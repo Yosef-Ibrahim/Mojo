@@ -26,6 +26,21 @@ model User {
   matchesAsPlayer1 Match[]   @relation("Player1Matches")
   matchesAsPlayer2 Match[]   @relation("Player2Matches")
   matchesWon       Match[]   @relation("WinnerMatches")
+
+  // Friends relations
+  friends          Friendship[] @relation("UserFriends")
+  friendOf         Friendship[] @relation("FriendOf")
+}
+
+model Friendship {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation("UserFriends", fields: [userId], references: [id], onDelete: Cascade)
+  friendId  String
+  friend    User     @relation("FriendOf", fields: [friendId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, friendId])
 }
 
 model Match {

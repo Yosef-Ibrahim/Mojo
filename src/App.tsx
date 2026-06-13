@@ -9,17 +9,24 @@ import GameBoard from './components/GameBoard';
 import Settings from './components/Settings';
 import { AudioManager } from './games/audio';
 import { Difficulty } from './types';
+import { GAMES } from './games';
 
 const App: React.FC = () => {
-  const { currentGame, players, theme, setTheme, setDifficulty } = useGame();
-  const { user, loading, logout, matchHistory } = useAuth();
-  const { activeRoom, joinRoom } = useSocket();
+  const { currentGame, setCurrentGame, players, setPlayers, theme, setTheme, setDifficulty } = useGame();
+  const { user, token, loading, logout, matchHistory } = useAuth();
+  const { activeRoom, joinRoom, onlineUsers } = useSocket();
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isMuted, setIsMuted] = useState(AudioManager.isMuted);
   const [activeView, setActiveView] = useState<'dashboard' | 'arena' | 'history' | 'stats' | 'friends' | 'inventory'>('arena');
   const [globalLeaderboard, setGlobalLeaderboard] = useState<any[]>([]);
   const [autoJoinAttempted, setAutoJoinAttempted] = useState(false);
+
+  // Real Friends feature states
+  const [friends, setFriends] = useState<any[]>([]);
+  const [friendUsernameInput, setFriendUsernameInput] = useState('');
+  const [friendError, setFriendError] = useState<string | null>(null);
+  const [friendSuccess, setFriendSuccess] = useState<string | null>(null);
 
   // Auto-join room from URL query param or sessionStorage (set before login)
   useEffect(() => {
@@ -44,6 +51,124 @@ const App: React.FC = () => {
         .catch(err => console.error("Error fetching leaderboard:", err));
     }
   }, [activeView]);
+
+  const fetchFriends = async () => {
+    if (!token) return;
+    try {
+      const res = await fetch(`${(import.meta.env.VITE_API_URL as string) || 'http://localhost:5000'}/api/friends`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setFriends(data);
+      }
+    } catch (err) {
+      console.error("Error fetching friends:", err);
+    }
+  };
+
+  useEffect(() => {
+    if (token) {
+      fetchFriends();
+    } else {
+      setFriends([]);
+    }
+  }, [token]);
+
+  useEffect(() => {
+    if (activeView === 'friends' || activeView === 'dashboard') {
+      fetchFriends();
+    }
+  }, [activeView]);
+
+  const handleAddFriend = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!friendUsernameInput.trim() || !token) return;
+    setFriendError(null);
+    setFriendSuccess(null);
+
+    try {
+      const res = await fetch(`${(import.meta.env.VITE_API_URL as string) || 'http://localhost:5000'}/api/friends/add`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ username: friendUsernameInput.trim() })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setFriendSuccess(`Successfully connected with ${data.friend.username}!`);
+        setFriends(prev => [...prev, data.friend]);
+        setFriendUsernameInput('');
+      } else {
+        setFriendError(data.error || 'Failed to add friend.');
+      }
+    } catch (err) {
+      setFriendError('Network error. Please try again.');
+    }
+  };
+
+  const handleRemoveFriend = async (friendId: string) => {
+    if (!token) return;
+    if (!confirm("Are you sure you want to delete this direct-link?")) return;
+
+    try {
+      const res = await fetch(`${(import.meta.env.VITE_API_URL as string) || 'http://localhost:5000'}/api/friends/remove`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ friendId })
+      });
+      if (res.ok) {
+        setFriends(prev => prev.filter(f => f.id !== friendId));
+      }
+    } catch (err) {
+      console.error("Error removing friend:", err);
+    }
+  };
+
+  // Synchronize activeRoom with GameContext for online multiplayer
+  useEffect(() => {
+    if (activeRoom && activeRoom.status === 'active') {
+      const roomGame = GAMES[activeRoom.gameType];
+      if (roomGame && (!currentGame || currentGame.id !== roomGame.id)) {
+        setCurrentGame(roomGame);
+      }
+
+      const host = activeRoom.players.find(p => p.symbol === "1");
+      const guest = activeRoom.players.find(p => p.symbol === "2");
+      
+      if (host && guest) {
+        const gamePlayers = [
+          {
+            id: 1,
+            name: host.username,
+            symbol: roomGame?.id === 'snakesladders' ? '🔴' : 'X',
+            type: 'human' as const,
+            score: 0,
+            avatar: host.avatar
+          },
+          {
+            id: 2,
+            name: guest.username,
+            symbol: roomGame?.id === 'snakesladders' ? '🔵' : 'O',
+            type: 'human' as const,
+            score: 0,
+            avatar: guest.avatar
+          }
+        ];
+        
+        if (!players || players.length !== 2 || players[0].name !== host.username || players[1].name !== guest.username) {
+          setPlayers(gamePlayers);
+        }
+      }
+    }
+  }, [activeRoom, currentGame, players, setCurrentGame, setPlayers]);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -132,12 +257,7 @@ const App: React.FC = () => {
     { id: 4, title: 'NEURAL CLIMBER', desc: 'Ascend 2 ladders in Snakes & Ladders', xp: '+100 XP', progress: 0.5, completed: false },
   ];
 
-  const friendsList = [
-    { name: 'Xenon_Hunter', status: 'ONLINE', game: 'Chess Reborn', color: '#00f0ff' },
-    { name: 'Glitch_Queen', status: 'IN LOBBY', game: 'Idle', color: '#d946ef' },
-    { name: 'Zero_Cool', status: 'OFFLINE', game: 'Away 3h', color: '#94a3b8' },
-    { name: 'Cyber_Grandmaster', status: 'ONLINE', game: 'Analyzing Sudoku', color: '#fbbf24' },
-  ];
+  // Real friends list state is used instead of mock friendsList.
 
   const marketItems = [
     { id: 1, name: 'Plasma Edge', type: 'LEGENDARY', cost: '450 NP', desc: 'Custom laser pointer cell highlight skin for Chess.', rarityColor: '#fbbf24', avatar: '⚔️' },
@@ -206,25 +326,37 @@ const App: React.FC = () => {
               <div className="cyber-panel p-6 border border-white/5 bg-[var(--card-bg)]">
                 <div className="border-b border-white/10 pb-3 mb-5 flex justify-between items-center">
                   <h3 className="font-bold font-display text-sm text-white uppercase tracking-wider">ACTIVE_LOBBY.SYS</h3>
-                  <span className="text-[10px] font-mono text-[#00f0ff] uppercase">{friendsList.filter(f => f.status !== 'OFFLINE').length} ONLINE</span>
+                  <span className="text-[10px] font-mono text-[#00f0ff] uppercase">
+                    {friends.filter(f => onlineUsers.includes(f.id)).length} ONLINE
+                  </span>
                 </div>
                 <div className="space-y-4">
-                  {friendsList.map((f, i) => (
-                    <div key={i} className="flex items-center justify-between p-2.5 hover:bg-white/5 rounded transition">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full border border-white/10 bg-black/30 flex items-center justify-center font-mono font-bold text-xs uppercase" style={{ color: f.color }}>
-                          {f.name.substring(0, 2)}
-                        </div>
-                        <div>
-                          <div className="text-xs font-bold text-white uppercase tracking-wide">{f.name}</div>
-                          <div className="text-[9px] text-[#94a3b8] font-mono uppercase mt-0.5">{f.game}</div>
-                        </div>
-                      </div>
-                      <span className="text-[9px] font-mono px-2 py-0.5 rounded border font-bold" style={{ borderColor: `${f.color}33`, color: f.color }}>
-                        {f.status}
-                      </span>
+                  {friends.length === 0 ? (
+                    <div className="text-center py-4 font-mono text-[10px] text-[#94a3b8] uppercase font-bold">
+                      No active connections.<br />Add friends in the Friends tab.
                     </div>
-                  ))}
+                  ) : (
+                    friends.map((f) => {
+                      const isOnline = onlineUsers.includes(f.id);
+                      const color = isOnline ? '#00f0ff' : '#94a3b8';
+                      return (
+                        <div key={f.id} className="flex items-center justify-between p-2.5 hover:bg-white/5 rounded transition">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full border border-white/10 bg-black/30 flex items-center justify-center font-mono font-bold text-xs uppercase" style={{ color }}>
+                              {f.avatar || f.username.substring(0, 2)}
+                            </div>
+                            <div>
+                              <div className="text-xs font-bold text-white uppercase tracking-wide">{f.username}</div>
+                              <div className="text-[9px] text-[#94a3b8] font-mono uppercase mt-0.5">LVL {f.level} // {f.xp} XP</div>
+                            </div>
+                          </div>
+                          <span className="text-[9px] font-mono px-2 py-0.5 rounded border font-bold" style={{ borderColor: `${color}33`, color }}>
+                            {isOnline ? 'ONLINE' : 'OFFLINE'}
+                          </span>
+                        </div>
+                      );
+                    })
+                  )}
                 </div>
               </div>
             </div>
@@ -406,37 +538,83 @@ const App: React.FC = () => {
       case 'friends':
         return (
           <div className="space-y-6 animate-fade-in">
+            {/* Add Friend Form */}
+            <div className="cyber-panel p-6 border border-white/5 bg-[var(--card-bg)]">
+              <div className="border-b border-white/10 pb-3 mb-4">
+                <h3 className="font-bold font-display text-sm text-white uppercase tracking-wider">ADD_NEW_CONNECTION</h3>
+                <p className="text-[10px] font-mono text-[#94a3b8] uppercase mt-1 font-bold">Establish direct-link with another active agent username</p>
+              </div>
+              <form onSubmit={handleAddFriend} className="flex gap-3">
+                <input
+                  type="text"
+                  placeholder="ENTER AGENT CODENAME..."
+                  value={friendUsernameInput}
+                  onChange={(e) => setFriendUsernameInput(e.target.value)}
+                  className="cyber-input px-4 py-2 bg-black/40 border border-white/10 text-white font-mono text-xs rounded focus:outline-none focus:border-[#00f0ff] transition flex-grow"
+                />
+                <button
+                  type="submit"
+                  className="px-5 py-2 bg-[#d946ef] text-white font-mono text-xs font-bold rounded hover:bg-[#c084fc] transition uppercase"
+                >
+                  CONNECT_AGENT
+                </button>
+              </form>
+              {friendError && (
+                <div className="text-red-500 font-mono text-[10px] mt-2 uppercase font-bold">⚠️ ERROR: {friendError}</div>
+              )}
+              {friendSuccess && (
+                <div className="text-emerald-500 font-mono text-[10px] mt-2 uppercase font-bold">✓ SUCCESS: {friendSuccess}</div>
+              )}
+            </div>
+
+            {/* Friends List */}
             <div className="cyber-panel p-6 border border-white/5 bg-[var(--card-bg)]">
               <div className="border-b border-white/10 pb-3 mb-6">
                 <h3 className="font-bold font-display text-sm text-white uppercase tracking-wider">ALL_COMMUNICATIONS_LOG</h3>
                 <p className="text-[10px] font-mono text-[#94a3b8] uppercase mt-1 font-bold">Secure direct-link connections with other agents</p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {friendsList.map((f, i) => (
-                  <div key={i} className="cyber-panel p-4 border border-white/5 bg-black/10 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full border border-white/10 bg-black/30 flex items-center justify-center font-mono font-bold text-sm uppercase" style={{ color: f.color }}>
-                        {f.name.substring(0, 2)}
+              {friends.length === 0 ? (
+                <div className="text-center py-8 font-mono text-xs text-[#94a3b8] uppercase font-bold">
+                  No active connections. Search and add agents above.
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {friends.map((f) => {
+                    const isOnline = onlineUsers.includes(f.id);
+                    const color = isOnline ? '#00f0ff' : '#94a3b8';
+                    return (
+                      <div key={f.id} className="cyber-panel p-4 border border-white/5 bg-black/10 flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full border border-white/10 bg-black/30 flex items-center justify-center font-mono font-bold text-sm uppercase" style={{ color }}>
+                            {f.avatar || f.username.substring(0, 2)}
+                          </div>
+                          <div>
+                            <div className="text-xs font-bold text-white uppercase tracking-wide">{f.username}</div>
+                            <div className="text-[10px] text-[#94a3b8] font-mono uppercase mt-0.5">
+                              LVL {f.level} // {f.xp} XP
+                            </div>
+                            <div className="text-[8px] text-white/50 font-mono mt-0.5">
+                              RECORD: {f.wins}W - {f.losses}L - {f.draws}D
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex flex-col items-end gap-2">
+                          <span className="text-[8px] font-mono px-2 py-0.5 rounded border font-bold" style={{ borderColor: `${color}33`, color }}>
+                            {isOnline ? 'ONLINE' : 'OFFLINE'}
+                          </span>
+                          <button
+                            onClick={() => handleRemoveFriend(f.id)}
+                            className="text-[8px] font-mono font-bold text-red-400 border border-red-500/20 hover:bg-red-500/10 px-2 py-1 rounded transition uppercase"
+                          >
+                            TERMINATE LINK
+                          </button>
+                        </div>
                       </div>
-                      <div>
-                        <div className="text-xs font-bold text-white uppercase tracking-wide">{f.name}</div>
-                        <div className="text-[10px] text-[#94a3b8] font-mono uppercase mt-0.5">STATUS: {f.game}</div>
-                      </div>
-                    </div>
-                    <div className="flex flex-col items-end gap-2">
-                      <span className="text-[8px] font-mono px-2 py-0.5 rounded border font-bold" style={{ borderColor: `${f.color}33`, color: f.color }}>
-                        {f.status}
-                      </span>
-                      {f.status !== 'OFFLINE' && (
-                        <button className="text-[8px] font-mono font-bold text-black bg-[#00f0ff] px-2 py-1 rounded hover:scale-105 transition uppercase">
-                          SEND CHAT
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           </div>
         );

@@ -29,9 +29,11 @@ app.use(cors({
 app.use(express.json());
 
 import authRoutes from "./routes/authRoutes";
+import friendRoutes from "./routes/friendRoutes";
 
 app.use("/api/auth", authRoutes);
 app.use("/api", authRoutes);
+app.use("/api/friends", friendRoutes);
 
 // Health check endpoint
 app.get("/health", (req, res) => {
@@ -40,9 +42,18 @@ app.get("/health", (req, res) => {
 
 import { roomManager } from "./game/roomManager";
 
+const onlineUsers = new Map<string, string>(); // userId -> socketId
+
 // Real-time communication socket connection handler
 io.on("connection", (socket) => {
   console.log(`[Socket] User connected: ${socket.id}`);
+
+  // 0. Track online status
+  socket.on("user:online", ({ userId }) => {
+    (socket as any).userId = userId;
+    onlineUsers.set(userId, socket.id);
+    io.emit("users:online_list", Array.from(onlineUsers.keys()));
+  });
 
   // 1. Create room
   socket.on("room:create", ({ userId, username, avatar, gameType }) => {
@@ -85,6 +96,14 @@ io.on("connection", (socket) => {
   // 4. Handle player disconnection
   socket.on("disconnect", async () => {
     console.log(`[Socket] User disconnected: ${socket.id}`);
+    
+    // Remove from online users
+    const userId = (socket as any).userId;
+    if (userId) {
+      onlineUsers.delete(userId);
+      io.emit("users:online_list", Array.from(onlineUsers.keys()));
+    }
+
     const result = await roomManager.handleDisconnect(socket.id);
     if (result) {
       // Notify the remaining player that they won by forfeit
