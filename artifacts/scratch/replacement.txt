@@ -1,0 +1,131 @@
+  const presenterRef = useRef<GamePresenter | null>(null);
+
+  useEffect(() => {
+    if (!gameState || gameState.gameStatus === 'active' || !players || !currentGame) return;
+    addLeaderboardEntry({
+      gameId: currentGame.id,
+      gameName: currentGame.name,
+      winner: gameState.gameStatus === 'won'
+        ? players[(gameState.winner as number) - 1].name
+        : 'Draw',
+      player1: players[0].name,
+      player2: players[1].name,
+      date: new Date().toLocaleDateString(),
+      difficulty,
+    });
+  }, [gameState?.gameStatus]);
+
+  useEffect(() => {
+    if (!currentGame || !gameState) return;
+    const data = TutorialManager.getTutorial(currentGame.id);
+    if (data && !TutorialManager.hasCompleted(currentGame.id)) {
+      setTutorialData(data);
+      setShowTutorial(true);
+    }
+  }, [currentGame?.id]);
+
+  const handleTutorialComplete = () => {
+    if (currentGame) TutorialManager.markCompleted(currentGame.id);
+    setShowTutorial(false);
+    setTutorialData(null);
+  };
+
+  const handleTutorialSkip = () => {
+    setShowTutorial(false);
+    setTutorialData(null);
+  };
+
+  // --- MVP Integration ---
+  useEffect(() => {
+    if (!currentGame || !logic || !players || players.length < 2) return;
+
+    const view: IGameView = {
+      updateBoard: () => {},
+      updateGameState: (state) => {
+        if (state.moves && state.moves.length > 0) {
+          const lastM = state.moves[state.moves.length - 1];
+          setLastMove({ x: lastM.x, y: lastM.y });
+        }
+        
+        if (state.gameStatus === 'won' && state.winner) {
+          updateScore(state.winner);
+          AudioManager.playWin();
+        } else if (state.gameStatus === 'draw') {
+          AudioManager.playDraw();
+        } else if (state.moves.length > 0) {
+          AudioManager.playMove();
+        }
+
+        setGameState(state);
+      },
+      showWinner: () => {},
+      showDraw: () => {},
+      setThinkingState: (isThinking) => setIsAIThinking(isThinking),
+      onInvalidMove: () => AudioManager.playError()
+    };
+
+    const playerStrategies = players.map(p => 
+      p.type === 'human' 
+        ? new HumanPlayer(p.id, p.name, p.symbol, p.avatar)
+        : new OnlinePlayer(p.id, p.name, p.symbol, p.avatar)
+    );
+
+    presenterRef.current = new GamePresenter(
+      currentGame.id, 
+      logic as any, 
+      view, 
+      playerStrategies, 
+      difficulty, 
+      currentGame.boardSize
+    );
+
+    if (!gameState) {
+      presenterRef.current.startGame();
+    }
+
+    return () => {
+      presenterRef.current?.cleanup();
+    };
+  }, [currentGame?.id, players]); // Only re-instantiate on new game or player change
+
+  if (!gameState || !players || !currentGame || !logic) return null;
+
+  const handleMove = (x: number, y: number) => {
+    if (!presenterRef.current || gameState.gameStatus !== 'active') return;
+
+    let symbol = undefined;
+    let sourceX = undefined;
+    let sourceY = undefined;
+
+    if (currentGame.id === 'word') {
+      symbol = wordLetter;
+    } else if (currentGame.id === 'numerical') {
+      if (numValue === null) return;
+      symbol = numValue.toString();
+    } else if (currentGame.id === 'sus') {
+      symbol = gameState.currentPlayer === 1 ? 'S' : 'U';
+    } else if (currentGame.id === 'fourbyfour') {
+      if (!selectedPiece) {
+        const p = players[gameState.currentPlayer - 1];
+        if (gameState.board[x][y] === p.symbol) {
+          setSelectedPiece({ x, y });
+        }
+        return;
+      } else {
+        sourceX = selectedPiece.x;
+        sourceY = selectedPiece.y;
+        setSelectedPiece(null);
+      }
+    }
+
+    presenterRef.current.onCellClicked(x, y, symbol, sourceX, sourceY);
+    setNumValue(null);
+  };
+
+  const restartGame = () => {
+    if (presenterRef.current) {
+      presenterRef.current.resetGame();
+      setSelectedPiece(null);
+      setNumValue(null);
+    }
+  };

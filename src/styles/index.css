@@ -1,0 +1,193 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&family=Share+Tech+Mono&family=Space+Grotesk:wght@400;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Outfit', sans-serif;
+  --font-mono: 'Share Tech Mono', monospace;
+  --font-display: 'Space Grotesk', sans-serif;
+}
+
+:root {
+  --bg-gradient: radial-gradient(circle at top, #0f111a 0%, #050608 100%);
+  --card-bg: rgba(15, 20, 35, 0.6);
+  --card-text: #ffffff;
+  --card-desc: #94a3b8;
+  --input-bg: #0d1017;
+  --input-border: #1f2937;
+  --input-focus: #00f0ff;
+  --btn-primary: #00f0ff;
+  --sidebar-bg: #0b0d13;
+  --sidebar-text: #94a3b8;
+  --board-cell-bg: #121520;
+  --board-cell-border: #22293f;
+  --board-cell-hover: #1e152f;
+  --board-cell-selected: #00f0ff;
+  --ring-color: #00f0ff;
+  --border-color: #1f2937;
+  --neon-cyan: #00f0ff;
+  --neon-pink: #d946ef;
+  --neon-yellow: #fbbf24;
+  --neon-green: #10b981;
+  --glass-border: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="light"] {
+  --bg-gradient: radial-gradient(circle at top, #f8fafc 0%, #e2e8f0 100%);
+  --card-bg: rgba(255, 255, 255, 0.85);
+  --card-text: #0f172a;
+  --card-desc: #475569;
+  --input-bg: #f1f5f9;
+  --input-border: #cbd5e1;
+  --input-focus: #d946ef;
+  --btn-primary: #d946ef;
+  --sidebar-bg: #f8fafc;
+  --sidebar-text: #475569;
+  --board-cell-bg: #f1f5f9;
+  --board-cell-border: #e2e8f0;
+  --board-cell-hover: #fae8ff;
+  --board-cell-selected: #d946ef;
+  --ring-color: #d946ef;
+  --border-color: #cbd5e1;
+  --neon-cyan: #06b6d4;
+  --neon-pink: #d946ef;
+  --neon-yellow: #d97706;
+  --neon-green: #059669;
+  --glass-border: rgba(0, 0, 0, 0.05);
+}
+
+body {
+  background: var(--bg-gradient);
+  min-height: 100vh;
+  font-family: 'Outfit', sans-serif;
+  color: var(--card-text);
+  overflow-x: hidden;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--neon-cyan);
+}
+
+/* Dashboard UI Layout classes */
+.neon-glow-border-cyan {
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.1);
+}
+
+.neon-glow-border-pink {
+  border: 1px solid rgba(217, 70, 239, 0.3);
+  box-shadow: 0 0 15px rgba(217, 70, 239, 0.1);
+}
+
+.neon-glow-border-yellow {
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  box-shadow: 0 0 15px rgba(251, 191, 36, 0.1);
+}
+
+.active-nav-item {
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.05);
+  border-left: 3px solid var(--neon-cyan);
+}
+
+/* Glassmorphism Cards */
+.cyber-panel {
+  background: var(--card-bg);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+}
+
+.cyber-btn {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+/* Hover scales */
+.cyber-card-interactive {
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.cyber-card-interactive:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5), 0 0 15px rgba(0, 240, 255, 0.15);
+  border-color: rgba(0, 240, 255, 0.3);
+}
+
+/* Micro-animations */
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 0.4;
+    filter: drop-shadow(0 0 5px var(--neon-cyan));
+  }
+  50% {
+    opacity: 0.8;
+    filter: drop-shadow(0 0 12px var(--neon-cyan));
+  }
+}
+
+.pulse-neon-cyan {
+  animation: pulseGlow 2.5s infinite;
+}
+
+/* Snakes & Ladders SVG overlays */
+.ladder-svg-line {
+  stroke: var(--neon-cyan);
+  stroke-width: 5;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 6px rgba(0, 240, 255, 0.8));
+}
+
+.ladder-svg-rung {
+  stroke: var(--neon-cyan);
+  stroke-width: 3;
+  filter: drop-shadow(0 0 4px rgba(0, 240, 255, 0.6));
+}
+
+.snake-svg-body {
+  fill: none;
+  stroke: var(--neon-pink);
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 8px rgba(217, 70, 239, 0.9));
+}
+
+.snake-svg-head {
+  fill: var(--neon-pink);
+  filter: drop-shadow(0 0 8px rgba(217, 70, 239, 0.9));
+}
+
+/* Cyber Brutalism borders for game items */
+.brutal-border {
+  border: 2px solid var(--border-color);
+}
+
+.shadow-brutal-cyan {
+  box-shadow: 0px 4px 12px rgba(0, 240, 255, 0.15);
+}
+.shadow-brutal-pink {
+  box-shadow: 0px 4px 12px rgba(217, 70, 239, 0.15);
+}
+.shadow-brutal-yellow {
+  box-shadow: 0px 4px 12px rgba(251, 191, 36, 0.15);
+}
+.shadow-brutal-black {
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+}

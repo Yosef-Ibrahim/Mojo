@@ -1,6 +1,5 @@
 # Visual Studio
 .vs/
-.vs/
 *.vcxproj.user
 
 # Build folders
@@ -15,5 +14,22 @@ x64/
 *.ilk
 *.ipch
 *.tlog
-*.log
+
+# Node
+node_modules/
+server/node_modules/
+dist/
+server/dist/
+
+# Environment (secrets)
+.env
+.env.local
+server/.env
+
+# Database (local only — Railway will generate its own)
 *.db
+*.db-journal
+server/dev.db
+
+# Logs
+*.log
