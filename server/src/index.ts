@@ -30,6 +30,7 @@ app.use(express.json());
 
 import authRoutes from "./routes/authRoutes";
 
+app.use("/api/auth", authRoutes);
 app.use("/api", authRoutes);
 
 // Health check endpoint
