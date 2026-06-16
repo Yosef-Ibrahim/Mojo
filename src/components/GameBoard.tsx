@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useGame } from '../context/GameContext';
+import { useAuth } from '../context/AuthContext';
 import { useSocket } from '../context/SocketContext';
 import { getGameLogic } from '../games/logic';
 import { AudioManager } from '../games/audio';
@@ -10,15 +11,37 @@ import { HumanPlayer } from '../architecture/players/HumanPlayer';
 import { OnlinePlayer } from '../architecture/players/OnlinePlayer';
 import { IGameView } from '../architecture/interfaces/IGameView';
 
-const CHESS_PIECES: Record<string, string> = {
+const CHESS_PIECE_UNICODE: Record<string, string> = {
   wp: '♙', wr: '♖', wn: '♘', wb: '♗', wq: '♕', wk: '♔',
   bp: '♟', br: '♜', bn: '♞', bb: '♝', bq: '♛', bk: '♚'
+};
+
+// Styled chess piece renderer — white = cyan, black = magenta, matching site palette
+const ChessPiece: React.FC<{ code: string }> = ({ code }) => {
+  const isWhite = code.startsWith('w');
+  const unicode = CHESS_PIECE_UNICODE[code] || code;
+  return (
+    <span style={{
+      display: 'inline-block',
+      fontSize: '1.6em',
+      lineHeight: 1,
+      color: isWhite ? '#00e5ff' : '#d946ef',
+      filter: isWhite
+        ? 'drop-shadow(0 0 6px rgba(0,229,255,0.8)) drop-shadow(0 0 12px rgba(0,229,255,0.4))'
+        : 'drop-shadow(0 0 6px rgba(217,70,239,0.8)) drop-shadow(0 0 12px rgba(217,70,239,0.4))',
+      userSelect: 'none',
+      pointerEvents: 'none',
+    }}>
+      {unicode}
+    </span>
+  );
 };
 
 const DIE_UNICODE = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
 
 const GameBoard: React.FC = () => {
   const { currentGame, players, gameState, setGameState, scores, updateScore, resetGame, theme, difficulty, addLeaderboardEntry } = useGame();
+  const { refreshProfile, recordMatch } = useAuth();
   const { activeRoom, isMyTurn, sendMove } = useSocket();
   const isOnlineGame = !!activeRoom;
   const [forfeitNotice, setForfeitNotice] = useState<string | null>(null);
@@ -30,6 +53,8 @@ const GameBoard: React.FC = () => {
   const [showTutorial, setShowTutorial] = useState(false);
   const [tutorialData, setTutorialData] = useState<{ title: string; steps: { title: string; description: string; action: string }[] } | null>(null);
   const [minesweeperMode, setMinesweeperMode] = useState<'reveal' | 'flag'>('reveal');
+  const [gameResultToast, setGameResultToast] = useState<{ result: 'win' | 'draw' | 'loss' | 'solved'; winner?: string; xp: number; duration: string } | null>(null);
+  const gameStartTimeRef = useRef<number>(Date.now());
 
   const logic = currentGame ? getGameLogic(currentGame.id) : null;
   const presenterRef = useRef<GamePresenter | null>(null);
@@ -156,15 +181,17 @@ const GameBoard: React.FC = () => {
       const isLastMoveSource = lastMoveObj && lastMoveObj.sourceX === x && lastMoveObj.sourceY === y;
       const isLastMoveTarget = lastMoveObj && lastMoveObj.x === x && lastMoveObj.y === y;
 
+      // Selected piece — cyan highlight
       if (isSelected) {
         return {
-          backgroundColor: '#581c87',
-          borderColor: '#00f0ff',
-          borderWidth: '4px',
+          backgroundColor: '#0e2a3a',
+          borderColor: '#00e5ff',
+          borderWidth: '3px',
+          boxShadow: 'inset 0 0 12px rgba(0,229,255,0.35)',
         };
       }
 
-      // Check if this square is a valid target move for the selected piece
+      // Legal move target — purple tint
       const isLegalTarget = selectedPiece && logic && gameState && logic.isValidMove(
         gameState.board,
         x,
@@ -177,39 +204,38 @@ const GameBoard: React.FC = () => {
 
       if (isLegalTarget) {
         return {
-          backgroundColor: isLight ? '#065f46' : '#064e3b',
-          borderColor: '#10b981',
-          borderWidth: '3px',
-          color: cell && cell.startsWith('w') ? '#00f0ff' : '#d946ef',
+          backgroundColor: isLight ? '#1a0a2e' : '#150827',
+          borderColor: '#c850f0',
+          borderWidth: '2px',
+          boxShadow: 'inset 0 0 10px rgba(200,80,240,0.3)',
           cursor: 'pointer',
         };
       }
 
+      // Last move highlight — amber/orange
       if (isLastMoveSource) {
         return {
-          backgroundColor: '#451a03',
-          borderColor: '#fbbf24',
+          backgroundColor: '#1a1200',
+          borderColor: '#f59e0b',
           borderWidth: '2px',
-          color: cell && cell.startsWith('w') ? '#00f0ff' : '#d946ef',
+          boxShadow: 'inset 0 0 8px rgba(245,158,11,0.2)',
         };
       }
 
       if (isLastMoveTarget) {
         return {
-          backgroundColor: '#78350f',
+          backgroundColor: '#1f1500',
           borderColor: '#fbbf24',
           borderWidth: '2px',
-          color: cell && cell.startsWith('w') ? '#00f0ff' : '#d946ef',
+          boxShadow: 'inset 0 0 10px rgba(251,191,36,0.25)',
         };
       }
 
+      // Default light/dark squares — navy palette
       return {
-        backgroundColor: isLight 
-          ? (isThemeLight ? '#f3f4f6' : '#2a303c') 
-          : (isThemeLight ? '#9ca3af' : '#141822'),
-        borderColor: '#000000',
-        borderWidth: '2px',
-        color: cell && cell.startsWith('w') ? '#00f0ff' : '#d946ef',
+        backgroundColor: isLight ? '#0d1117' : '#111827',
+        borderColor: isLight ? '#1e2d3d' : '#0a0e18',
+        borderWidth: '1px',
       };
     }
 
@@ -453,6 +479,7 @@ const GameBoard: React.FC = () => {
         winner: null,
         moves: [],
       });
+      gameStartTimeRef.current = Date.now();
     }
   }, [currentGame, gameState, setGameState, logic]);
 
@@ -470,6 +497,59 @@ const GameBoard: React.FC = () => {
       date: new Date().toLocaleDateString(),
       difficulty,
     });
+
+    // Calculate duration in seconds
+    const elapsedMs = Date.now() - gameStartTimeRef.current;
+    const elapsedSec = Math.floor(elapsedMs / 1000);
+    const mins = Math.floor(elapsedSec / 60);
+    const secs = elapsedSec % 60;
+    const duration = mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
+
+    // Determine result and opponent
+    let result: 'win' | 'loss' | 'draw' = 'draw';
+    let winner: string | undefined;
+    let xpEarned = 50;
+
+    // Check if any player is AI (covers chess vs AI, snakes vs AI, etc.)
+    const hasAI = players.some(p => p.type === 'ai' || p.type === 'random');
+    const isTrulySolo = currentGame.isSinglePlayer; // puzzle games: sudoku, 2048, etc.
+
+    if (gameState.gameStatus === 'won') {
+      const winnerIdx = (gameState.winner as number) - 1; // winner is player id (1 or 2)
+      const winnerPlayer = players[winnerIdx];
+      winner = winnerPlayer?.name;
+
+      if (isTrulySolo) {
+        // Solo puzzle — player always wins (there's no opponent)
+        result = 'win';
+        xpEarned = 100;
+      } else if (winnerPlayer?.type === 'human') {
+        // Human beat AI or another human
+        result = 'win';
+        xpEarned = hasAI ? 150 : 120;
+      } else {
+        // AI won — human lost
+        result = 'loss';
+        xpEarned = 30;
+      }
+    }
+
+    const opponent = isTrulySolo
+      ? 'AI'
+      : (players.find(p => p.type === 'ai' || p.type === 'random')?.name || players[1]?.name || 'AI');
+
+    // Record match — updates history + stats optimistically, then syncs with backend
+    recordMatch({
+      gameType: currentGame.id,
+      opponent,
+      result,
+      xpEarned,
+      duration: elapsedSec,
+    });
+
+    // Show toast — use 'solved' for pure puzzle games (no opponent)
+    const toastResult = isTrulySolo && result === 'win' ? 'solved' : result;
+    setGameResultToast({ result: toastResult, winner, xp: xpEarned, duration });
   }, [gameState?.gameStatus]);
 
   useEffect(() => {
@@ -991,6 +1071,63 @@ const GameBoard: React.FC = () => {
               )}
 
               {/* Grid cell renderer */}
+              {currentGame.id === 'chess' ? (
+                <div style={{ position: 'relative', width: '100%' }}>
+                  {/* File labels (a-h) top */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '16px repeat(8, minmax(0,1fr))', marginBottom: '2px', paddingLeft: '2px' }}>
+                    <div />
+                    {['a','b','c','d','e','f','g','h'].map(f => (
+                      <div key={f} style={{ textAlign: 'center', fontFamily: "'Share Tech Mono', monospace", fontSize: '9px', color: '#3d4460', textTransform: 'uppercase' }}>{f}</div>
+                    ))}
+                  </div>
+                  <div style={{ display: 'flex', gap: '2px' }}>
+                    {/* Rank labels (8-1) */}
+                    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-around', width: '14px', flexShrink: 0 }}>
+                      {[8,7,6,5,4,3,2,1].map(r => (
+                        <div key={r} style={{ textAlign: 'center', fontFamily: "'Share Tech Mono', monospace", fontSize: '9px', color: '#3d4460' }}>{r}</div>
+                      ))}
+                    </div>
+                    <div
+                      role="grid"
+                      aria-label="Chess game board"
+                      style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(8, minmax(0, 1fr))',
+                        gap: '2px',
+                        flex: 1,
+                        border: '1px solid #1e2538',
+                      }}
+                      className="touch-manipulation text-center"
+                    >
+                      {gameState.board.map((row, x) =>
+                        row.map((cell, y) => {
+                          const isSelected = selectedPiece?.x === x && selectedPiece?.y === y;
+                          const displayCell = cell ? <ChessPiece code={cell} /> : null;
+                          const isCellDisabled = gameState.gameStatus !== 'active';
+                          return (
+                            <button
+                              key={`${x}-${y}`}
+                              onClick={() => handleMove(x, y)}
+                              disabled={isCellDisabled}
+                              style={{
+                                aspectRatio: '1 / 1',
+                                width: '100%',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                transition: 'all 0.1s ease-out',
+                                ...boardCellStyle(x, y, isSelected, cell),
+                              }}
+                            >
+                              {displayCell}
+                            </button>
+                          );
+                        })
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ) : (
               <div
                 role="grid"
                 aria-label={`${currentGame.name} game board`}
@@ -1031,7 +1168,7 @@ const GameBoard: React.FC = () => {
                     } else if (isMemory && gameState.gameStatus === 'active') {
                       displayCell = '';
                     } else if (currentGame.id === 'chess' && cell) {
-                      displayCell = CHESS_PIECES[cell] || cell;
+                      displayCell = <ChessPiece code={cell} />;
                     } else if (currentGame.id === 'sudoku' && cell) {
                       displayCell = cell.replace('c', '');
                     } else if (currentGame.id === 'minesweeper') {
@@ -1110,6 +1247,7 @@ const GameBoard: React.FC = () => {
                   })
                 )}
               </div>
+              )} {/* end non-chess board ternary */}
 
               {/* Dynamic Animated Tokens for Snakes & Ladders */}
               {currentGame.id === 'snakesladders' && (() => {
@@ -1323,6 +1461,121 @@ const GameBoard: React.FC = () => {
           onComplete={handleTutorialComplete}
           onSkip={handleTutorialSkip}
         />
+      )}
+
+      {/* Game Result Toast */}
+      {gameResultToast && (
+        <div
+          style={{
+            position: 'fixed',
+            top: '80px',
+            right: '28px',
+            zIndex: 9999,
+            width: '340px',
+            background: '#0a0c14',
+            border: `1px solid ${gameResultToast.result === 'win' || gameResultToast.result === 'solved' ? '#00e5ff' : gameResultToast.result === 'draw' ? '#f5c518' : '#ff3d3d'}`,
+            boxShadow: `0 0 32px ${gameResultToast.result === 'win' || gameResultToast.result === 'solved' ? 'rgba(0,229,255,0.25)' : gameResultToast.result === 'draw' ? 'rgba(245,197,24,0.25)' : 'rgba(255,61,61,0.25)'}`,
+            borderRadius: '4px',
+            padding: '24px',
+            animation: 'slideInRight 0.35s cubic-bezier(0.23,1,0.32,1)',
+          }}
+        >
+          <style>{`
+            @keyframes slideInRight {
+              from { transform: translateX(120%); opacity: 0; }
+              to { transform: translateX(0); opacity: 1; }
+            }
+          `}</style>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
+            <div>
+              <div style={{
+                fontFamily: "'Share Tech Mono', monospace",
+                fontSize: '9px',
+                color: gameResultToast.result === 'win' || gameResultToast.result === 'solved' ? '#00e5ff' : gameResultToast.result === 'draw' ? '#f5c518' : '#ff3d3d',
+                textTransform: 'uppercase',
+                letterSpacing: '0.12em',
+                marginBottom: '6px',
+              }}>
+                {gameResultToast.result === 'solved' ? '// PUZZLE SOLVED' : gameResultToast.result === 'win' ? '// VICTORY ACHIEVED' : gameResultToast.result === 'draw' ? '// DRAW RECORDED' : '// DEFEAT LOGGED'}
+              </div>
+              <div style={{
+                fontFamily: "'Rajdhani', sans-serif",
+                fontWeight: 700,
+                fontSize: '28px',
+                color: '#e8eaf0',
+                textTransform: 'uppercase',
+                lineHeight: 1,
+                letterSpacing: '0.02em',
+              }}>
+                {gameResultToast.result === 'solved' ? 'SOLVED!' : gameResultToast.result === 'win' ? (gameResultToast.winner ? `${gameResultToast.winner.toUpperCase()} WINS` : 'WINNER!') : gameResultToast.result === 'draw' ? 'DRAW' : 'DEFEATED'}
+              </div>
+            </div>
+            <button
+              onClick={() => setGameResultToast(null)}
+              style={{ background: 'transparent', border: 'none', color: '#3d4460', cursor: 'pointer', fontSize: '16px', padding: '0 0 0 8px', lineHeight: 1 }}
+            >✕</button>
+          </div>
+
+          <div style={{ display: 'flex', gap: '20px', marginBottom: '16px' }}>
+            <div>
+              <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: '9px', color: '#7b8299', textTransform: 'uppercase', marginBottom: '3px' }}>XP EARNED</div>
+              <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: '18px', color: '#00e676' }}>+{gameResultToast.xp} XP</div>
+            </div>
+            <div>
+              <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: '9px', color: '#7b8299', textTransform: 'uppercase', marginBottom: '3px' }}>DURATION</div>
+              <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: '18px', color: '#e8eaf0' }}>{gameResultToast.duration}</div>
+            </div>
+            <div>
+              <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: '9px', color: '#7b8299', textTransform: 'uppercase', marginBottom: '3px' }}>GAME</div>
+              <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: '18px', color: '#c850f0', textTransform: 'uppercase' }}>{currentGame?.id?.toUpperCase()}</div>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button
+              onClick={() => { setGameResultToast(null); resetGame(); }}
+              style={{
+                flex: 1,
+                fontFamily: "'Share Tech Mono', monospace",
+                fontSize: '9px',
+                textTransform: 'uppercase',
+                letterSpacing: '0.1em',
+                padding: '9px',
+                border: '1px solid rgba(0,229,255,0.3)',
+                color: '#00e5ff',
+                background: 'transparent',
+                cursor: 'pointer',
+                borderRadius: '2px',
+                transition: 'background 0.15s',
+              }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(0,229,255,0.08)'; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
+            >
+              BACK TO MENU
+            </button>
+            <button
+              onClick={() => { setGameResultToast(null); }}
+              style={{
+                flex: 1,
+                fontFamily: "'Share Tech Mono', monospace",
+                fontSize: '9px',
+                textTransform: 'uppercase',
+                letterSpacing: '0.1em',
+                padding: '9px',
+                border: 'none',
+                color: '#000',
+                background: '#00e5ff',
+                cursor: 'pointer',
+                borderRadius: '2px',
+                transition: 'box-shadow 0.15s',
+              }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 0 14px rgba(0,229,255,0.4)'; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.boxShadow = 'none'; }}
+            >
+              PLAY AGAIN
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );

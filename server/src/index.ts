@@ -20,22 +20,27 @@ const io = new Server(server, {
   },
 });
 
-app.use(cors({
-  origin: allowedOrigins.includes("*") ? "*" : (origin: string | undefined, cb: Function) => {
-    if (!origin || allowedOrigins.includes(origin)) cb(null, true);
-    else cb(new Error("Not allowed by CORS"));
-  }
-}));
+app.use(
+  cors({
+    origin: allowedOrigins.includes("*")
+      ? "*"
+      : (origin: string | undefined, cb: Function) => {
+          if (!origin || allowedOrigins.includes(origin)) cb(null, true);
+          else cb(new Error("Not allowed by CORS"));
+        },
+  }),
+);
 app.use(express.json());
 
 import authRoutes from "./routes/authRoutes";
 import friendRoutes from "./routes/friendRoutes";
+import gameRoutes from "./routes/gameRoutes";
 
 app.use("/api/auth", authRoutes);
-app.use("/api", authRoutes);
 app.use("/api/friends", friendRoutes);
+app.use("/api/games", gameRoutes);
 
-// Health check endpoint
+// Health check
 app.get("/health", (req, res) => {
   res.json({ status: "healthy", timestamp: new Date() });
 });
@@ -44,69 +49,84 @@ import { roomManager } from "./game/roomManager";
 
 const onlineUsers = new Map<string, string>(); // userId -> socketId
 
-// Real-time communication socket connection handler
 io.on("connection", (socket) => {
   console.log(`[Socket] User connected: ${socket.id}`);
 
-  // 0. Track online status
   socket.on("user:online", ({ userId }) => {
     (socket as any).userId = userId;
     onlineUsers.set(userId, socket.id);
     io.emit("users:online_list", Array.from(onlineUsers.keys()));
   });
 
-  // 1. Create room
   socket.on("room:create", ({ userId, username, avatar, gameType }) => {
-    const room = roomManager.createRoom(socket.id, userId, username, avatar, gameType);
+    const room = roomManager.createRoom(
+      socket.id,
+      userId,
+      username,
+      avatar,
+      gameType,
+    );
     socket.join(room.roomId);
     socket.emit("room:created", room);
   });
 
-  // 2. Join room
   socket.on("room:join", ({ userId, username, avatar, roomId }) => {
-    const room = roomManager.joinRoom(socket.id, userId, username, avatar, roomId);
+    const room = roomManager.joinRoom(
+      socket.id,
+      userId,
+      username,
+      avatar,
+      roomId,
+    );
     if (!room) {
-      socket.emit("room:error", { message: "Room not found, finished, or already full." });
+      socket.emit("room:error", {
+        message: "Room not found, finished, or already full.",
+      });
       return;
     }
-
     socket.join(roomId);
     socket.emit("room:joined", room);
-    
-    // Broadcast updated room state (both players present now)
     io.to(roomId).emit("room:update", room);
-    
-    // Broadcast start game event to both players
     io.to(roomId).emit("game:start", room);
   });
 
-  // 3. Make move
-  socket.on("game:move", async ({ roomId, userId, board, moves, nextPlayerId, isGameOver, winnerSymbol }) => {
-    const result = await roomManager.makeMove(roomId, userId, board, moves, nextPlayerId, isGameOver, winnerSymbol);
-    if (!result) return; // invalid turn or room
+  socket.on(
+    "game:move",
+    async ({
+      roomId,
+      userId,
+      board,
+      moves,
+      nextPlayerId,
+      isGameOver,
+      winnerSymbol,
+    }) => {
+      const result = await roomManager.makeMove(
+        roomId,
+        userId,
+        board,
+        moves,
+        nextPlayerId,
+        isGameOver,
+        winnerSymbol,
+      );
+      if (!result) return;
+      io.to(roomId).emit("game:update", result.room);
+      if (isGameOver) {
+        io.to(roomId).emit("game:over", result.room);
+      }
+    },
+  );
 
-    // Broadcast move update to both players in the room
-    io.to(roomId).emit("game:update", result.room);
-
-    if (isGameOver) {
-      io.to(roomId).emit("game:over", result.room);
-    }
-  });
-
-  // 4. Handle player disconnection
   socket.on("disconnect", async () => {
     console.log(`[Socket] User disconnected: ${socket.id}`);
-    
-    // Remove from online users
     const userId = (socket as any).userId;
     if (userId) {
       onlineUsers.delete(userId);
       io.emit("users:online_list", Array.from(onlineUsers.keys()));
     }
-
     const result = await roomManager.handleDisconnect(socket.id);
     if (result) {
-      // Notify the remaining player that they won by forfeit
       io.to(result.remainingPlayerSocket).emit("game:forfeit", result.room);
     }
   });

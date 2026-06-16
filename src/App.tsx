@@ -1,30 +1,40 @@
-import React, { useEffect, useState } from 'react';
-import { useGame } from './context/GameContext';
-import { useAuth } from './context/AuthContext';
-import { useSocket } from './context/SocketContext';
-import AuthForm from './components/AuthForm';
-import GameMenu from './components/GameMenu';
-import PlayerSetup from './components/PlayerSetup';
-import GameBoard from './components/GameBoard';
-import Settings from './components/Settings';
-import { AudioManager } from './games/audio';
-import { Difficulty } from './types';
-import { GAMES } from './games';
+import React, { useEffect, useState } from "react";
+import { useGame } from "./context/GameContext";
+import { useAuth } from "./context/AuthContext";
+import { useSocket } from "./context/SocketContext";
+import AuthForm from "./components/AuthForm";
+import GameMenu from "./components/GameMenu";
+import PlayerSetup from "./components/PlayerSetup";
+import GameBoard from "./components/GameBoard";
+import Settings from "./components/Settings";
+import { AudioManager } from "./games/audio";
+import { Difficulty } from "./types";
+import { GAMES } from "./games";
 
 const App: React.FC = () => {
-  const { currentGame, setCurrentGame, players, setPlayers, theme, setTheme, setDifficulty } = useGame();
+  const {
+    currentGame,
+    setCurrentGame,
+    players,
+    setPlayers,
+    theme,
+    setTheme,
+    setDifficulty,
+  } = useGame();
   const { user, token, loading, logout, matchHistory } = useAuth();
   const { activeRoom, joinRoom, onlineUsers } = useSocket();
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isMuted, setIsMuted] = useState(AudioManager.isMuted);
-  const [activeView, setActiveView] = useState<'dashboard' | 'arena' | 'history' | 'stats' | 'friends' | 'inventory'>('arena');
+  const [activeView, setActiveView] = useState<
+    "dashboard" | "arena" | "history" | "stats" | "friends" | "inventory"
+  >("arena");
   const [globalLeaderboard, setGlobalLeaderboard] = useState<any[]>([]);
   const [autoJoinAttempted, setAutoJoinAttempted] = useState(false);
 
   // Real Friends feature states
   const [friends, setFriends] = useState<any[]>([]);
-  const [friendUsernameInput, setFriendUsernameInput] = useState('');
+  const [friendUsernameInput, setFriendUsernameInput] = useState("");
   const [friendError, setFriendError] = useState<string | null>(null);
   const [friendSuccess, setFriendSuccess] = useState<string | null>(null);
 
@@ -32,34 +42,44 @@ const App: React.FC = () => {
   useEffect(() => {
     if (user && !autoJoinAttempted) {
       const params = new URLSearchParams(window.location.search);
-      const roomId = params.get('roomId') || sessionStorage.getItem('pendingRoomId');
+      const roomId =
+        params.get("roomId") || sessionStorage.getItem("pendingRoomId");
       if (roomId) {
         setAutoJoinAttempted(true);
-        setActiveView('arena');
+        setActiveView("arena");
         joinRoom(roomId);
-        sessionStorage.removeItem('pendingRoomId');
-        window.history.replaceState({}, document.title, window.location.pathname);
+        sessionStorage.removeItem("pendingRoomId");
+        window.history.replaceState(
+          {},
+          document.title,
+          window.location.pathname,
+        );
       }
     }
   }, [user, autoJoinAttempted, joinRoom]);
 
   useEffect(() => {
-    if (activeView === 'stats') {
-      fetch(`${(import.meta.env.VITE_API_URL as string) || 'http://localhost:5000'}/api/leaderboard`)
-        .then(res => res.json())
-        .then(data => setGlobalLeaderboard(data))
-        .catch(err => console.error("Error fetching leaderboard:", err));
+    if (activeView === "stats") {
+      fetch(
+        `${(import.meta.env.VITE_API_URL as string) || "http://localhost:5000"}/api/leaderboard`,
+      )
+        .then((res) => res.json())
+        .then((data) => setGlobalLeaderboard(data))
+        .catch((err) => console.error("Error fetching leaderboard:", err));
     }
   }, [activeView]);
 
   const fetchFriends = async () => {
     if (!token) return;
     try {
-      const res = await fetch(`${(import.meta.env.VITE_API_URL as string) || 'http://localhost:5000'}/api/friends`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
+      const res = await fetch(
+        `${(import.meta.env.VITE_API_URL as string) || "http://localhost:5000"}/api/friends`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
       if (res.ok) {
         const data = await res.json();
         setFriends(data);
@@ -78,7 +98,7 @@ const App: React.FC = () => {
   }, [token]);
 
   useEffect(() => {
-    if (activeView === 'friends' || activeView === 'dashboard') {
+    if (activeView === "friends" || activeView === "dashboard") {
       fetchFriends();
     }
   }, [activeView]);
@@ -90,24 +110,29 @@ const App: React.FC = () => {
     setFriendSuccess(null);
 
     try {
-      const res = await fetch(`${(import.meta.env.VITE_API_URL as string) || 'http://localhost:5000'}/api/friends/add`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
+      const res = await fetch(
+        `${(import.meta.env.VITE_API_URL as string) || "http://localhost:5000"}/api/friends/add`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ username: friendUsernameInput.trim() }),
         },
-        body: JSON.stringify({ username: friendUsernameInput.trim() })
-      });
+      );
       const data = await res.json();
       if (res.ok) {
-        setFriendSuccess(`Successfully connected with ${data.friend.username}!`);
-        setFriends(prev => [...prev, data.friend]);
-        setFriendUsernameInput('');
+        setFriendSuccess(
+          `Successfully connected with ${data.friend.username}!`,
+        );
+        setFriends((prev) => [...prev, data.friend]);
+        setFriendUsernameInput("");
       } else {
-        setFriendError(data.error || 'Failed to add friend.');
+        setFriendError(data.error || "Failed to add friend.");
       }
     } catch (err) {
-      setFriendError('Network error. Please try again.');
+      setFriendError("Network error. Please try again.");
     }
   };
 
@@ -116,16 +141,19 @@ const App: React.FC = () => {
     if (!confirm("Are you sure you want to delete this direct-link?")) return;
 
     try {
-      const res = await fetch(`${(import.meta.env.VITE_API_URL as string) || 'http://localhost:5000'}/api/friends/remove`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
+      const res = await fetch(
+        `${(import.meta.env.VITE_API_URL as string) || "http://localhost:5000"}/api/friends/remove`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ friendId }),
         },
-        body: JSON.stringify({ friendId })
-      });
+      );
       if (res.ok) {
-        setFriends(prev => prev.filter(f => f.id !== friendId));
+        setFriends((prev) => prev.filter((f) => f.id !== friendId));
       }
     } catch (err) {
       console.error("Error removing friend:", err);
@@ -134,36 +162,41 @@ const App: React.FC = () => {
 
   // Synchronize activeRoom with GameContext for online multiplayer
   useEffect(() => {
-    if (activeRoom && activeRoom.status === 'active') {
+    if (activeRoom && activeRoom.status === "active") {
       const roomGame = GAMES[activeRoom.gameType];
       if (roomGame && (!currentGame || currentGame.id !== roomGame.id)) {
         setCurrentGame(roomGame);
       }
 
-      const host = activeRoom.players.find(p => p.symbol === "1");
-      const guest = activeRoom.players.find(p => p.symbol === "2");
-      
+      const host = activeRoom.players.find((p) => p.symbol === "1");
+      const guest = activeRoom.players.find((p) => p.symbol === "2");
+
       if (host && guest) {
         const gamePlayers = [
           {
             id: 1,
             name: host.username,
-            symbol: roomGame?.id === 'snakesladders' ? '🔴' : 'X',
-            type: 'human' as const,
+            symbol: roomGame?.id === "snakesladders" ? "P1" : "X",
+            type: "human" as const,
             score: 0,
-            avatar: host.avatar
+            avatar: host.avatar,
           },
           {
             id: 2,
             name: guest.username,
-            symbol: roomGame?.id === 'snakesladders' ? '🔵' : 'O',
-            type: 'human' as const,
+            symbol: roomGame?.id === "snakesladders" ? "P2" : "O",
+            type: "human" as const,
             score: 0,
-            avatar: guest.avatar
-          }
+            avatar: guest.avatar,
+          },
         ];
-        
-        if (!players || players.length !== 2 || players[0].name !== host.username || players[1].name !== guest.username) {
+
+        if (
+          !players ||
+          players.length !== 2 ||
+          players[0].name !== host.username ||
+          players[1].name !== guest.username
+        ) {
           setPlayers(gamePlayers);
         }
       }
@@ -171,13 +204,13 @@ const App: React.FC = () => {
   }, [activeRoom, currentGame, players, setCurrentGame, setPlayers]);
 
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-  }, [theme]);
+    document.documentElement.setAttribute("data-theme", "dark");
+  }, []);
 
   // Sync settings and start procedural background music
   useEffect(() => {
     try {
-      const saved = localStorage.getItem('boardGamesSettings');
+      const saved = localStorage.getItem("boardGamesSettings");
       if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed.theme) setTheme(parsed.theme);
@@ -188,7 +221,7 @@ const App: React.FC = () => {
         }
       }
     } catch {}
-    
+
     // Launch ambient synthesizer sequence
     AudioManager.startMusic();
 
@@ -199,7 +232,7 @@ const App: React.FC = () => {
 
   const toggleTheme = () => {
     AudioManager.playClick();
-    setTheme(theme === 'light' ? 'dark' : 'light');
+    setTheme(theme === "light" ? "dark" : "light");
   };
 
   const handleMuteToggle = () => {
@@ -210,13 +243,41 @@ const App: React.FC = () => {
   // If loading user profile, show premium loading screen
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#070b13] font-mono text-white">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-[#00f0ff] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <div className="text-xs font-bold uppercase tracking-widest text-[#00f0ff] animate-pulse">
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "#070b13",
+        }}
+      >
+        <div style={{ textAlign: "center" }}>
+          <div
+            style={{
+              width: "44px",
+              height: "44px",
+              border: "3px solid #00e5ff",
+              borderTop: "3px solid transparent",
+              borderRadius: "50%",
+              animation: "spin 0.8s linear infinite",
+              margin: "0 auto 16px",
+            }}
+          />
+          <div
+            style={{
+              fontFamily: "'Share Tech Mono', monospace",
+              fontSize: "10px",
+              color: "#00e5ff",
+              textTransform: "uppercase",
+              letterSpacing: "0.15em",
+              textShadow: "0 0 12px rgba(0,229,255,0.7)",
+            }}
+          >
             ESTABLISHING SECURE CONNECTION LINK.SYS...
           </div>
         </div>
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
     );
   }
@@ -224,9 +285,9 @@ const App: React.FC = () => {
   // If not logged in, preserve ?roomId in sessionStorage and show Auth form
   if (!user) {
     const params = new URLSearchParams(window.location.search);
-    const pendingRoom = params.get('roomId');
+    const pendingRoom = params.get("roomId");
     if (pendingRoom) {
-      sessionStorage.setItem('pendingRoomId', pendingRoom);
+      sessionStorage.setItem("pendingRoomId", pendingRoom);
       window.history.replaceState({}, document.title, window.location.pathname);
     }
     return <AuthForm />;
@@ -238,151 +299,784 @@ const App: React.FC = () => {
   const totalXp = user.xp;
   const playerLevel = user.level;
   const currentXpInLevel = totalXp % 500;
-  const xpPercentage = Math.min(100, Math.max(0, (currentXpInLevel / 500) * 100));
+  const xpPercentage = Math.min(
+    100,
+    Math.max(0, (currentXpInLevel / 500) * 100),
+  );
 
   const getLevelTitle = (lvl: number) => {
-    if (lvl === 1) return 'BRONZE APPRENTICE';
-    if (lvl === 2) return 'SILVER RECRUIT';
-    if (lvl === 3) return 'GOLD INITIATE';
-    if (lvl === 4) return 'PLATINUM SPECIALIST';
-    if (lvl === 5) return 'DIAMOND ENFORCER';
-    return 'CYBER GRANDMASTER';
+    if (lvl === 1) return "BRONZE APPRENTICE";
+    if (lvl === 2) return "SILVER RECRUIT";
+    if (lvl === 3) return "GOLD INITIATE";
+    if (lvl === 4) return "PLATINUM SPECIALIST";
+    if (lvl === 5) return "DIAMOND ENFORCER";
+    return "CYBER GRANDMASTER";
   };
 
   // Mock data for Dashboard
   const dailyQuests = [
-    { id: 1, title: 'DECRYPT CELL NODES', desc: 'Scan 20 safety zones in Minesweeper', xp: '+150 XP', progress: 0.65, completed: false },
-    { id: 2, title: 'TACTICAL MATE', desc: 'Perform checkmate in Grandmaster Chess', xp: '+300 XP', progress: 0.0, completed: false },
-    { id: 3, title: 'COMPRESS DATA', desc: 'Slide grid to 1024 packet size in 2048', xp: '+200 XP', progress: 1.0, completed: true },
-    { id: 4, title: 'NEURAL CLIMBER', desc: 'Ascend 2 ladders in Snakes & Ladders', xp: '+100 XP', progress: 0.5, completed: false },
+    {
+      id: 1,
+      title: "DECRYPT CELL NODES",
+      desc: "Scan 20 safety zones in Minesweeper",
+      xp: "+150 XP",
+      progress: 0.65,
+      completed: false,
+    },
+    {
+      id: 2,
+      title: "TACTICAL MATE",
+      desc: "Perform checkmate in Grandmaster Chess",
+      xp: "+300 XP",
+      progress: 0.0,
+      completed: false,
+    },
+    {
+      id: 3,
+      title: "COMPRESS DATA",
+      desc: "Slide grid to 1024 packet size in 2048",
+      xp: "+200 XP",
+      progress: 1.0,
+      completed: true,
+    },
+    {
+      id: 4,
+      title: "NEURAL CLIMBER",
+      desc: "Ascend 2 ladders in Snakes & Ladders",
+      xp: "+100 XP",
+      progress: 0.5,
+      completed: false,
+    },
   ];
 
   // Real friends list state is used instead of mock friendsList.
 
   const marketItems = [
-    { id: 1, name: 'Plasma Edge', type: 'LEGENDARY', cost: '450 NP', desc: 'Custom laser pointer cell highlight skin for Chess.', rarityColor: '#fbbf24', avatar: '⚔️' },
-    { id: 2, name: 'Volt Reactor', type: 'RARE', cost: '1200 NP', desc: 'Animated background grid particle skin for 2048.', rarityColor: '#d946ef', avatar: '⚡' },
-    { id: 3, name: 'Grip Master', type: 'UNCOMMON', cost: '300 NP', desc: 'Anti-slip tactile cell styling pack for Sudoku.', rarityColor: '#00f0ff', avatar: '🛡️' },
-    { id: 4, name: 'Shard Core', type: 'LEGENDARY', cost: '1500 NP', desc: 'Crystalline skin set for Solitaire card stack decks.', rarityColor: '#fbbf24', avatar: '💎' },
+    {
+      id: 1,
+      name: "Plasma Edge",
+      type: "LEGENDARY",
+      cost: "450 NP",
+      desc: "Custom laser pointer cell highlight skin for Chess.",
+      rarityColor: "#fbbf24",
+      icon: "fa-chess-knight",
+    },
+    {
+      id: 2,
+      name: "Volt Reactor",
+      type: "RARE",
+      cost: "1200 NP",
+      desc: "Animated background grid particle skin for 2048.",
+      rarityColor: "#d946ef",
+      icon: "fa-bolt",
+    },
+    {
+      id: 3,
+      name: "Grip Master",
+      type: "UNCOMMON",
+      cost: "300 NP",
+      desc: "Anti-slip tactile cell styling pack for Sudoku.",
+      rarityColor: "#00e5ff",
+      icon: "fa-shield",
+    },
+    {
+      id: 4,
+      name: "Shard Core",
+      type: "LEGENDARY",
+      cost: "1500 NP",
+      desc: "Crystalline skin set for Solitaire card stack decks.",
+      rarityColor: "#fbbf24",
+      icon: "fa-gem",
+    },
   ];
+
+  const getAvatarUrl = (seed: string) =>
+    `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${seed}&backgroundColor=070b13,0a0c14&radius=0`;
 
   const renderActiveView = () => {
     switch (activeView) {
-      case 'dashboard':
+      case "dashboard":
         return (
-          <div className="space-y-8 animate-fade-in">
-            {/* Active Expedition Campaign Banner */}
-            <div className="cyber-panel neon-glow-border-cyan p-8 relative overflow-hidden bg-gradient-to-r from-[#0d1527] to-[#121c38]">
-              <div className="absolute top-0 right-0 bg-[#00f0ff] text-black font-mono px-3 py-1 text-[10px] border-b border-l border-white/10 font-bold uppercase tracking-widest">
+          <div
+            className="animate-fade-in"
+            style={{ display: "flex", flexDirection: "column", gap: "28px" }}
+          >
+            {/* ── XP Banner ── */}
+            <div
+              style={{
+                background: "linear-gradient(135deg, #0d1527 0%, #121c38 100%)",
+                border: "1px solid rgba(0,229,255,0.25)",
+                boxShadow: "0 0 20px rgba(0,229,255,0.06)",
+                borderRadius: "4px",
+                padding: "32px",
+                position: "relative",
+                overflow: "hidden",
+              }}
+            >
+              <div className="corner-tag" style={{ background: "#00e5ff" }}>
                 PLAYER_RANK
               </div>
-              <h2 className="text-[#00f0ff] font-mono text-xs font-bold tracking-widest mb-1 uppercase">LEVEL {playerLevel} // {getLevelTitle(playerLevel)}</h2>
-              <h1 className="text-3xl font-black font-display text-white uppercase tracking-wide mb-2">{currentUsername}</h1>
-              <p className="text-xs text-[#94a3b8] font-mono mb-6 uppercase tracking-wider">XP PROGRESSION: {currentXpInLevel} / 500 XP TO LEVEL UP</p>
-              
-              <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
-                <div className="w-full max-w-md bg-black/40 border border-white/5 h-4 rounded-full overflow-hidden p-0.5">
-                  <div className="bg-[#00f0ff] h-full rounded-full pulse-neon-cyan" style={{ width: `${xpPercentage}%` }}></div>
+              <div
+                style={{
+                  fontFamily: "'Share Tech Mono', monospace",
+                  fontSize: "11px",
+                  color: "#00e5ff",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.1em",
+                  marginBottom: "6px",
+                }}
+              >
+                LEVEL {playerLevel} // {getLevelTitle(playerLevel)}
+              </div>
+              <div
+                style={{
+                  fontFamily: "'Rajdhani', sans-serif",
+                  fontWeight: 700,
+                  fontSize: "36px",
+                  color: "#e8eaf0",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.04em",
+                  lineHeight: 1,
+                  marginBottom: "6px",
+                }}
+              >
+                {currentUsername}
+              </div>
+              <div
+                style={{
+                  fontFamily: "'Share Tech Mono', monospace",
+                  fontSize: "10px",
+                  color: "#7b8299",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.1em",
+                  marginBottom: "20px",
+                }}
+              >
+                XP PROGRESSION: {currentXpInLevel} / 500 XP TO LEVEL UP
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "20px",
+                  flexWrap: "wrap",
+                }}
+              >
+                <div
+                  style={{
+                    flex: 1,
+                    minWidth: "180px",
+                    background: "rgba(0,0,0,0.4)",
+                    height: "6px",
+                    borderRadius: "0",
+                    overflow: "hidden",
+                  }}
+                >
+                  <div
+                    className="pulse-neon-cyan"
+                    style={{
+                      width: `${xpPercentage}%`,
+                      height: "100%",
+                      background: "#00e5ff",
+                      borderRadius: "0",
+                    }}
+                  />
                 </div>
-                <button 
-                  onClick={() => { AudioManager.playClick(); setActiveView('arena'); }}
-                  className="cyber-btn bg-[#00f0ff] text-black px-6 py-2.5 text-xs font-bold uppercase hover:scale-105 transition"
+                <button
+                  onClick={() => {
+                    AudioManager.playClick();
+                    setActiveView("arena");
+                  }}
+                  style={{
+                    background: "#00e5ff",
+                    color: "#000",
+                    fontFamily: "'Share Tech Mono', monospace",
+                    fontSize: "11px",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.1em",
+                    padding: "10px 24px",
+                    borderRadius: "3px",
+                    border: "none",
+                    cursor: "pointer",
+                    transition: "box-shadow 0.2s",
+                    flexShrink: 0,
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLButtonElement).style.boxShadow =
+                      "0 0 16px rgba(0,229,255,0.35)";
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLButtonElement).style.boxShadow =
+                      "none";
+                  }}
                 >
                   ENGAGE PROTOCOL →
                 </button>
               </div>
             </div>
 
-            {/* Daily Quests and Friends */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {/* Daily Quests Widget */}
-              <div className="cyber-panel p-6 border border-white/5 bg-[var(--card-bg)]">
-                <div className="border-b border-white/10 pb-3 mb-5 flex justify-between items-center">
-                  <h3 className="font-bold font-display text-sm text-white uppercase tracking-wider">DAILY_QUESTS.SYS</h3>
-                  <span className="text-[10px] font-mono text-[#fbbf24] uppercase">RESET IN 14H</span>
+            {/* ── Daily Quests + Friends ── */}
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+                gap: "20px",
+              }}
+            >
+              {/* Daily Quests */}
+              <div
+                style={{
+                  background: "#131722",
+                  border: "1px solid rgba(255,255,255,0.06)",
+                  borderRadius: "4px",
+                  padding: "24px",
+                }}
+              >
+                <div
+                  style={{
+                    borderBottom: "1px solid rgba(255,255,255,0.08)",
+                    paddingBottom: "12px",
+                    marginBottom: "20px",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <span
+                    style={{
+                      fontFamily: "'Share Tech Mono', monospace",
+                      fontSize: "11px",
+                      color: "#e8eaf0",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.08em",
+                    }}
+                  >
+                    DAILY_QUESTS.SYS
+                  </span>
+                  <span
+                    style={{
+                      fontFamily: "'Share Tech Mono', monospace",
+                      fontSize: "10px",
+                      color: "#f5c518",
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    RESET IN 14H
+                  </span>
                 </div>
-                <div className="space-y-4">
-                  {dailyQuests.map(q => (
-                    <div key={q.id} className="cyber-panel p-3 border border-white/5 bg-black/20 flex items-center justify-between">
-                      <div className="flex-1 mr-4">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className={`text-[10px] font-mono font-bold ${q.completed ? 'text-[#10b981]' : 'text-[#fbbf24]'}`}>
-                            {q.completed ? 'COMPLETED' : 'IN_PROGRESS'}
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "12px",
+                  }}
+                >
+                  {dailyQuests.map((q) => (
+                    <div
+                      key={q.id}
+                      style={{
+                        background: "rgba(0,0,0,0.2)",
+                        border: "1px solid rgba(255,255,255,0.05)",
+                        borderRadius: "3px",
+                        padding: "12px",
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "flex-start",
+                          marginBottom: "6px",
+                        }}
+                      >
+                        <div>
+                          <span
+                            style={{
+                              fontFamily: "'Share Tech Mono', monospace",
+                              fontSize: "9px",
+                              color: q.completed ? "#00e676" : "#f5c518",
+                              textTransform: "uppercase",
+                              letterSpacing: "0.08em",
+                              marginRight: "8px",
+                            }}
+                          >
+                            {q.completed ? "COMPLETED" : "IN_PROGRESS"}
                           </span>
-                          <span className="text-xs font-bold text-white uppercase tracking-wide">{q.title}</span>
+                          <span
+                            style={{
+                              fontFamily: "'Share Tech Mono', monospace",
+                              fontSize: "10px",
+                              color: "#e8eaf0",
+                              textTransform: "uppercase",
+                            }}
+                          >
+                            {q.title}
+                          </span>
                         </div>
-                        <p className="text-[10px] text-[#94a3b8] mb-2">{q.desc}</p>
-                        <div className="w-full bg-black/40 h-1.5 rounded-full overflow-hidden">
-                          <div className={`h-full rounded-full ${q.completed ? 'bg-[#10b981]' : 'bg-[#fbbf24]'}`} style={{ width: `${q.progress * 100}%` }}></div>
-                        </div>
+                        <span
+                          style={{
+                            fontFamily: "'Share Tech Mono', monospace",
+                            fontSize: "10px",
+                            color: "#00e5ff",
+                            flexShrink: 0,
+                            marginLeft: "8px",
+                          }}
+                        >
+                          {q.xp}
+                        </span>
                       </div>
-                      <span className="text-xs font-mono font-bold text-[#00f0ff] shrink-0">{q.xp}</span>
+                      <p
+                        style={{
+                          fontFamily: "'Inter', sans-serif",
+                          fontSize: "11px",
+                          color: "#7b8299",
+                          marginBottom: "8px",
+                        }}
+                      >
+                        {q.desc}
+                      </p>
+                      <div
+                        style={{
+                          background: "rgba(0,0,0,0.4)",
+                          height: "3px",
+                          borderRadius: "0",
+                          overflow: "hidden",
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: `${q.progress * 100}%`,
+                            height: "100%",
+                            background: q.completed ? "#00e676" : "#f5c518",
+                            borderRadius: "0",
+                          }}
+                        />
+                      </div>
                     </div>
                   ))}
                 </div>
               </div>
 
-              {/* Friends list Widget */}
-              <div className="cyber-panel p-6 border border-white/5 bg-[var(--card-bg)]">
-                <div className="border-b border-white/10 pb-3 mb-5 flex justify-between items-center">
-                  <h3 className="font-bold font-display text-sm text-white uppercase tracking-wider">ACTIVE_LOBBY.SYS</h3>
-                  <span className="text-[10px] font-mono text-[#00f0ff] uppercase">
-                    {friends.filter(f => onlineUsers.includes(f.id)).length} ONLINE
+              {/* Friends */}
+              <div
+                style={{
+                  background: "#131722",
+                  border: "1px solid rgba(255,255,255,0.06)",
+                  borderRadius: "4px",
+                  padding: "24px",
+                }}
+              >
+                <div
+                  style={{
+                    borderBottom: "1px solid rgba(255,255,255,0.08)",
+                    paddingBottom: "12px",
+                    marginBottom: "20px",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <span
+                    style={{
+                      fontFamily: "'Share Tech Mono', monospace",
+                      fontSize: "11px",
+                      color: "#e8eaf0",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.08em",
+                    }}
+                  >
+                    ACTIVE_LOBBY.SYS
+                  </span>
+                  <span
+                    style={{
+                      fontFamily: "'Share Tech Mono', monospace",
+                      fontSize: "10px",
+                      color: "#00e5ff",
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    {friends.filter((f) => onlineUsers.includes(f.id)).length}{" "}
+                    ONLINE
                   </span>
                 </div>
-                <div className="space-y-4">
-                  {friends.length === 0 ? (
-                    <div className="text-center py-4 font-mono text-[10px] text-[#94a3b8] uppercase font-bold">
-                      No active connections.<br />Add friends in the Friends tab.
-                    </div>
-                  ) : (
-                    friends.map((f) => {
+                {friends.length === 0 ? (
+                  <div
+                    style={{
+                      textAlign: "center",
+                      padding: "24px 0",
+                      fontFamily: "'Share Tech Mono', monospace",
+                      fontSize: "10px",
+                      color: "#7b8299",
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    No active connections.
+                    <br />
+                    Add friends in the Friends tab.
+                  </div>
+                ) : (
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "4px",
+                    }}
+                  >
+                    {friends.map((f) => {
                       const isOnline = onlineUsers.includes(f.id);
-                      const color = isOnline ? '#00f0ff' : '#94a3b8';
+                      const dotColor = isOnline ? "#00e676" : "#3d4460";
+                      const nameColor = isOnline ? "#e8eaf0" : "#7b8299";
+                      const badgeColor = isOnline ? "#00e5ff" : "#7b8299";
                       return (
-                        <div key={f.id} className="flex items-center justify-between p-2.5 hover:bg-white/5 rounded transition">
-                          <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full border border-white/10 bg-black/30 flex items-center justify-center font-mono font-bold text-xs uppercase" style={{ color }}>
-                              {f.avatar || f.username.substring(0, 2)}
+                        <div
+                          key={f.id}
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            padding: "8px 0",
+                            borderBottom: "1px solid rgba(255,255,255,0.04)",
+                          }}
+                        >
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "10px",
+                            }}
+                          >
+                            <div
+                              style={{
+                                width: "32px",
+                                height: "32px",
+                                border: `1px solid ${badgeColor}33`,
+                                background: "rgba(0,0,0,0.3)",
+                                overflow: "hidden",
+                                position: "relative",
+                                flexShrink: 0,
+                              }}
+                            >
+                              <img
+                                src={
+                                  f.avatar && f.avatar.startsWith("http")
+                                    ? f.avatar
+                                    : getAvatarUrl(f.username)
+                                }
+                                alt={f.username}
+                                style={{
+                                  width: "100%",
+                                  height: "100%",
+                                  objectFit: "cover",
+                                }}
+                              />
+                              <span
+                                style={{
+                                  position: "absolute",
+                                  bottom: "1px",
+                                  right: "1px",
+                                  width: "7px",
+                                  height: "7px",
+                                  borderRadius: "50%",
+                                  background: dotColor,
+                                  border: "1px solid #131722",
+                                }}
+                              />
                             </div>
                             <div>
-                              <div className="text-xs font-bold text-white uppercase tracking-wide">{f.username}</div>
-                              <div className="text-[9px] text-[#94a3b8] font-mono uppercase mt-0.5">LVL {f.level} // {f.xp} XP</div>
+                              <div
+                                style={{
+                                  fontFamily: "'Share Tech Mono', monospace",
+                                  fontSize: "10px",
+                                  color: nameColor,
+                                  textTransform: "uppercase",
+                                  letterSpacing: "0.06em",
+                                }}
+                              >
+                                {f.username}
+                              </div>
+                              <div
+                                style={{
+                                  fontFamily: "'Share Tech Mono', monospace",
+                                  fontSize: "9px",
+                                  color: "#7b8299",
+                                  textTransform: "uppercase",
+                                  marginTop: "2px",
+                                }}
+                              >
+                                LVL {f.level} // {f.xp} XP
+                              </div>
                             </div>
                           </div>
-                          <span className="text-[9px] font-mono px-2 py-0.5 rounded border font-bold" style={{ borderColor: `${color}33`, color }}>
-                            {isOnline ? 'ONLINE' : 'OFFLINE'}
+                          <span
+                            style={{
+                              fontFamily: "'Share Tech Mono', monospace",
+                              fontSize: "8px",
+                              color: badgeColor,
+                              border: `1px solid ${badgeColor}33`,
+                              padding: "2px 8px",
+                              textTransform: "uppercase",
+                              borderRadius: "2px",
+                            }}
+                          >
+                            {isOnline ? "ONLINE" : "OFFLINE"}
                           </span>
                         </div>
                       );
-                    })
-                  )}
-                </div>
+                    })}
+                  </div>
+                )}
               </div>
             </div>
 
-            {/* Trending Marketplace */}
-            <div className="cyber-panel p-6 border border-white/5 bg-[var(--card-bg)]">
-              <div className="border-b border-white/10 pb-3 mb-5 flex justify-between items-center">
-                <h3 className="font-bold font-display text-sm text-white uppercase tracking-wider">TRENDING_IN_MARKET.SYS</h3>
-                <span className="text-[10px] font-mono text-[#d946ef] uppercase">REFRESHING_ITEMS</span>
+            {/* ── Recent Matches ── */}
+            {matchHistory.length > 0 && (
+              <div
+                style={{
+                  background: "#131722",
+                  border: "1px solid rgba(255,255,255,0.06)",
+                  borderRadius: "4px",
+                  padding: "24px",
+                }}
+              >
+                <div
+                  style={{
+                    borderBottom: "1px solid rgba(255,255,255,0.08)",
+                    paddingBottom: "12px",
+                    marginBottom: "20px",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <span style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: "11px", color: "#e8eaf0", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                    RECENT_MATCHES.LOG
+                  </span>
+                  <button
+                    onClick={() => { AudioManager.playClick(); setActiveView("history"); }}
+                    style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: "9px", color: "#00e5ff", textTransform: "uppercase", background: "transparent", border: "none", cursor: "pointer", letterSpacing: "0.06em" }}
+                  >
+                    VIEW ALL →
+                  </button>
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  {matchHistory.slice(0, 4).map((entry) => {
+                    const isWin = entry.winner === currentUsername;
+                    const isDraw = entry.winner === null;
+                    const resultLabel = isDraw ? "DRAW" : isWin ? "WIN" : "LOSS";
+                    const resultColor = isDraw ? "#f5c518" : isWin ? "#00e5ff" : "#ff3d3d";
+                    return (
+                      <div
+                        key={entry.id}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          padding: "10px 14px",
+                          background: "rgba(0,0,0,0.2)",
+                          border: "1px solid rgba(255,255,255,0.04)",
+                          borderRadius: "3px",
+                        }}
+                      >
+                        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                          <span style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: "9px", color: resultColor, border: `1px solid ${resultColor}33`, padding: "2px 8px", textTransform: "uppercase", borderRadius: "2px", flexShrink: 0 }}>
+                            {resultLabel}
+                          </span>
+                          <div>
+                            <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: "11px", color: "#e8eaf0", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+                              {entry.gameType?.toUpperCase()}
+                            </div>
+                            <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: "9px", color: "#7b8299", textTransform: "uppercase", marginTop: "2px" }}>
+                              vs {entry.player1.username === currentUsername ? entry.player2.username : entry.player1.username}
+                            </div>
+                          </div>
+                        </div>
+                        <span style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: "9px", color: "#3d4460", textTransform: "uppercase" }}>
+                          {new Date(entry.startedAt).toLocaleDateString()}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {marketItems.map(item => (
-                  <div key={item.id} className="cyber-panel p-4 border border-white/5 bg-black/10 flex flex-col justify-between h-44 hover:scale-[1.02] transition">
+            )}
+
+            {/* ── Trending Market ── */}
+            <div
+              style={{
+                background: "#131722",
+                border: "1px solid rgba(255,255,255,0.06)",
+                borderRadius: "4px",
+                padding: "24px",
+              }}
+            >
+              <div
+                style={{
+                  borderBottom: "1px solid rgba(255,255,255,0.08)",
+                  paddingBottom: "12px",
+                  marginBottom: "20px",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <span
+                  style={{
+                    fontFamily: "'Share Tech Mono', monospace",
+                    fontSize: "11px",
+                    color: "#e8eaf0",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.08em",
+                  }}
+                >
+                  TRENDING_IN_MARKET.SYS
+                </span>
+                <span
+                  style={{
+                    fontFamily: "'Share Tech Mono', monospace",
+                    fontSize: "10px",
+                    color: "#c850f0",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  REFRESHING_ITEMS
+                </span>
+              </div>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))",
+                  gap: "16px",
+                }}
+              >
+                {marketItems.map((item) => (
+                  <div
+                    key={item.id}
+                    className="cyber-card-interactive"
+                    style={{
+                      background: "rgba(0,0,0,0.2)",
+                      border: "1px solid rgba(255,255,255,0.05)",
+                      borderRadius: "4px",
+                      padding: "16px",
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "space-between",
+                      height: "176px",
+                    }}
+                  >
                     <div>
-                      <div className="flex justify-between items-start mb-2">
-                        <span className="text-2xl">{item.avatar}</span>
-                        <span className="text-[8px] font-mono font-bold px-1.5 py-0.5 rounded border uppercase" style={{ borderColor: `${item.rarityColor}33`, color: item.rarityColor }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "flex-start",
+                          marginBottom: "10px",
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: "32px",
+                            height: "32px",
+                            border: `1px solid ${item.rarityColor}33`,
+                            background: `${item.rarityColor}0d`,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <i
+                            className={`fa-solid ${item.icon}`}
+                            style={{
+                              fontSize: "14px",
+                              color: item.rarityColor,
+                            }}
+                          />
+                        </div>
+                        <span
+                          style={{
+                            fontFamily: "'Share Tech Mono', monospace",
+                            fontSize: "8px",
+                            color: item.rarityColor,
+                            border: `1px solid ${item.rarityColor}33`,
+                            padding: "2px 6px",
+                            textTransform: "uppercase",
+                            letterSpacing: "0.06em",
+                          }}
+                        >
                           {item.type}
                         </span>
                       </div>
-                      <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-1">{item.name}</h4>
-                      <p className="text-[9px] text-[#94a3b8] line-clamp-2">{item.desc}</p>
+                      <div
+                        style={{
+                          fontFamily: "'Inter', sans-serif",
+                          fontSize: "11px",
+                          fontWeight: 600,
+                          color: "#e8eaf0",
+                          textTransform: "uppercase",
+                          letterSpacing: "0.06em",
+                          marginBottom: "4px",
+                        }}
+                      >
+                        {item.name}
+                      </div>
+                      <div
+                        style={{
+                          fontFamily: "'Inter', sans-serif",
+                          fontSize: "10px",
+                          color: "#7b8299",
+                          lineHeight: 1.4,
+                          display: "-webkit-box",
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: "vertical",
+                          overflow: "hidden",
+                        }}
+                      >
+                        {item.desc}
+                      </div>
                     </div>
-                    <div className="mt-4 flex items-center justify-between border-t border-white/5 pt-3">
-                      <span className="text-xs font-mono font-bold text-[#00f0ff]">{item.cost}</span>
-                      <button className="text-[9px] font-mono font-bold text-black bg-white px-2.5 py-1 rounded hover:bg-[#00f0ff] transition uppercase">
+                    <div
+                      style={{
+                        borderTop: "1px solid rgba(255,255,255,0.06)",
+                        paddingTop: "10px",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        marginTop: "8px",
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontFamily: "'Share Tech Mono', monospace",
+                          fontSize: "12px",
+                          color: "#00e5ff",
+                        }}
+                      >
+                        {item.cost}
+                      </span>
+                      <button
+                        style={{
+                          fontFamily: "'Share Tech Mono', monospace",
+                          fontSize: "8px",
+                          color: "#000",
+                          background: "#fff",
+                          padding: "4px 10px",
+                          textTransform: "uppercase",
+                          letterSpacing: "0.06em",
+                          border: "none",
+                          cursor: "pointer",
+                          borderRadius: "2px",
+                          transition: "background 0.15s",
+                        }}
+                        onMouseEnter={(e) => {
+                          (
+                            e.currentTarget as HTMLButtonElement
+                          ).style.background = "#00e5ff";
+                        }}
+                        onMouseLeave={(e) => {
+                          (
+                            e.currentTarget as HTMLButtonElement
+                          ).style.background = "#fff";
+                        }}
+                      >
                         ACQUIRE
                       </button>
                     </div>
@@ -393,136 +1087,544 @@ const App: React.FC = () => {
           </div>
         );
 
-      case 'arena':
+      case "arena":
         return (
           <div className="animate-fade-in">
             {/* Joining via link — room joined but game not started yet */}
-            {activeRoom && activeRoom.status === 'waiting' && !players && (
+            {activeRoom && activeRoom.status === "waiting" && !players && (
               <div className="min-h-screen flex items-center justify-center">
                 <div className="cyber-panel neon-glow-border-cyan max-w-md w-full p-10 text-center space-y-5 bg-[var(--card-bg)]">
                   <div className="w-12 h-12 border-4 border-[#d946ef] border-t-transparent rounded-full animate-spin mx-auto"></div>
-                  <p className="text-sm font-bold font-mono text-[#d946ef] uppercase tracking-widest">JOINING ROOM...</p>
-                  <p className="text-[10px] font-mono text-[#94a3b8] uppercase">
-                    Room: {activeRoom.roomId.substring(0,8).toUpperCase()}...
+                  <p className="text-sm font-bold font-mono text-[#d946ef] uppercase tracking-widest">
+                    JOINING ROOM...
                   </p>
-                  <p className="text-[10px] font-mono text-white/40 uppercase">Waiting for host to be ready</p>
+                  <p className="text-[10px] font-mono text-[#94a3b8] uppercase">
+                    Room: {activeRoom.roomId.substring(0, 8).toUpperCase()}...
+                  </p>
+                  <p className="text-[10px] font-mono text-white/40 uppercase">
+                    Waiting for host to be ready
+                  </p>
                 </div>
               </div>
             )}
-            {(!activeRoom || activeRoom.status !== 'waiting' || players) && (
-              !currentGame ? <GameMenu /> : !players ? <PlayerSetup /> : <GameBoard />
-            )}
+            {(!activeRoom || activeRoom.status !== "waiting" || players) &&
+              (!currentGame ? (
+                <GameMenu />
+              ) : !players ? (
+                <PlayerSetup />
+              ) : (
+                <GameBoard />
+              ))}
           </div>
         );
 
-      case 'history':
+      case "history":
         return (
-          <div className="space-y-6 animate-fade-in">
-            <div className="cyber-panel p-6 border border-white/5 bg-[var(--card-bg)]">
-              <div className="border-b border-white/10 pb-3 mb-6">
-                <h3 className="font-bold font-display text-sm text-white uppercase tracking-wider">MATCH_HISTORY_LOG.SYS</h3>
+          <div
+            className="animate-fade-in"
+            style={{ display: "flex", flexDirection: "column", gap: "24px" }}
+          >
+            {/* Page Title */}
+            <div style={{ marginBottom: "8px" }}>
+              <div
+                style={{
+                  fontFamily: "'Rajdhani', sans-serif",
+                  fontWeight: 700,
+                  fontSize: "40px",
+                  color: "#e8eaf0",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.04em",
+                  lineHeight: 1,
+                }}
+              >
+                MATCH HISTORY
               </div>
+              <div
+                style={{
+                  fontFamily: "'Share Tech Mono', monospace",
+                  fontSize: "10px",
+                  color: "#7b8299",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.12em",
+                  marginTop: "6px",
+                }}
+              >
+                ARCHIVE OF RECENT DIGITAL CONQUESTS
+              </div>
+            </div>
 
-              {matchHistory.length === 0 ? (
-                <div className="py-20 text-center">
-                  <span className="text-5xl">📡</span>
-                  <h4 className="text-sm font-bold text-white uppercase tracking-widest mt-4">NO ARCHIVE RECORDS FOUND</h4>
-                  <p className="text-xs text-[#94a3b8] font-mono uppercase mt-2">Initialize simulations in the Arena to record game files.</p>
-                  <button 
-                    onClick={() => { AudioManager.playClick(); setActiveView('arena'); }}
-                    className="cyber-btn bg-[#00f0ff] text-black px-6 py-2 mt-6 text-xs font-bold uppercase"
-                  >
-                    ENTER SIMULATION ARENA
-                  </button>
+            {matchHistory.length === 0 ? (
+              <div
+                style={{
+                  background: "#131722",
+                  border: "1px solid rgba(255,255,255,0.06)",
+                  borderRadius: "0",
+                  padding: "64px",
+                  textAlign: "center",
+                }}
+              >
+                <div
+                  style={{
+                    width: "52px",
+                    height: "52px",
+                    margin: "0 auto 16px",
+                    border: "1px solid rgba(0,229,255,0.2)",
+                    background: "rgba(0,229,255,0.05)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <i
+                    className="fa-solid fa-satellite-dish"
+                    style={{ fontSize: "22px", color: "#00e5ff" }}
+                  />
                 </div>
-              ) : (
-                <div className="space-y-4">
-                  {matchHistory.map((entry, _i) => {
-                    const isWin = entry.winner === currentUsername;
-                    const isDraw = entry.winner === null;
-                    return (
-                      <div key={entry.id} className="cyber-panel p-4 border border-white/5 bg-black/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                        <div className="flex items-center gap-4">
-                          <span className="text-2xl">🏆</span>
-                          <div>
-                            <div className="text-xs font-bold text-white uppercase tracking-wider">{entry.gameType.toUpperCase()}</div>
-                            <div className="text-[10px] text-[#94a3b8] font-mono uppercase mt-0.5">
-                              {entry.player1.avatar} {entry.player1.username} VS {entry.player2.avatar} {entry.player2.username}
-                            </div>
-                          </div>
+                <div
+                  style={{
+                    fontFamily: "'Rajdhani', sans-serif",
+                    fontWeight: 700,
+                    fontSize: "20px",
+                    color: "#e8eaf0",
+                    textTransform: "uppercase",
+                    marginBottom: "8px",
+                  }}
+                >
+                  NO ARCHIVE RECORDS FOUND
+                </div>
+                <div
+                  style={{
+                    fontFamily: "'Share Tech Mono', monospace",
+                    fontSize: "10px",
+                    color: "#7b8299",
+                    textTransform: "uppercase",
+                    marginBottom: "24px",
+                  }}
+                >
+                  Initialize simulations in the Arena to record game files.
+                </div>
+                <button
+                  onClick={() => {
+                    AudioManager.playClick();
+                    setActiveView("arena");
+                  }}
+                  style={{
+                    background: "#00e5ff",
+                    color: "#000",
+                    fontFamily: "'Share Tech Mono', monospace",
+                    fontSize: "11px",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.1em",
+                    padding: "12px 28px",
+                    borderRadius: "3px",
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                >
+                  ENTER SIMULATION ARENA
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {matchHistory.map((entry, _i) => {
+                  const isWin = entry.winner === currentUsername;
+                  const isDraw = entry.winner === null;
+                  const resultLabel = isDraw ? "DRAW" : isWin ? "WIN" : "LOSS";
+                  const resultColor = isDraw
+                    ? "#f5c518"
+                    : isWin
+                      ? "#00e5ff"
+                      : "#f5c518";
+                  const xpLabel = isDraw
+                    ? "DRAW +50 XP"
+                    : isWin
+                      ? "WIN +150 XP"
+                      : "LOSS +30 XP";
+                  const xpColor = isDraw
+                    ? "#f5c518"
+                    : isWin
+                      ? "#00e676"
+                      : "#ff3d3d";
+                  return (
+                    <div
+                      key={entry.id}
+                      style={{
+                        background: "#131722",
+                        border: "1px solid rgba(255,255,255,0.06)",
+                        borderRadius: "4px",
+                        padding: "24px 28px",
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        gap: "24px",
+                        position: "relative",
+                        overflow: "hidden",
+                      }}
+                    >
+                      {/* Ghost result text behind */}
+                      <span
+                        style={{
+                          position: "absolute",
+                          right: "140px",
+                          top: "50%",
+                          transform: "translateY(-50%)",
+                          fontFamily: "'Rajdhani', sans-serif",
+                          fontWeight: 700,
+                          fontStyle: "italic",
+                          fontSize: "80px",
+                          color: resultColor,
+                          opacity: 0.06,
+                          userSelect: "none",
+                          pointerEvents: "none",
+                          letterSpacing: "-0.02em",
+                          lineHeight: 1,
+                        }}
+                      >
+                        {resultLabel}
+                      </span>
+
+                      {/* Left: mode badge, game name, stats */}
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "10px",
+                            marginBottom: "8px",
+                          }}
+                        >
+                          <span
+                            style={{
+                              fontFamily: "'Share Tech Mono', monospace",
+                              fontSize: "9px",
+                              background: "rgba(255,255,255,0.08)",
+                              color: "#e8eaf0",
+                              padding: "3px 8px",
+                              borderRadius: "2px",
+                              textTransform: "uppercase",
+                              letterSpacing: "0.08em",
+                            }}
+                          >
+                            {entry.gameType?.includes("ranked")
+                              ? "RANKED"
+                              : entry.gameType?.includes("tournament")
+                                ? "TOURNAMENT"
+                                : "CASUAL"}
+                          </span>
+                          <span
+                            style={{
+                              fontFamily: "'Inter', sans-serif",
+                              fontSize: "12px",
+                              color: "#7b8299",
+                            }}
+                          >
+                            {new Date(entry.startedAt).toLocaleDateString()}
+                          </span>
                         </div>
-
-                        <div className="flex items-center gap-6 self-stretch sm:self-auto justify-between sm:justify-start border-t sm:border-t-0 border-white/5 pt-3 sm:pt-0">
-                          <div className="text-right">
-                            <span className="text-[9px] text-[#94a3b8] font-mono block uppercase">{new Date(entry.startedAt).toLocaleDateString()}</span>
-                            <span className="text-xs font-mono font-bold text-white block mt-0.5">
-                              WINNER: {entry.winner ? entry.winner.toUpperCase() : 'DRAW'}
-                            </span>
-                          </div>
-
-                          <div className="shrink-0">
-                            {isDraw ? (
-                              <span className="px-3 py-1 rounded text-[10px] font-mono font-bold bg-[#fbbf24]/10 text-[#fbbf24] border border-[#fbbf24]/20 uppercase">
-                                DRAW +50 XP
-                              </span>
-                            ) : isWin ? (
-                              <span className="px-3 py-1 rounded text-[10px] font-mono font-bold bg-[#10b981]/10 text-[#10b981] border border-[#10b981]/20 uppercase">
-                                WIN +150 XP
-                              </span>
-                            ) : (
-                              <span className="px-3 py-1 rounded text-[10px] font-mono font-bold bg-[#ef4444]/10 text-[#ef4444] border border-[#ef4444]/20 uppercase">
-                                LOSS +30 XP
-                              </span>
-                            )}
-                          </div>
+                        <h3
+                          style={{
+                            fontFamily: "'Rajdhani', sans-serif",
+                            fontWeight: 700,
+                            fontSize: "28px",
+                            color: "#e8eaf0",
+                            textTransform: "uppercase",
+                            letterSpacing: "0.02em",
+                            marginBottom: "12px",
+                            lineHeight: 1,
+                          }}
+                        >
+                          {entry.gameType?.toUpperCase()}
+                        </h3>
+                        <div style={{ display: "flex", gap: "28px" }}>
+                          {[
+                            {
+                              label: "PLAYERS",
+                              value: `${entry.player1.username} vs ${entry.player2.username}`,
+                            },
+                            {
+                              label: "WINNER",
+                              value: entry.winner
+                                ? entry.winner.toUpperCase()
+                                : "DRAW",
+                            },
+                          ].map(({ label, value }) => (
+                            <div key={label}>
+                              <div
+                                style={{
+                                  fontFamily: "'Share Tech Mono', monospace",
+                                  fontSize: "9px",
+                                  color: "#7b8299",
+                                  textTransform: "uppercase",
+                                  marginBottom: "2px",
+                                }}
+                              >
+                                {label}
+                              </div>
+                              <div
+                                style={{
+                                  fontFamily: "'Share Tech Mono', monospace",
+                                  fontSize: "16px",
+                                  color: "#00e5ff",
+                                  letterSpacing: "0.02em",
+                                }}
+                              >
+                                {value}
+                              </div>
+                            </div>
+                          ))}
                         </div>
                       </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
+
+                      {/* Right: result + XP badge */}
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "flex-end",
+                          gap: "12px",
+                          flexShrink: 0,
+                        }}
+                      >
+                        <span
+                          style={{
+                            fontFamily: "'Rajdhani', sans-serif",
+                            fontWeight: 700,
+                            fontStyle: "italic",
+                            fontSize: "52px",
+                            color: resultColor,
+                            lineHeight: 1,
+                            letterSpacing: "-0.02em",
+                          }}
+                        >
+                          {resultLabel}
+                        </span>
+                        <span
+                          style={{
+                            fontFamily: "'Share Tech Mono', monospace",
+                            fontSize: "10px",
+                            color: xpColor,
+                            background: `${xpColor}15`,
+                            border: `1px solid ${xpColor}30`,
+                            padding: "4px 10px",
+                            borderRadius: "2px",
+                            textTransform: "uppercase",
+                          }}
+                        >
+                          {xpLabel}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         );
 
-      case 'stats':
+      case "stats":
         return (
-          <div className="space-y-6 animate-fade-in">
-            <div className="cyber-panel p-6 border border-white/5 bg-[var(--card-bg)]">
-              <div className="border-b border-white/10 pb-3 mb-6">
-                <h3 className="font-bold font-display text-sm text-white uppercase tracking-wider">SYSTEM_LEADERBOARD_RECORDS</h3>
-                <p className="text-[10px] font-mono text-[#94a3b8] uppercase mt-1">Cross-agent scores rank database</p>
+          <div
+            className="animate-fade-in"
+            style={{ display: "flex", flexDirection: "column", gap: "24px" }}
+          >
+            <div
+              style={{
+                background: "#131722",
+                border: "1px solid rgba(255,255,255,0.06)",
+                borderRadius: "4px",
+                padding: "28px",
+                position: "relative",
+                overflow: "hidden",
+              }}
+            >
+              <div className="corner-tag" style={{ background: "#f5c518" }}>
+                LEADERBOARD
+              </div>
+              <div
+                style={{
+                  fontFamily: "'Rajdhani', sans-serif",
+                  fontWeight: 700,
+                  fontSize: "28px",
+                  color: "#e8eaf0",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.04em",
+                  marginBottom: "4px",
+                }}
+              >
+                SYSTEM_LEADERBOARD_RECORDS
+              </div>
+              <div
+                style={{
+                  fontFamily: "'Share Tech Mono', monospace",
+                  fontSize: "10px",
+                  color: "#7b8299",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.1em",
+                  marginBottom: "24px",
+                }}
+              >
+                Cross-agent scores rank database
               </div>
 
               {globalLeaderboard.length === 0 ? (
-                <div className="py-20 text-center">
-                  <span className="text-5xl">🏆</span>
-                  <h4 className="text-sm font-bold text-white uppercase tracking-widest mt-4">LEADERBOARD IS VACANT</h4>
-                  <p className="text-xs text-[#94a3b8] font-mono uppercase mt-2">Rank index updates will load when matches are saved.</p>
+                <div style={{ textAlign: "center", padding: "48px 0" }}>
+                  <div
+                    style={{
+                      width: "52px",
+                      height: "52px",
+                      margin: "0 auto 16px",
+                      border: "1px solid rgba(245,197,24,0.2)",
+                      background: "rgba(245,197,24,0.05)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <i
+                      className="fa-solid fa-trophy"
+                      style={{ fontSize: "22px", color: "#f5c518" }}
+                    />
+                  </div>
+                  <div
+                    style={{
+                      fontFamily: "'Rajdhani', sans-serif",
+                      fontWeight: 700,
+                      fontSize: "20px",
+                      color: "#e8eaf0",
+                      textTransform: "uppercase",
+                      marginTop: "16px",
+                    }}
+                  >
+                    LEADERBOARD IS VACANT
+                  </div>
+                  <div
+                    style={{
+                      fontFamily: "'Share Tech Mono', monospace",
+                      fontSize: "10px",
+                      color: "#7b8299",
+                      textTransform: "uppercase",
+                      marginTop: "8px",
+                    }}
+                  >
+                    Rank index updates will load when matches are saved.
+                  </div>
                 </div>
               ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left font-mono text-xs border-collapse">
+                <div style={{ overflowX: "auto" }}>
+                  <table
+                    style={{
+                      width: "100%",
+                      borderCollapse: "collapse",
+                      fontFamily: "'Share Tech Mono', monospace",
+                    }}
+                  >
                     <thead>
-                       <tr className="border-b border-white/10 text-[#94a3b8] uppercase">
-                        <th className="py-3 px-4">RANK</th>
-                        <th className="py-3 px-4">AGENT</th>
-                        <th className="py-3 px-4">LEVEL</th>
-                        <th className="py-3 px-4">XP</th>
-                        <th className="py-3 px-4">RECORD</th>
+                      <tr
+                        style={{
+                          borderBottom: "1px solid rgba(255,255,255,0.08)",
+                        }}
+                      >
+                        {["RANK", "AGENT", "LEVEL", "XP", "RECORD"].map((h) => (
+                          <th
+                            key={h}
+                            style={{
+                              padding: "10px 16px",
+                              textAlign: "left",
+                              fontSize: "10px",
+                              color: "#7b8299",
+                              textTransform: "uppercase",
+                              letterSpacing: "0.1em",
+                              fontWeight: 400,
+                            }}
+                          >
+                            {h}
+                          </th>
+                        ))}
                       </tr>
                     </thead>
                     <tbody>
                       {globalLeaderboard.map((entry, idx) => (
-                        <tr key={entry.id} className="border-b border-white/5 hover:bg-white/5 transition">
-                          <td className="py-3 px-4 font-bold text-[#fbbf24]">#{idx + 1}</td>
-                          <td className="py-3 px-4 text-white font-bold flex items-center gap-2">
-                            <span className="text-base">{entry.avatar}</span>
-                            <span className="uppercase tracking-wider">{entry.username}</span>
+                        <tr
+                          key={entry.id}
+                          style={{
+                            borderBottom: "1px solid rgba(255,255,255,0.04)",
+                            transition: "background 0.15s",
+                          }}
+                          onMouseEnter={(e) => {
+                            (
+                              e.currentTarget as HTMLTableRowElement
+                            ).style.background = "rgba(255,255,255,0.03)";
+                          }}
+                          onMouseLeave={(e) => {
+                            (
+                              e.currentTarget as HTMLTableRowElement
+                            ).style.background = "transparent";
+                          }}
+                        >
+                          <td
+                            style={{
+                              padding: "12px 16px",
+                              color: idx === 0 ? "#f5c518" : "#7b8299",
+                              fontSize: "12px",
+                              fontWeight: idx === 0 ? 700 : 400,
+                            }}
+                          >
+                            #{idx + 1}
                           </td>
-                          <td className="py-3 px-4 uppercase font-bold text-[#d946ef]">LVL {entry.level}</td>
-                          <td className="py-3 px-4 text-[#00f0ff] font-bold font-mono">{entry.xp} XP</td>
-                          <td className="py-3 px-4 font-mono font-bold text-[#94a3b8]">
+                          <td style={{ padding: "12px 16px" }}>
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "10px",
+                              }}
+                            >
+                              <div style={{ width: "28px", height: "28px", border: "1px solid rgba(0,229,255,0.2)", overflow: "hidden", flexShrink: 0, background: "rgba(0,0,0,0.3)" }}>
+                                <img
+                                  src={entry.avatar && entry.avatar.startsWith("http") ? entry.avatar : getAvatarUrl(entry.username)}
+                                  alt={entry.username}
+                                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                                />
+                              </div>
+                              <span
+                                style={{
+                                  color: "#e8eaf0",
+                                  fontSize: "11px",
+                                  textTransform: "uppercase",
+                                  letterSpacing: "0.06em",
+                                  fontWeight: 600,
+                                }}
+                              >
+                                {entry.username}
+                              </span>
+                            </div>
+                          </td>
+                          <td
+                            style={{
+                              padding: "12px 16px",
+                              color: "#c850f0",
+                              fontSize: "11px",
+                            }}
+                          >
+                            LVL {entry.level}
+                          </td>
+                          <td
+                            style={{
+                              padding: "12px 16px",
+                              color: "#00e5ff",
+                              fontSize: "11px",
+                            }}
+                          >
+                            {entry.xp} XP
+                          </td>
+                          <td
+                            style={{
+                              padding: "12px 16px",
+                              color: "#7b8299",
+                              fontSize: "11px",
+                            }}
+                          >
                             {entry.wins}W - {entry.losses}L - {entry.draws}D
                           </td>
                         </tr>
@@ -535,77 +1637,349 @@ const App: React.FC = () => {
           </div>
         );
 
-      case 'friends':
+      case "friends":
         return (
-          <div className="space-y-6 animate-fade-in">
-            {/* Add Friend Form */}
-            <div className="cyber-panel p-6 border border-white/5 bg-[var(--card-bg)]">
-              <div className="border-b border-white/10 pb-3 mb-4">
-                <h3 className="font-bold font-display text-sm text-white uppercase tracking-wider">ADD_NEW_CONNECTION</h3>
-                <p className="text-[10px] font-mono text-[#94a3b8] uppercase mt-1 font-bold">Establish direct-link with another active agent username</p>
+          <div
+            className="animate-fade-in"
+            style={{ display: "flex", flexDirection: "column", gap: "20px" }}
+          >
+            {/* Add Connection */}
+            <div
+              style={{
+                background: "#131722",
+                border: "1px solid rgba(255,255,255,0.06)",
+                borderRadius: "4px",
+                padding: "24px",
+                position: "relative",
+                overflow: "hidden",
+              }}
+            >
+              <div className="corner-tag" style={{ background: "#c850f0" }}>
+                CONNECT
               </div>
-              <form onSubmit={handleAddFriend} className="flex gap-3">
+              <div
+                style={{
+                  fontFamily: "'Rajdhani', sans-serif",
+                  fontWeight: 700,
+                  fontSize: "22px",
+                  color: "#e8eaf0",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.04em",
+                  marginBottom: "4px",
+                }}
+              >
+                ADD_NEW_CONNECTION
+              </div>
+              <div
+                style={{
+                  fontFamily: "'Share Tech Mono', monospace",
+                  fontSize: "10px",
+                  color: "#7b8299",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.08em",
+                  marginBottom: "16px",
+                }}
+              >
+                Establish direct-link with another active agent
+              </div>
+              <form
+                onSubmit={handleAddFriend}
+                style={{ display: "flex", gap: "10px" }}
+              >
                 <input
                   type="text"
                   placeholder="ENTER AGENT CODENAME..."
                   value={friendUsernameInput}
                   onChange={(e) => setFriendUsernameInput(e.target.value)}
-                  className="cyber-input px-4 py-2 bg-black/40 border border-white/10 text-white font-mono text-xs rounded focus:outline-none focus:border-[#00f0ff] transition flex-grow"
+                  style={{
+                    flex: 1,
+                    background: "rgba(0,0,0,0.4)",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                    borderRadius: "3px",
+                    padding: "10px 14px",
+                    color: "#e8eaf0",
+                    fontFamily: "'Share Tech Mono', monospace",
+                    fontSize: "11px",
+                    outline: "none",
+                    textTransform: "uppercase",
+                    transition: "border-color 0.2s",
+                  }}
+                  onFocus={(e) => {
+                    (e.currentTarget as HTMLInputElement).style.borderColor =
+                      "#00e5ff";
+                  }}
+                  onBlur={(e) => {
+                    (e.currentTarget as HTMLInputElement).style.borderColor =
+                      "rgba(255,255,255,0.1)";
+                  }}
                 />
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-[#d946ef] text-white font-mono text-xs font-bold rounded hover:bg-[#c084fc] transition uppercase"
+                  style={{
+                    background: "#c850f0",
+                    color: "#fff",
+                    fontFamily: "'Share Tech Mono', monospace",
+                    fontSize: "10px",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.1em",
+                    padding: "10px 20px",
+                    borderRadius: "3px",
+                    border: "none",
+                    cursor: "pointer",
+                    transition: "box-shadow 0.2s",
+                    flexShrink: 0,
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLButtonElement).style.boxShadow =
+                      "0 0 16px rgba(200,80,240,0.35)";
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLButtonElement).style.boxShadow =
+                      "none";
+                  }}
                 >
                   CONNECT_AGENT
                 </button>
               </form>
               {friendError && (
-                <div className="text-red-500 font-mono text-[10px] mt-2 uppercase font-bold">⚠️ ERROR: {friendError}</div>
+                <div
+                  style={{
+                    fontFamily: "'Share Tech Mono', monospace",
+                    fontSize: "10px",
+                    color: "#ff3d3d",
+                    textTransform: "uppercase",
+                    marginTop: "10px",
+                  }}
+                >
+                  ⚠ ERROR: {friendError}
+                </div>
               )}
               {friendSuccess && (
-                <div className="text-emerald-500 font-mono text-[10px] mt-2 uppercase font-bold">✓ SUCCESS: {friendSuccess}</div>
+                <div
+                  style={{
+                    fontFamily: "'Share Tech Mono', monospace",
+                    fontSize: "10px",
+                    color: "#00e676",
+                    textTransform: "uppercase",
+                    marginTop: "10px",
+                  }}
+                >
+                  ✓ SUCCESS: {friendSuccess}
+                </div>
               )}
             </div>
 
             {/* Friends List */}
-            <div className="cyber-panel p-6 border border-white/5 bg-[var(--card-bg)]">
-              <div className="border-b border-white/10 pb-3 mb-6">
-                <h3 className="font-bold font-display text-sm text-white uppercase tracking-wider">ALL_COMMUNICATIONS_LOG</h3>
-                <p className="text-[10px] font-mono text-[#94a3b8] uppercase mt-1 font-bold">Secure direct-link connections with other agents</p>
+            <div
+              style={{
+                background: "#131722",
+                border: "1px solid rgba(255,255,255,0.06)",
+                borderRadius: "4px",
+                padding: "24px",
+              }}
+            >
+              <div
+                style={{
+                  borderBottom: "1px solid rgba(255,255,255,0.08)",
+                  paddingBottom: "12px",
+                  marginBottom: "20px",
+                }}
+              >
+                <div
+                  style={{
+                    fontFamily: "'Rajdhani', sans-serif",
+                    fontWeight: 700,
+                    fontSize: "22px",
+                    color: "#e8eaf0",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.04em",
+                  }}
+                >
+                  ALL_COMMUNICATIONS_LOG
+                </div>
+                <div
+                  style={{
+                    fontFamily: "'Share Tech Mono', monospace",
+                    fontSize: "10px",
+                    color: "#7b8299",
+                    textTransform: "uppercase",
+                    marginTop: "4px",
+                  }}
+                >
+                  Secure direct-link connections
+                </div>
               </div>
 
               {friends.length === 0 ? (
-                <div className="text-center py-8 font-mono text-xs text-[#94a3b8] uppercase font-bold">
+                <div
+                  style={{
+                    textAlign: "center",
+                    padding: "32px",
+                    fontFamily: "'Share Tech Mono', monospace",
+                    fontSize: "10px",
+                    color: "#7b8299",
+                    textTransform: "uppercase",
+                  }}
+                >
                   No active connections. Search and add agents above.
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns:
+                      "repeat(auto-fill, minmax(280px, 1fr))",
+                    gap: "12px",
+                  }}
+                >
                   {friends.map((f) => {
                     const isOnline = onlineUsers.includes(f.id);
-                    const color = isOnline ? '#00f0ff' : '#94a3b8';
+                    const badgeColor = isOnline ? "#00e5ff" : "#7b8299";
+                    const dotColor = isOnline ? "#00e676" : "#3d4460";
                     return (
-                      <div key={f.id} className="cyber-panel p-4 border border-white/5 bg-black/10 flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full border border-white/10 bg-black/30 flex items-center justify-center font-mono font-bold text-sm uppercase" style={{ color }}>
-                            {f.avatar || f.username.substring(0, 2)}
+                      <div
+                        key={f.id}
+                        style={{
+                          background: "rgba(0,0,0,0.2)",
+                          border: "1px solid rgba(255,255,255,0.05)",
+                          borderRadius: "0",
+                          padding: "16px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          gap: "12px",
+                        }}
+                      >
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "12px",
+                            minWidth: 0,
+                          }}
+                        >
+                          <div
+                            style={{
+                              width: "40px",
+                              height: "40px",
+                              border: `1px solid ${badgeColor}33`,
+                              background: "rgba(0,0,0,0.4)",
+                              overflow: "hidden",
+                              flexShrink: 0,
+                              position: "relative",
+                            }}
+                          >
+                            <img
+                              src={
+                                f.avatar && f.avatar.startsWith("http")
+                                  ? f.avatar
+                                  : getAvatarUrl(f.username)
+                              }
+                              alt={f.username}
+                              style={{
+                                width: "100%",
+                                height: "100%",
+                                objectFit: "cover",
+                              }}
+                            />
+                            <span
+                              style={{
+                                position: "absolute",
+                                bottom: "2px",
+                                right: "2px",
+                                width: "8px",
+                                height: "8px",
+                                borderRadius: "50%",
+                                background: dotColor,
+                                border: "1px solid #131722",
+                              }}
+                            />
                           </div>
-                          <div>
-                            <div className="text-xs font-bold text-white uppercase tracking-wide">{f.username}</div>
-                            <div className="text-[10px] text-[#94a3b8] font-mono uppercase mt-0.5">
+                          <div style={{ minWidth: 0 }}>
+                            <div
+                              style={{
+                                fontFamily: "'Share Tech Mono', monospace",
+                                fontSize: "11px",
+                                color: "#e8eaf0",
+                                textTransform: "uppercase",
+                                letterSpacing: "0.06em",
+                                whiteSpace: "nowrap",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                              }}
+                            >
+                              {f.username}
+                            </div>
+                            <div
+                              style={{
+                                fontFamily: "'Share Tech Mono', monospace",
+                                fontSize: "9px",
+                                color: "#7b8299",
+                                textTransform: "uppercase",
+                                marginTop: "2px",
+                              }}
+                            >
                               LVL {f.level} // {f.xp} XP
                             </div>
-                            <div className="text-[8px] text-white/50 font-mono mt-0.5">
-                              RECORD: {f.wins}W - {f.losses}L - {f.draws}D
+                            <div
+                              style={{
+                                fontFamily: "'Share Tech Mono', monospace",
+                                fontSize: "8px",
+                                color: "#3d4460",
+                                textTransform: "uppercase",
+                                marginTop: "1px",
+                              }}
+                            >
+                              {f.wins}W - {f.losses}L - {f.draws}D
                             </div>
                           </div>
                         </div>
-                        <div className="flex flex-col items-end gap-2">
-                          <span className="text-[8px] font-mono px-2 py-0.5 rounded border font-bold" style={{ borderColor: `${color}33`, color }}>
-                            {isOnline ? 'ONLINE' : 'OFFLINE'}
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "flex-end",
+                            gap: "8px",
+                            flexShrink: 0,
+                          }}
+                        >
+                          <span
+                            style={{
+                              fontFamily: "'Share Tech Mono', monospace",
+                              fontSize: "8px",
+                              color: badgeColor,
+                              border: `1px solid ${badgeColor}33`,
+                              padding: "2px 8px",
+                              textTransform: "uppercase",
+                              borderRadius: "2px",
+                            }}
+                          >
+                            {isOnline ? "ONLINE" : "OFFLINE"}
                           </span>
                           <button
                             onClick={() => handleRemoveFriend(f.id)}
-                            className="text-[8px] font-mono font-bold text-red-400 border border-red-500/20 hover:bg-red-500/10 px-2 py-1 rounded transition uppercase"
+                            style={{
+                              fontFamily: "'Share Tech Mono', monospace",
+                              fontSize: "8px",
+                              color: "#ff3d3d",
+                              border: "1px solid rgba(255,61,61,0.25)",
+                              background: "transparent",
+                              padding: "3px 8px",
+                              textTransform: "uppercase",
+                              borderRadius: "2px",
+                              cursor: "pointer",
+                              transition: "background 0.15s",
+                            }}
+                            onMouseEnter={(e) => {
+                              (
+                                e.currentTarget as HTMLButtonElement
+                              ).style.background = "rgba(255,61,61,0.08)";
+                            }}
+                            onMouseLeave={(e) => {
+                              (
+                                e.currentTarget as HTMLButtonElement
+                              ).style.background = "transparent";
+                            }}
                           >
                             TERMINATE LINK
                           </button>
@@ -619,50 +1993,193 @@ const App: React.FC = () => {
           </div>
         );
 
-      case 'inventory':
+      case "inventory":
         return (
-          <div className="space-y-6 animate-fade-in">
-            <div className="cyber-panel p-6 border border-white/5 bg-[var(--card-bg)]">
-              <div className="border-b border-white/10 pb-3 mb-6">
-                <h3 className="font-bold font-display text-sm text-white uppercase tracking-wider">DIGITAL_INVENTORY_SYSTEM</h3>
-                <p className="text-[10px] font-mono text-[#94a3b8] uppercase mt-1">Unlocked skins, card decks, and audio themes</p>
+          <div className="animate-fade-in">
+            <div
+              style={{
+                background: "#131722",
+                border: "1px solid rgba(255,255,255,0.06)",
+                borderRadius: "4px",
+                padding: "28px",
+                position: "relative",
+                overflow: "hidden",
+              }}
+            >
+              <div className="corner-tag" style={{ background: "#00e5ff" }}>
+                INV_SYS
+              </div>
+              <div
+                style={{
+                  fontFamily: "'Rajdhani', sans-serif",
+                  fontWeight: 700,
+                  fontSize: "28px",
+                  color: "#e8eaf0",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.04em",
+                  marginBottom: "4px",
+                }}
+              >
+                DIGITAL_INVENTORY_SYSTEM
+              </div>
+              <div
+                style={{
+                  fontFamily: "'Share Tech Mono', monospace",
+                  fontSize: "10px",
+                  color: "#7b8299",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.1em",
+                  marginBottom: "24px",
+                }}
+              >
+                Unlocked skins, card decks, and audio themes
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))",
+                  gap: "14px",
+                }}
+              >
                 {/* Equipped items */}
-                <div className="cyber-panel p-4 border border-[#10b981]/30 bg-black/20 relative">
-                  <span className="absolute top-0 right-0 bg-[#10b981] text-black font-mono text-[8px] px-1.5 py-0.5 rounded-bl font-bold uppercase">
-                    EQUIPPED
-                  </span>
-                  <div className="text-3xl mb-2">⚡</div>
-                  <h4 className="text-xs font-bold text-white uppercase tracking-wider">Volt Reactor Skin</h4>
-                  <p className="text-[9px] text-[#94a3b8] mt-1 font-mono">2048 SYSTEM TILE SKIN</p>
-                </div>
+                {[
+                  {
+                    faIcon: "fa-bolt",
+                    name: "Volt Reactor Skin",
+                    sub: "2048 SYSTEM TILE SKIN",
+                    color: "#f5c518",
+                  },
+                  {
+                    faIcon: "fa-cards-blank",
+                    name: "Plasma Card Frame",
+                    sub: "SOLITAIRE CARDS THEME",
+                    color: "#c850f0",
+                  },
+                  {
+                    faIcon: "fa-dice",
+                    name: "Neon Dice Set",
+                    sub: "SNAKES & LADDERS SKIN",
+                    color: "#00e5ff",
+                  },
+                ].map((item) => (
+                  <div
+                    key={item.name}
+                    style={{
+                      background: "rgba(0,230,118,0.04)",
+                      border: "1px solid rgba(0,230,118,0.3)",
+                      borderRadius: "0",
+                      padding: "16px",
+                      position: "relative",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <div
+                      className="corner-tag"
+                      style={{
+                        background: "#00e676",
+                        fontSize: "8px",
+                        padding: "3px 8px",
+                      }}
+                    >
+                      EQUIPPED
+                    </div>
+                    <div
+                      style={{
+                        width: "36px",
+                        height: "36px",
+                        border: `1px solid ${item.color}33`,
+                        background: `${item.color}0d`,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        marginBottom: "10px",
+                        marginTop: "10px",
+                      }}
+                    >
+                      <i
+                        className={`fa-solid ${item.faIcon}`}
+                        style={{
+                          fontSize: "16px",
+                          color: item.color,
+                          filter: `drop-shadow(0 0 6px ${item.color}80)`,
+                        }}
+                      />
+                    </div>
+                    <div
+                      style={{
+                        fontFamily: "'Inter', sans-serif",
+                        fontSize: "11px",
+                        fontWeight: 600,
+                        color: "#e8eaf0",
+                        textTransform: "uppercase",
+                        letterSpacing: "0.06em",
+                        marginBottom: "4px",
+                      }}
+                    >
+                      {item.name}
+                    </div>
+                    <div
+                      style={{
+                        fontFamily: "'Share Tech Mono', monospace",
+                        fontSize: "9px",
+                        color: "#7b8299",
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      {item.sub}
+                    </div>
+                  </div>
+                ))}
 
-                <div className="cyber-panel p-4 border border-[#10b981]/30 bg-black/20 relative">
-                  <span className="absolute top-0 right-0 bg-[#10b981] text-black font-mono text-[8px] px-1.5 py-0.5 rounded-bl font-bold uppercase">
-                    EQUIPPED
-                  </span>
-                  <div className="text-3xl mb-2">🎴</div>
-                  <h4 className="text-xs font-bold text-white uppercase tracking-wider">Plasma Card Frame</h4>
-                  <p className="text-[9px] text-[#94a3b8] mt-1 font-mono">SOLITAIRE CARDS THEME</p>
-                </div>
-
-                <div className="cyber-panel p-4 border border-[#10b981]/30 bg-black/20 relative">
-                  <span className="absolute top-0 right-0 bg-[#10b981] text-black font-mono text-[8px] px-1.5 py-0.5 rounded-bl font-bold uppercase">
-                    EQUIPPED
-                  </span>
-                  <div className="text-3xl mb-2">🎲</div>
-                  <h4 className="text-xs font-bold text-white uppercase tracking-wider">Neon Dice Set</h4>
-                  <p className="text-[9px] text-[#94a3b8] mt-1 font-mono">SNAKES & LADDERS SKIN</p>
-                </div>
-
-                {/* Locked items */}
+                {/* Locked slots */}
                 {Array.from({ length: 9 }).map((_, i) => (
-                  <div key={i} className="cyber-panel p-4 border border-white/5 bg-black/40 flex flex-col items-center justify-center text-center opacity-40">
-                    <span className="text-xl">🔒</span>
-                    <h4 className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-wider mt-2">Locked Slot 0{i + 4}</h4>
-                    <p className="text-[8px] text-[#94a3b8] mt-0.5 font-mono">LOCKED_IN_DATABASE</p>
+                  <div
+                    key={i}
+                    style={{
+                      background: "rgba(0,0,0,0.3)",
+                      border: "1px solid rgba(255,255,255,0.04)",
+                      borderRadius: "0",
+                      padding: "16px",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      textAlign: "center",
+                      opacity: 0.38,
+                      minHeight: "120px",
+                    }}
+                  >
+                    <i
+                      className="fa-solid fa-lock"
+                      style={{
+                        fontSize: "18px",
+                        color: "#3d4460",
+                        marginBottom: "8px",
+                      }}
+                    />
+                    <div
+                      style={{
+                        fontFamily: "'Share Tech Mono', monospace",
+                        fontSize: "9px",
+                        color: "#7b8299",
+                        textTransform: "uppercase",
+                        letterSpacing: "0.06em",
+                        marginBottom: "3px",
+                      }}
+                    >
+                      LOCKED SLOT 0{i + 4}
+                    </div>
+                    <div
+                      style={{
+                        fontFamily: "'Share Tech Mono', monospace",
+                        fontSize: "8px",
+                        color: "#3d4460",
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      LOCKED_IN_DATABASE
+                    </div>
                   </div>
                 ))}
               </div>
@@ -672,168 +2189,433 @@ const App: React.FC = () => {
     }
   };
 
+  const navItems = [
+    { view: "dashboard", label: "Dashboard", icon: "fa-gauge-high" },
+    { view: "arena", label: "Arena", icon: "fa-gamepad" },
+    { view: "history", label: "History", icon: "fa-clock-rotate-left" },
+    { view: "stats", label: "Stats", icon: "fa-chart-bar" },
+    { view: "friends", label: "Friends", icon: "fa-user-group" },
+    { view: "inventory", label: "Inventory", icon: "fa-box-archive" },
+  ] as const;
+
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-[var(--bg-gradient)] text-white">
-      {/* Left Navigation Sidebar */}
-      <aside className={`${sidebarOpen ? 'w-full md:w-64 p-6 border-b md:border-b-0 md:border-r' : 'w-0 h-0 overflow-hidden p-0 border-0 flex-none'} bg-[#0a0c12] border-white/5 flex flex-col justify-between shrink-0 z-40 transition-all duration-300`}>
-        <div className="space-y-8">
-          {/* Logo & Profile Header */}
-          <div className="flex items-center gap-3 border-b border-white/5 pb-5">
-            <div className="w-10 h-10 rounded-full border-2 border-[#00f0ff] bg-black/40 shrink-0 flex items-center justify-center text-xl">
-              {user.avatar || "👾"}
-            </div>
-            <div>
-              <div className="text-xs font-bold uppercase tracking-wider text-white truncate max-w-[130px]">{currentUsername}</div>
-              <div className="flex items-center gap-1.5 mt-0.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#10b981] animate-pulse"></span>
-                <span className="text-[9px] font-mono text-[#94a3b8] uppercase">LVL {playerLevel} // {getLevelTitle(playerLevel)}</span>
+    <div
+      style={{
+        display: "flex",
+        height: "100vh",
+        overflow: "hidden",
+        background: "var(--bg-deep)",
+        color: "var(--text-primary)",
+      }}
+    >
+      <aside
+        style={{
+          width: sidebarOpen ? "var(--sidebar-w)" : "0",
+          minWidth: sidebarOpen ? "var(--sidebar-w)" : "0",
+          height: "100vh",
+          position: "sticky",
+          top: 0,
+          overflow: "hidden",
+          background: "#0a0c14",
+          borderRight: "1px solid rgba(255,255,255,0.06)",
+          boxShadow: "4px 0 24px rgba(0,0,0,0.4)",
+          display: "flex",
+          flexDirection: "column",
+          flexShrink: 0,
+          zIndex: 40,
+          transition: "min-width 0.28s ease, width 0.28s ease",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            height: "100%",
+            padding: sidebarOpen ? "0" : "0",
+            overflow: "hidden",
+          }}
+        >
+          <div
+            style={{
+              padding: "20px 16px 16px",
+              borderBottom: "1px solid rgba(255,255,255,0.06)",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <div
+                style={{
+                  width: "40px",
+                  height: "40px",
+                  flexShrink: 0,
+                  border: "1px solid rgba(0,229,255,0.4)",
+                  boxShadow:
+                    "0 0 12px rgba(0,229,255,0.25), inset 0 0 8px rgba(0,229,255,0.05)",
+                  overflow: "hidden",
+                  background: "#0d0f1a",
+                }}
+              >
+                {user.avatar && user.avatar.startsWith("http") ? (
+                  <img
+                    src={user.avatar}
+                    alt="avatar"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                  />
+                ) : (
+                  <img
+                    src={getAvatarUrl(currentUsername)}
+                    alt="avatar"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                  />
+                )}
+              </div>
+              <div style={{ overflow: "hidden", flex: 1 }}>
+                <div
+                  style={{
+                    fontFamily: "'Share Tech Mono', monospace",
+                    fontSize: "11px",
+                    color: "#e8eaf0",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.07em",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    textShadow: "0 0 8px rgba(255,255,255,0.15)",
+                  }}
+                >
+                  {currentUsername}
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "6px",
+                    marginTop: "3px",
+                  }}
+                >
+                  <span
+                    style={{
+                      width: "5px",
+                      height: "5px",
+                      borderRadius: "50%",
+                      background: "#00e676",
+                      display: "inline-block",
+                      boxShadow: "0 0 6px rgba(0,230,118,0.8)",
+                    }}
+                  />
+                  <span
+                    style={{
+                      fontFamily: "'Share Tech Mono', monospace",
+                      fontSize: "8px",
+                      color: "#7b8299",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.06em",
+                    }}
+                  >
+                    LVL {playerLevel} // {getLevelTitle(playerLevel)}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Navigation Links */}
-          <nav className="space-y-1">
-            <button
-              onClick={() => { AudioManager.playClick(); setActiveView('dashboard'); }}
-              className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider transition ${
-                activeView === 'dashboard' ? 'active-nav-item' : 'text-[#94a3b8] hover:text-white hover:bg-white/5'
-              }`}
-            >
-              <span className="text-sm">🏠</span> Dashboard
-            </button>
-            <button
-              onClick={() => { AudioManager.playClick(); setActiveView('arena'); }}
-              className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider transition ${
-                activeView === 'arena' ? 'active-nav-item' : 'text-[#94a3b8] hover:text-white hover:bg-white/5'
-              }`}
-            >
-              <span className="text-sm">🎮</span> Arena
-            </button>
-            <button
-              onClick={() => { AudioManager.playClick(); setActiveView('history'); }}
-              className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider transition ${
-                activeView === 'history' ? 'active-nav-item' : 'text-[#94a3b8] hover:text-white hover:bg-white/5'
-              }`}
-            >
-              <span className="text-sm">🕒</span> History
-            </button>
-            <button
-              onClick={() => { AudioManager.playClick(); setActiveView('stats'); }}
-              className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider transition ${
-                activeView === 'stats' ? 'active-nav-item' : 'text-[#94a3b8] hover:text-white hover:bg-white/5'
-              }`}
-            >
-              <span className="text-sm">🏆</span> Stats
-            </button>
-            <button
-              onClick={() => { AudioManager.playClick(); setActiveView('friends'); }}
-              className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider transition ${
-                activeView === 'friends' ? 'active-nav-item' : 'text-[#94a3b8] hover:text-white hover:bg-white/5'
-              }`}
-            >
-              <span className="text-sm">👥</span> Friends
-            </button>
-            <button
-              onClick={() => { AudioManager.playClick(); setActiveView('inventory'); }}
-              className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider transition ${
-                activeView === 'inventory' ? 'active-nav-item' : 'text-[#94a3b8] hover:text-white hover:bg-white/5'
-              }`}
-            >
-              <span className="text-sm">📦</span> Inventory
-            </button>
+          <nav style={{ flex: 1, padding: "8px 0", overflowY: "auto" }}>
+            {navItems.map(({ view, label, icon }) => {
+              const isActive = activeView === view;
+              return (
+                <button
+                  key={view}
+                  onClick={() => {
+                    AudioManager.playClick();
+                    setActiveView(view);
+                  }}
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "11px",
+                    padding: "11px 18px",
+                    border: "none",
+                    borderLeft: isActive
+                      ? "2px solid #00e5ff"
+                      : "2px solid transparent",
+                    background: isActive
+                      ? "rgba(0,229,255,0.07)"
+                      : "transparent",
+                    color: isActive ? "#00e5ff" : "#7b8299",
+                    fontFamily: "'Share Tech Mono', monospace",
+                    fontSize: "10px",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.09em",
+                    cursor: "pointer",
+                    transition: "all 0.14s",
+                    textAlign: "left",
+                    textShadow: isActive
+                      ? "0 0 8px rgba(0,229,255,0.6)"
+                      : "none",
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isActive) {
+                      const b = e.currentTarget as HTMLButtonElement;
+                      b.style.color = "#c8d0e0";
+                      b.style.background = "rgba(255,255,255,0.04)";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive) {
+                      const b = e.currentTarget as HTMLButtonElement;
+                      b.style.color = "#7b8299";
+                      b.style.background = "transparent";
+                    }
+                  }}
+                >
+                  <i
+                    className={`fa-solid ${icon}`}
+                    style={{
+                      width: "14px",
+                      fontSize: "11px",
+                      flexShrink: 0,
+                      filter: isActive
+                        ? "drop-shadow(0 0 4px rgba(0,229,255,0.7))"
+                        : "none",
+                    }}
+                  />
+                  {label}
+                </button>
+              );
+            })}
           </nav>
-        </div>
 
-        {/* Start Queue button */}
-        <div className="mt-8 pt-5 border-t border-white/5 space-y-4">
-          <button
-            onClick={() => { AudioManager.playClick(); setActiveView('arena'); }}
-            className="w-full py-2.5 rounded-lg text-xs font-bold font-mono uppercase bg-gradient-to-r from-[#d946ef] to-[#00f0ff] text-black shadow-lg hover:scale-105 active:scale-95 transition tracking-widest cursor-pointer text-center block"
+          <div
+            style={{
+              padding: "16px",
+              borderTop: "1px solid rgba(255,255,255,0.06)",
+            }}
           >
-            START QUEUE
-          </button>
-          <div className="flex gap-2 text-[10px] font-mono text-[#94a3b8] justify-center">
-            <span className="hover:text-white cursor-pointer">SUPPORT</span>
-            <span>•</span>
-            <span 
-              onClick={() => { AudioManager.playClick(); logout(); }}
-              className="hover:text-white cursor-pointer hover:underline"
+            <button
+              onClick={() => {
+                AudioManager.playClick();
+                setActiveView("arena");
+              }}
+              style={{
+                width: "100%",
+                padding: "11px 0",
+                background: "transparent",
+                border: "1px solid #00e5ff",
+                color: "#00e5ff",
+                fontFamily: "'Share Tech Mono', monospace",
+                fontSize: "10px",
+                textTransform: "uppercase",
+                letterSpacing: "0.1em",
+                cursor: "pointer",
+                marginBottom: "10px",
+                boxShadow: "0 0 10px rgba(0,229,255,0.12)",
+                transition: "box-shadow 0.2s, background 0.2s",
+              }}
+              onMouseEnter={(e) => {
+                const b = e.currentTarget as HTMLButtonElement;
+                b.style.background = "rgba(0,229,255,0.08)";
+                b.style.boxShadow = "0 0 18px rgba(0,229,255,0.3)";
+              }}
+              onMouseLeave={(e) => {
+                const b = e.currentTarget as HTMLButtonElement;
+                b.style.background = "transparent";
+                b.style.boxShadow = "0 0 10px rgba(0,229,255,0.12)";
+              }}
             >
-              LOGOUT
-            </span>
+              <i className="fa-solid fa-play" style={{ marginRight: "8px" }} />
+              START QUEUE
+            </button>
+            <div
+              style={{
+                display: "flex",
+                gap: "12px",
+                justifyContent: "center",
+                fontFamily: "'Share Tech Mono', monospace",
+                fontSize: "9px",
+                color: "#3d4460",
+              }}
+            >
+              <span
+                style={{ cursor: "pointer", transition: "color 0.15s" }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLSpanElement).style.color = "#7b8299";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLSpanElement).style.color = "#3d4460";
+                }}
+              >
+                SUPPORT
+              </span>
+              <span>•</span>
+              <span
+                onClick={() => {
+                  AudioManager.playClick();
+                  logout();
+                }}
+                style={{
+                  cursor: "pointer",
+                  textTransform: "uppercase",
+                  transition: "color 0.15s",
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLSpanElement).style.color = "#ff3d3d";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLSpanElement).style.color = "#3d4460";
+                }}
+              >
+                <i
+                  className="fa-solid fa-right-from-bracket"
+                  style={{ marginRight: "4px" }}
+                />
+                LOGOUT
+              </span>
+            </div>
           </div>
         </div>
       </aside>
 
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-h-0">
-        {/* Global Top Header Bar */}
-        <header className="h-16 border-b border-white/5 bg-[#0a0c12] px-6 md:px-8 flex items-center justify-between z-30 shrink-0">
-          <div className="flex items-center gap-4">
+      <div
+        style={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          minWidth: 0,
+          overflow: "hidden",
+        }}
+      >
+        <header
+          style={{
+            height: "52px",
+            flexShrink: 0,
+            background: "#0a0c14",
+            borderBottom: "1px solid rgba(255,255,255,0.06)",
+            boxShadow: "0 2px 20px rgba(0,0,0,0.35)",
+            padding: "0 24px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            zIndex: 30,
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
             <button
-              onClick={() => { AudioManager.playClick(); setSidebarOpen(!sidebarOpen); }}
-              className="text-white hover:text-[#00f0ff] focus:outline-none flex items-center justify-center p-1.5 rounded hover:bg-white/5 transition"
+              onClick={() => {
+                AudioManager.playClick();
+                setSidebarOpen(!sidebarOpen);
+              }}
+              className="icon-btn"
               title="Toggle Sidebar"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
+              <i className="fa-solid fa-bars" />
             </button>
-            <span className="text-base font-bold font-mono tracking-widest text-[#00f0ff]">NEON_REALM</span>
-            <span className="text-xs font-mono text-[#94a3b8] hidden sm:inline">({activeView.toUpperCase()})</span>
+            <span
+              style={{
+                fontFamily: "'Share Tech Mono', monospace",
+                fontSize: "14px",
+                color: "#00e5ff",
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                textShadow: "0 0 12px rgba(0,229,255,0.5)",
+              }}
+            >
+              NEON_REALM
+            </span>
+            <span
+              style={{
+                fontFamily: "'Share Tech Mono', monospace",
+                fontSize: "9px",
+                color: "#3d4460",
+                letterSpacing: "0.08em",
+              }}
+            >
+              <i
+                className="fa-solid fa-angle-right"
+                style={{ margin: "0 6px" }}
+              />
+              {activeView.toUpperCase()}
+            </span>
           </div>
 
-          <div className="flex items-center gap-3">
-            {/* System Audio Toggle */}
+          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
             <button
               onClick={handleMuteToggle}
-              className={`w-8 h-8 rounded border flex items-center justify-center text-xs font-mono transition font-bold shrink-0 ${
-                isMuted 
-                  ? 'border-[#ef4444]/20 text-[#ef4444] bg-[#ef4444]/5 hover:bg-[#ef4444]/10' 
-                  : 'border-[#10b981]/20 text-[#10b981] bg-[#10b981]/5 hover:bg-[#10b981]/10'
-              }`}
-              title={isMuted ? 'UNMUTE AUDIO' : 'MUTE AUDIO'}
+              className={`icon-btn ${isMuted ? "active-mute" : "active-sound"}`}
+              title={isMuted ? "Unmute" : "Mute"}
             >
-              {isMuted ? '🔇' : '🔊'}
+              <i
+                className={`fa-solid ${isMuted ? "fa-volume-xmark" : "fa-volume-high"}`}
+              />
             </button>
-
-            {/* Dark/Light mode toggle */}
             <button
-              onClick={toggleTheme}
-              className="w-8 h-8 rounded border border-white/10 text-white flex items-center justify-center text-xs hover:bg-white/5 transition font-bold shrink-0"
-              title={theme === 'light' ? 'SWITCH TO DARK MODE' : 'SWITCH TO LIGHT MODE'}
+              onClick={() => {
+                AudioManager.playClick();
+                setSettingsOpen(true);
+              }}
+              className="icon-btn"
+              title="Settings"
             >
-              {theme === 'light' ? '🌙' : '☀️'}
+              <i className="fa-solid fa-sliders" />
             </button>
+            <div style={{ position: "relative" }}>
+              <button className="icon-btn" title="Notifications">
+                <i className="fa-solid fa-bell" />
+              </button>
+              <span
+                style={{
+                  position: "absolute",
+                  top: "7px",
+                  right: "7px",
+                  width: "5px",
+                  height: "5px",
+                  borderRadius: "50%",
+                  background: "#c850f0",
+                  boxShadow: "0 0 6px rgba(200,80,240,0.8)",
+                }}
+              />
+            </div>
 
-            {/* Settings trigger gear */}
             <button
-              onClick={() => { AudioManager.playClick(); setSettingsOpen(true); }}
-              className="w-8 h-8 rounded border border-white/10 text-white flex items-center justify-center text-xs hover:bg-white/5 transition font-bold shrink-0"
-              title="SYS CONFIGURATION"
+              className="icon-btn"
+              title="View Profile"
+              onClick={() => { AudioManager.playClick(); setActiveView("dashboard"); }}
+              style={{ overflow: "hidden", padding: 0 }}
             >
-              ⚙️
-            </button>
-
-            {/* Notifications Bell */}
-            <button
-              className="w-8 h-8 rounded border border-white/10 text-white flex items-center justify-center text-xs hover:bg-white/5 transition font-bold relative shrink-0"
-              title="NOTIFICATIONS"
-            >
-              🔔
-              <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-[#d946ef] animate-pulse"></span>
+              {user.avatar && user.avatar.startsWith("http") ? (
+                <img
+                  src={user.avatar}
+                  alt="avatar"
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              ) : (
+                <img
+                  src={getAvatarUrl(currentUsername)}
+                  alt="avatar"
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              )}
             </button>
           </div>
         </header>
 
-        {/* Dynamic Inner Tab panel */}
-        <main className="flex-1 overflow-y-auto p-6 md:p-8">
+        <main style={{ flex: 1, overflowY: "auto", padding: "28px 28px 40px" }}>
           {renderActiveView()}
         </main>
       </div>
 
-      {/* Settings Modal */}
-      <Settings isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} onSoundChange={(muted) => setIsMuted(muted)} />
+      <Settings
+        isOpen={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
+        onSoundChange={(muted) => setIsMuted(muted)}
+      />
     </div>
   );
 };

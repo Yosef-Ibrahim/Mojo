@@ -1,172 +1,477 @@
-import React from 'react';
-import { useGame } from '../context/GameContext';
-import { GAMES } from '../games';
+import React from "react";
+import { useGame } from "../context/GameContext";
+import { GAMES } from "../games";
+
+const getGameIcon = (id: string): string => {
+  const map: Record<string, string> = {
+    chess: "fa-chess",
+    sudoku: "fa-table-cells",
+    minesweeper: "fa-bomb",
+    "2048": "fa-layer-group",
+    solitaire: "fa-cards",
+    xo: "fa-xmark",
+    connect4: "fa-circle-dot",
+    snakesladders: "fa-dice",
+    checkers: "fa-circle-half-stroke",
+    go: "fa-circle",
+  };
+  return map[id] || "fa-gamepad";
+};
 
 const GameMenu: React.FC = () => {
   const { setCurrentGame } = useGame();
   const gameList = Object.values(GAMES);
-
-  // Group games
-  const singlePlayerGames = gameList.filter((g) => g.isSinglePlayer);
-  const partyGames = gameList.filter((g) => g.category === 'party');
-  const multiplayerGames = gameList.filter((g) => !g.isSinglePlayer && g.category !== 'party');
+  const soloGames = gameList.filter((g) => g.isSinglePlayer);
+  const partyGames = gameList.filter((g) => g.category === "party");
+  const multiGames = gameList.filter(
+    (g) => !g.isSinglePlayer && g.category !== "party",
+  );
 
   return (
-    <div className="p-6 md:p-10 text-[var(--card-text)]">
-      {/* Title Header */}
-      <div className="cyber-panel neon-glow-border-cyan p-8 mb-12 relative overflow-hidden">
-        <div className="absolute top-0 right-0 bg-[#00f0ff] text-black font-mono px-3 py-1 text-xs border-b border-l border-white/10 font-bold uppercase tracking-widest">
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "0",
+        height: "100%",
+      }}
+    >
+      <div
+        style={{
+          background:
+            "linear-gradient(135deg, #0d1527 0%, #121c38 55%, #1a0d2e 100%)",
+          border: "1px solid rgba(0,229,255,0.22)",
+          borderRadius: "0",
+          padding: "36px 36px 32px",
+          marginBottom: "32px",
+          position: "relative",
+          overflow: "hidden",
+          boxShadow: "0 0 40px rgba(0,229,255,0.07)",
+        }}
+      >
+        <div className="corner-tag" style={{ background: "#00e5ff" }}>
           SYS // ACTIVE_ARENA
         </div>
-        <h1 className="text-3xl md:text-5xl font-black font-display tracking-tight text-[var(--card-text)] mb-2 uppercase">
-          ENTER THE <span className="text-[#00f0ff]">ARENA</span>
+
+        <div
+          style={{
+            display: "flex",
+            gap: "8px",
+            marginBottom: "18px",
+            flexWrap: "wrap",
+          }}
+        >
+          {["NEW SEASON", "MULTI_PLAYER"].map((t) => (
+            <span
+              key={t}
+              style={{
+                fontFamily: "'Share Tech Mono', monospace",
+                fontSize: "10px",
+                color: "#e8eaf0",
+                textTransform: "uppercase",
+                letterSpacing: "0.08em",
+                padding: "3px 10px",
+                background: "rgba(255,255,255,0.07)",
+                border: "1px solid rgba(255,255,255,0.14)",
+              }}
+            >
+              {t}
+            </span>
+          ))}
+        </div>
+
+        <h1
+          style={{
+            fontFamily: "'Rajdhani', sans-serif",
+            fontWeight: 700,
+            fontSize: "clamp(32px,4.5vw,52px)",
+            color: "#e8eaf0",
+            textTransform: "uppercase",
+            letterSpacing: "0.04em",
+            lineHeight: 1,
+            marginBottom: "10px",
+          }}
+        >
+          ENTER THE{" "}
+          <span className="text-glow-cyan" style={{ color: "#00e5ff" }}>
+            ARENA
+          </span>
         </h1>
-        <p className="text-xs font-mono text-[#fbbf24] uppercase tracking-widest">
-          SIMULATION_PROTOCOL: MULTI_AGENT // CHOOSE YOUR MODULE
+
+        <p
+          style={{
+            fontFamily: "'Inter', sans-serif",
+            fontSize: "13px",
+            color: "#7b8299",
+            maxWidth: "480px",
+            lineHeight: 1.5,
+            marginBottom: "24px",
+          }}
+        >
+          Choose your game module and initiate the simulation protocol.
+          Challenge AI or real agents.
         </p>
+
+        <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+          <button
+            onClick={() => {}}
+            style={{
+              fontFamily: "'Share Tech Mono', monospace",
+              fontSize: "11px",
+              color: "#00e5ff",
+              border: "1px solid #00e5ff",
+              padding: "11px 22px",
+              textTransform: "uppercase",
+              letterSpacing: "0.08em",
+              background: "rgba(0,229,255,0.08)",
+              cursor: "pointer",
+              boxShadow: "0 0 14px rgba(0,229,255,0.2)",
+              transition: "box-shadow 0.2s",
+            }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.boxShadow =
+                "0 0 24px rgba(0,229,255,0.45)";
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.boxShadow =
+                "0 0 14px rgba(0,229,255,0.2)";
+            }}
+          >
+            <i className="fa-solid fa-bolt" style={{ marginRight: "8px" }} />
+            BATTLE NOW
+          </button>
+          <button
+            onClick={() => {}}
+            style={{
+              fontFamily: "'Share Tech Mono', monospace",
+              fontSize: "11px",
+              color: "#e8eaf0",
+              border: "1px solid rgba(255,255,255,0.14)",
+              padding: "11px 22px",
+              textTransform: "uppercase",
+              letterSpacing: "0.08em",
+              background: "rgba(255,255,255,0.04)",
+              cursor: "pointer",
+              transition: "background 0.2s",
+            }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.background =
+                "rgba(255,255,255,0.08)";
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.background =
+                "rgba(255,255,255,0.04)";
+            }}
+          >
+            <i
+              className="fa-solid fa-book-open"
+              style={{ marginRight: "8px" }}
+            />
+            LEARN RULES
+          </button>
+        </div>
       </div>
 
-      <div className="space-y-16">
-        {/* Section 1: Solo Missions */}
-        {singlePlayerGames.length > 0 && (
-          <div>
-            <div className="border-b border-white/10 mb-8 pb-3">
-              <h2 className="text-xl md:text-2xl font-black font-display text-[#fbbf24] uppercase tracking-wide">
-                SOLO_MISSIONS.SYS
-              </h2>
-              <p className="text-[10px] font-mono text-[var(--card-desc)] uppercase mt-1">Single player diagnostics & malware cleaning</p>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {singlePlayerGames.map((game) => (
-                <button
-                  key={game.id}
-                  onClick={() => setCurrentGame(game)}
-                  className="cyber-panel cyber-card-interactive text-left p-6 relative overflow-hidden flex flex-col justify-between h-56 cursor-pointer bg-[var(--card-bg)] text-[var(--card-text)]"
-                >
-                  <div>
-                    <div className="flex justify-between items-start mb-3">
-                      <span className="text-4xl">{game.icon}</span>
-                      <span className="font-mono text-[10px] text-[#fbbf24] border border-[#fbbf24]/20 px-2 py-0.5 font-bold uppercase">
-                        SOLO
-                      </span>
-                    </div>
-                    <h3 className="text-lg md:text-xl font-bold font-display text-[var(--card-text)] mb-2 uppercase tracking-wide">
-                      {game.name}
-                    </h3>
-                    <p className="text-xs text-[var(--card-desc)] line-clamp-2">
-                      {game.description}
-                    </p>
-                  </div>
-                  <div className="mt-4 flex items-center justify-between">
-                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold text-black ${
-                      game.difficulty === 'easy' ? 'bg-[#10b981]' : game.difficulty === 'medium' ? 'bg-[#fbbf24]' : 'bg-[#ef4444]'
-                    }`}>
-                      DIFF: {game.difficulty.toUpperCase()}
-                    </span>
-                    <span className="font-mono text-xs font-bold text-[#fbbf24] hover:underline">
-                      LOAD_SIM →
-                    </span>
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
+        {soloGames.length > 0 && (
+          <GameSection
+            title="SOLO_MISSIONS.SYS"
+            subtitle="Single player diagnostics and challenge modes"
+            accentColor="#f5c518"
+            badgeLabel="SOLO"
+            badgeIcon="fa-user"
+            games={soloGames}
+            onSelect={setCurrentGame}
+          />
         )}
-
-        {/* Section 2: Party Protocol (Section Alone) */}
         {partyGames.length > 0 && (
-          <div>
-            <div className="border-b border-white/10 mb-8 pb-3">
-              <h2 className="text-xl md:text-2xl font-black font-display text-[#d946ef] uppercase tracking-wide">
-                PARTY_PROTOCOL.SYS
-              </h2>
-              <p className="text-[10px] font-mono text-[var(--card-desc)] uppercase mt-1">Multiplayer local party simulations for multiple players</p>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {partyGames.map((game) => (
-                <button
-                  key={game.id}
-                  onClick={() => setCurrentGame(game)}
-                  className="cyber-panel cyber-card-interactive text-left p-6 relative overflow-hidden flex flex-col justify-between h-56 cursor-pointer bg-[var(--card-bg)] text-[var(--card-text)] border border-[#d946ef]/20"
-                >
-                  <div>
-                    <div className="flex justify-between items-start mb-3">
-                      <span className="text-4xl">{game.icon}</span>
-                      <span className="font-mono text-[10px] text-[#d946ef] border border-[#d946ef]/20 px-2 py-0.5 font-bold uppercase">
-                        PARTY
-                      </span>
-                    </div>
-                    <h3 className="text-lg md:text-xl font-bold font-display text-[var(--card-text)] mb-2 uppercase tracking-wide">
-                      {game.name}
-                    </h3>
-                    <p className="text-xs text-[var(--card-desc)] line-clamp-2">
-                      {game.description}
-                    </p>
-                  </div>
-                  <div className="mt-4 flex items-center justify-between">
-                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold text-black ${
-                      game.difficulty === 'easy' ? 'bg-[#10b981]' : game.difficulty === 'medium' ? 'bg-[#fbbf24]' : 'bg-[#ef4444]'
-                    }`}>
-                      DIFF: {game.difficulty.toUpperCase()}
-                    </span>
-                    <span className="font-mono text-xs font-bold text-[#d946ef] hover:underline">
-                      LOAD_SIM →
-                    </span>
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
+          <GameSection
+            title="PARTY_PROTOCOL.SYS"
+            subtitle="Multiplayer local party simulations"
+            accentColor="#c850f0"
+            badgeLabel="PARTY"
+            badgeIcon="fa-users"
+            games={partyGames}
+            onSelect={setCurrentGame}
+          />
         )}
-
-        {/* Section 3: Arena Protocol */}
-        {multiplayerGames.length > 0 && (
-          <div>
-            <div className="border-b border-white/10 mb-8 pb-3">
-              <h2 className="text-xl md:text-2xl font-black font-display text-[#00f0ff] uppercase tracking-wide">
-                ARENA_DUAL_PROTOCOL.SYS
-              </h2>
-              <p className="text-[10px] font-mono text-[var(--card-desc)] uppercase mt-1">Challenge human agents or AI tactical algorithms</p>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {multiplayerGames.map((game) => (
-                <button
-                  key={game.id}
-                  onClick={() => setCurrentGame(game)}
-                  className="cyber-panel cyber-card-interactive text-left p-6 relative overflow-hidden flex flex-col justify-between h-56 cursor-pointer bg-[var(--card-bg)] text-[var(--card-text)]"
-                >
-                  <div>
-                    <div className="flex justify-between items-start mb-3">
-                      <span className="text-4xl">{game.icon}</span>
-                      <span className="font-mono text-[10px] text-[#00f0ff] border border-[#00f0ff]/20 px-2 py-0.5 font-bold uppercase">
-                        DUAL
-                      </span>
-                    </div>
-                    <h3 className="text-lg md:text-xl font-bold font-display text-[var(--card-text)] mb-2 uppercase tracking-wide">
-                      {game.name}
-                    </h3>
-                    <p className="text-xs text-[var(--card-desc)] line-clamp-2">
-                      {game.description}
-                    </p>
-                  </div>
-                  <div className="mt-4 flex items-center justify-between">
-                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold text-black ${
-                      game.difficulty === 'easy' ? 'bg-[#10b981]' : game.difficulty === 'medium' ? 'bg-[#fbbf24]' : 'bg-[#ef4444]'
-                    }`}>
-                      DIFF: {game.difficulty.toUpperCase()}
-                    </span>
-                    <span className="font-mono text-xs font-bold text-[#00f0ff] hover:underline">
-                      LOAD_SIM →
-                    </span>
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
+        {multiGames.length > 0 && (
+          <GameSection
+            title="ARENA_DUAL_PROTOCOL.SYS"
+            subtitle="Challenge human agents or AI tactical algorithms"
+            accentColor="#00e5ff"
+            badgeLabel="DUAL"
+            badgeIcon="fa-swords"
+            games={multiGames}
+            onSelect={setCurrentGame}
+          />
         )}
       </div>
     </div>
   );
 };
+
+function GameSection({
+  title,
+  subtitle,
+  accentColor,
+  badgeLabel,
+  badgeIcon,
+  games,
+  onSelect,
+}: {
+  title: string;
+  subtitle: string;
+  accentColor: string;
+  badgeLabel: string;
+  badgeIcon: string;
+  games: any[];
+  onSelect: (g: any) => void;
+}) {
+  return (
+    <div>
+      <div
+        style={{
+          borderBottom: "1px solid rgba(255,255,255,0.07)",
+          marginBottom: "20px",
+          paddingBottom: "10px",
+        }}
+      >
+        <h2
+          style={{
+            fontFamily: "'Rajdhani', sans-serif",
+            fontWeight: 700,
+            fontSize: "20px",
+            color: accentColor,
+            textTransform: "uppercase",
+            letterSpacing: "0.04em",
+            textShadow: `0 0 12px ${accentColor}80`,
+          }}
+        >
+          {title}
+        </h2>
+        <p
+          style={{
+            fontFamily: "'Share Tech Mono', monospace",
+            fontSize: "9px",
+            color: "#7b8299",
+            textTransform: "uppercase",
+            letterSpacing: "0.1em",
+            marginTop: "3px",
+          }}
+        >
+          {subtitle}
+        </p>
+      </div>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(240px,1fr))",
+          gap: "16px",
+        }}
+      >
+        {games.map((g) => (
+          <GameCard
+            key={g.id}
+            game={g}
+            accentColor={accentColor}
+            badgeLabel={badgeLabel}
+            badgeIcon={badgeIcon}
+            onSelect={onSelect}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function GameCard({
+  game,
+  accentColor,
+  badgeLabel,
+  badgeIcon,
+  onSelect,
+}: {
+  game: any;
+  accentColor: string;
+  badgeLabel: string;
+  badgeIcon: string;
+  onSelect: (g: any) => void;
+}) {
+  const diffColor =
+    game.difficulty === "easy"
+      ? "#00e676"
+      : game.difficulty === "medium"
+        ? "#f5c518"
+        : "#ff3d3d";
+
+  const diffIcon =
+    game.difficulty === "easy"
+      ? "fa-circle-check"
+      : game.difficulty === "medium"
+        ? "fa-circle-half-stroke"
+        : "fa-skull";
+
+  return (
+    <button
+      onClick={() => onSelect(game)}
+      className="cyber-card-interactive"
+      style={{
+        background: "#131722",
+        border: "1px solid rgba(255,255,255,0.06)",
+        borderRadius: "0",
+        padding: "22px",
+        textAlign: "left",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        cursor: "pointer",
+        position: "relative",
+        overflow: "hidden",
+        minHeight: "200px",
+      }}
+    >
+      <div
+        style={{
+          position: "absolute",
+          top: "7px",
+          left: "7px",
+          fontFamily: "'Share Tech Mono', monospace",
+          fontSize: "8px",
+          color: "#f5c518",
+          background: "rgba(0,0,0,0.55)",
+          padding: "2px 6px",
+          opacity: 0.65,
+        }}
+      >
+        isSinglePlayer: {String(!!game.isSinglePlayer)}
+      </div>
+
+      <div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+            marginBottom: "12px",
+            marginTop: "14px",
+          }}
+        >
+          <div
+            style={{
+              width: "42px",
+              height: "42px",
+              border: `1px solid ${accentColor}33`,
+              background: `${accentColor}0d`,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <i
+              className={`fa-solid ${getGameIcon(game.id)}`}
+              style={{
+                fontSize: "18px",
+                color: accentColor,
+                filter: `drop-shadow(0 0 6px ${accentColor}80)`,
+              }}
+            />
+          </div>
+          <span
+            style={{
+              fontFamily: "'Share Tech Mono', monospace",
+              fontSize: "9px",
+              color: accentColor,
+              border: `1px solid ${accentColor}33`,
+              padding: "2px 8px",
+              textTransform: "uppercase",
+              letterSpacing: "0.08em",
+            }}
+          >
+            <i
+              className={`fa-solid ${badgeIcon}`}
+              style={{ marginRight: "5px" }}
+            />
+            {badgeLabel}
+          </span>
+        </div>
+
+        <h3
+          style={{
+            fontFamily: "'Rajdhani', sans-serif",
+            fontWeight: 700,
+            fontSize: "19px",
+            color: "#e8eaf0",
+            textTransform: "uppercase",
+            letterSpacing: "0.03em",
+            marginBottom: "7px",
+            lineHeight: 1.1,
+          }}
+        >
+          {game.name}
+        </h3>
+
+        <p
+          style={{
+            fontFamily: "'Inter', sans-serif",
+            fontSize: "11px",
+            color: "#7b8299",
+            lineHeight: 1.4,
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical" as const,
+            overflow: "hidden",
+          }}
+        >
+          {game.description}
+        </p>
+      </div>
+
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginTop: "14px",
+          paddingTop: "12px",
+          borderTop: "1px solid rgba(255,255,255,0.06)",
+        }}
+      >
+        <span
+          style={{
+            background: diffColor,
+            color: "#000",
+            fontFamily: "'Share Tech Mono', monospace",
+            fontSize: "9px",
+            padding: "3px 8px",
+            textTransform: "uppercase",
+            letterSpacing: "0.07em",
+          }}
+        >
+          <i
+            className={`fa-solid ${diffIcon}`}
+            style={{ marginRight: "5px" }}
+          />
+          {game.difficulty?.toUpperCase()}
+        </span>
+        <span
+          style={{
+            fontFamily: "'Share Tech Mono', monospace",
+            fontSize: "10px",
+            color: accentColor,
+            letterSpacing: "0.06em",
+            filter: `drop-shadow(0 0 6px ${accentColor}80)`,
+          }}
+        >
+          LOAD_SIM
+          <i
+            className="fa-solid fa-arrow-right"
+            style={{ marginLeft: "6px" }}
+          />
+        </span>
+      </div>
+    </button>
+  );
+}
 
 export default GameMenu;

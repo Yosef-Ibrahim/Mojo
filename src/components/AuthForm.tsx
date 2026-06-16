@@ -2,18 +2,31 @@ import React, { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { AudioManager } from "../games/audio";
 
-const AVATARS = ["👾", "⚔️", "🛡️", "⚡", "💎", "🚀", "👑", "🛸", "🤖", "🌀", "🔥", "🔮"];
+const AVATAR_SEEDS = [
+  "CyberKnight",
+  "VoidWalker",
+  "NeonHunter",
+  "ShadowByte",
+  "GlitchMaster",
+  "PhantomCore",
+  "DataViper",
+  "NullVector",
+  "IronProtocol",
+  "CryptoGhost",
+  "BitCrusher",
+  "LvlUpGhost",
+];
+
+const getAvatarUrl = (seed: string) =>
+  `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${seed}&backgroundColor=070b13,0a0c14&radius=0`;
 
 const AuthForm: React.FC = () => {
   const { login, register } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
-  
-  // Fields
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [avatar, setAvatar] = useState("👾");
-  
+  const [avatar, setAvatar] = useState(AVATAR_SEEDS[0]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -22,7 +35,6 @@ const AuthForm: React.FC = () => {
     setError(null);
     setLoading(true);
     AudioManager.playClick();
-
     if (isLogin) {
       const result = await login(username, password);
       if (!result.success) {
@@ -35,7 +47,12 @@ const AuthForm: React.FC = () => {
         setLoading(false);
         return;
       }
-      const result = await register(email, username, password, avatar);
+      const result = await register(
+        email,
+        username,
+        password,
+        getAvatarUrl(avatar),
+      );
       if (!result.success) {
         setError(result.error || "Registration failed");
         setLoading(false);
@@ -49,54 +66,131 @@ const AuthForm: React.FC = () => {
     setError(null);
   };
 
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-[#070b13] bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#0f1931] via-[#070b13] to-[#030509] p-4 font-mono select-none">
-      {/* Scanline overlay for cyber effect */}
-      <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,_rgba(0,0,0,0.25)_50%),_linear-gradient(90deg,_rgba(255,0,0,0.06),_rgba(0,255,0,0.02),_rgba(0,0,255,0.06))] bg-[size:100%_4px,_6px_100%] opacity-20"></div>
+  const S: Record<string, React.CSSProperties> = {
+    page: {
+      minHeight: "100vh",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      padding: "24px",
+      position: "relative",
+      overflow: "hidden",
+      background:
+        "radial-gradient(ellipse at center, #0f1931 0%, #070b13 55%, #030509 100%)",
+    },
+    card: {
+      position: "relative",
+      width: "100%",
+      maxWidth: "420px",
+      background: "#0d1527",
+      border: "1px solid rgba(0,229,255,0.3)",
+      boxShadow: "0 0 40px rgba(0,229,255,0.1), inset 0 0 60px rgba(0,0,0,0.3)",
+      borderRadius: "0",
+      padding: "44px 36px 36px",
+      zIndex: 1,
+    },
+    label: {
+      display: "block",
+      fontFamily: "'Share Tech Mono', monospace",
+      fontSize: "10px",
+      color: "#00e5ff",
+      textTransform: "uppercase" as const,
+      letterSpacing: "0.12em",
+      marginBottom: "6px",
+    },
+    labelPink: {
+      display: "block",
+      fontFamily: "'Share Tech Mono', monospace",
+      fontSize: "10px",
+      color: "#c850f0",
+      textTransform: "uppercase" as const,
+      letterSpacing: "0.12em",
+      marginBottom: "6px",
+    },
+  };
 
-      <div className="w-full max-w-md cyber-panel neon-glow-border-cyan bg-[#0d1527]/90 backdrop-blur-md p-8 relative overflow-hidden border border-[#00f0ff]/30 shadow-[0_0_30px_rgba(0,240,255,0.1)]">
-        {/* Decorative corner tag */}
-        <div className="absolute top-0 right-0 bg-[#00f0ff] text-black font-bold px-3 py-1 text-[9px] uppercase tracking-widest">
+  return (
+    <div style={S.page}>
+      <div className="scanlines" />
+
+      <div style={S.card}>
+        <div className="corner-tag" style={{ background: "#00e5ff" }}>
           SYSTEM_ACCESS
         </div>
 
-        {/* Title */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-black font-display text-white tracking-wider mb-2 drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">
-            CYBER_ARENA<span className="text-[#00f0ff]">.SYS</span>
+        <div style={{ textAlign: "center", marginBottom: "32px" }}>
+          <h1
+            style={{
+              fontFamily: "'Rajdhani', sans-serif",
+              fontWeight: 700,
+              fontSize: "34px",
+              color: "#e8eaf0",
+              letterSpacing: "0.04em",
+              textTransform: "uppercase",
+              marginBottom: "6px",
+            }}
+          >
+            CYBER_ARENA
+            <span className="text-glow-cyan" style={{ color: "#00e5ff" }}>
+              .SYS
+            </span>
           </h1>
-          <p className="text-xs text-[#94a3b8] uppercase tracking-widest">
+          <p
+            style={{
+              fontFamily: "'Share Tech Mono', monospace",
+              fontSize: "10px",
+              color: "#7b8299",
+              textTransform: "uppercase",
+              letterSpacing: "0.15em",
+            }}
+          >
             {isLogin ? "INITIALIZE NEURAL CONNECT" : "REGISTER NEW AGENT ID"}
           </p>
         </div>
 
-        {/* Error Alert */}
         {error && (
-          <div className="cyber-panel border border-[#ef4444]/30 bg-[#ef4444]/10 text-[#f87171] p-3 text-xs mb-6 text-center tracking-wide uppercase animate-pulse">
-            ⚠️ ERROR: {error}
+          <div
+            style={{
+              background: "rgba(255,61,61,0.08)",
+              border: "1px solid rgba(255,61,61,0.3)",
+              padding: "10px 14px",
+              marginBottom: "20px",
+              textAlign: "center",
+              fontFamily: "'Share Tech Mono', monospace",
+              fontSize: "10px",
+              color: "#ff3d3d",
+              textTransform: "uppercase",
+              letterSpacing: "0.08em",
+            }}
+          >
+            <i
+              className="fa-solid fa-triangle-exclamation"
+              style={{ marginRight: "8px" }}
+            />
+            {error}
           </div>
         )}
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form
+          onSubmit={handleSubmit}
+          style={{ display: "flex", flexDirection: "column", gap: "18px" }}
+        >
           {!isLogin && (
-            <div className="space-y-2">
-              <label className="text-[10px] text-[#00f0ff] font-bold uppercase tracking-wider block">
-                EMAIL_ADDRESS
-              </label>
+            <div>
+              <label style={S.label}>EMAIL_ADDRESS</label>
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="agent@nexus.net"
-                className="w-full bg-black/40 border border-white/10 rounded px-4 py-2 text-sm text-white focus:outline-none focus:border-[#00f0ff] transition"
+                className="cyber-input"
               />
             </div>
           )}
 
-          <div className="space-y-2">
-            <label className="text-[10px] text-[#00f0ff] font-bold uppercase tracking-wider block">
+          <div>
+            <label style={S.label}>
               {isLogin ? "USERNAME_OR_EMAIL" : "CHOOSE_CODENAME"}
             </label>
             <input
@@ -105,69 +199,158 @@ const AuthForm: React.FC = () => {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               placeholder="e.g. AGENT_ALPHA"
-              className="w-full bg-black/40 border border-white/10 rounded px-4 py-2 text-sm text-white focus:outline-none focus:border-[#00f0ff] transition"
+              className="cyber-input"
             />
           </div>
 
-          <div className="space-y-2">
-            <label className="text-[10px] text-[#00f0ff] font-bold uppercase tracking-wider block">
-              ACCESS_KEYPASSWORD
-            </label>
+          <div>
+            <label style={S.label}>ACCESS_KEYPASSWORD</label>
             <input
               type="password"
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="w-full bg-black/40 border border-white/10 rounded px-4 py-2 text-sm text-white focus:outline-none focus:border-[#00f0ff] transition"
+              className="cyber-input"
             />
           </div>
 
           {!isLogin && (
-            <div className="space-y-3">
-              <label className="text-[10px] text-[#d946ef] font-bold uppercase tracking-wider block">
-                SELECT_AVATAR_MODULE
-              </label>
-              <div className="grid grid-cols-6 gap-2 bg-black/30 p-3 rounded border border-white/5">
-                {AVATARS.map((emoji) => (
+            <div>
+              <label style={S.labelPink}>SELECT_AVATAR_MODULE</label>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(6, 1fr)",
+                  gap: "6px",
+                  background: "rgba(0,0,0,0.3)",
+                  border: "1px solid rgba(255,255,255,0.06)",
+                  padding: "10px",
+                }}
+              >
+                {AVATAR_SEEDS.map((seed) => (
                   <button
-                    key={emoji}
+                    key={seed}
                     type="button"
-                    onClick={() => { AudioManager.playClick(); setAvatar(emoji); }}
-                    className={`text-xl p-2 rounded transition flex items-center justify-center hover:bg-white/5 ${
-                      avatar === emoji
-                        ? "bg-[#d946ef]/20 border border-[#d946ef] shadow-[0_0_10px_rgba(217,70,239,0.3)]Scale-110"
-                        : "border border-transparent"
-                    }`}
+                    onClick={() => {
+                      AudioManager.playClick();
+                      setAvatar(seed);
+                    }}
+                    title={seed}
+                    style={{
+                      width: "100%",
+                      aspectRatio: "1",
+                      border:
+                        avatar === seed
+                          ? "1px solid #c850f0"
+                          : "1px solid rgba(255,255,255,0.08)",
+                      background:
+                        avatar === seed
+                          ? "rgba(200,80,240,0.15)"
+                          : "rgba(0,0,0,0.3)",
+                      cursor: "pointer",
+                      padding: "3px",
+                      boxShadow:
+                        avatar === seed
+                          ? "0 0 10px rgba(200,80,240,0.3)"
+                          : "none",
+                      transition: "all 0.15s",
+                    }}
                   >
-                    {emoji}
+                    <img
+                      src={getAvatarUrl(seed)}
+                      alt={seed}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "contain",
+                      }}
+                    />
                   </button>
                 ))}
               </div>
             </div>
           )}
 
-          {/* Action Button */}
           <button
             type="submit"
             disabled={loading}
-            className={`w-full cyber-btn py-3 text-xs font-bold uppercase tracking-widest transition duration-300 ${
-              isLogin
-                ? "bg-[#00f0ff] text-black hover:shadow-[0_0_15px_rgba(0,240,255,0.4)]"
-                : "bg-[#d946ef] text-white hover:shadow-[0_0_15px_rgba(217,70,239,0.4)]"
-            } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+            className="cyber-btn"
+            style={{
+              width: "100%",
+              padding: "14px",
+              background: isLogin ? "#00e5ff" : "#c850f0",
+              color: "#000",
+              fontSize: "11px",
+              letterSpacing: "0.12em",
+              border: "none",
+              cursor: loading ? "not-allowed" : "pointer",
+              opacity: loading ? 0.6 : 1,
+              boxShadow: isLogin
+                ? "0 0 20px rgba(0,229,255,0.25)"
+                : "0 0 20px rgba(200,80,240,0.25)",
+              transition: "box-shadow 0.2s",
+            }}
+            onMouseEnter={(e) => {
+              if (!loading)
+                (e.currentTarget as HTMLButtonElement).style.boxShadow = isLogin
+                  ? "0 0 30px rgba(0,229,255,0.5)"
+                  : "0 0 30px rgba(200,80,240,0.5)";
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.boxShadow = isLogin
+                ? "0 0 20px rgba(0,229,255,0.25)"
+                : "0 0 20px rgba(200,80,240,0.25)";
+            }}
           >
-            {loading ? "INITIALIZING SECURE LINK..." : isLogin ? "AUTHORIZE ACCESS →" : "REGISTER AGENT →"}
+            {loading
+              ? "INITIALIZING SECURE LINK..."
+              : isLogin
+                ? "AUTHORIZE ACCESS"
+                : "REGISTER AGENT"}
+            {!loading && (
+              <i
+                className="fa-solid fa-arrow-right"
+                style={{ marginLeft: "10px" }}
+              />
+            )}
           </button>
         </form>
 
-        {/* Toggle Mode */}
-        <div className="mt-8 text-center border-t border-white/10 pt-4">
+        <div
+          style={{
+            borderTop: "1px solid rgba(255,255,255,0.08)",
+            paddingTop: "16px",
+            marginTop: "20px",
+            textAlign: "center",
+          }}
+        >
           <button
             onClick={toggleMode}
-            className="text-[10px] text-[#94a3b8] hover:text-white uppercase tracking-wider transition"
+            style={{
+              fontFamily: "'Share Tech Mono', monospace",
+              fontSize: "10px",
+              color: "#7b8299",
+              textTransform: "uppercase",
+              letterSpacing: "0.1em",
+              cursor: "pointer",
+              background: "none",
+              border: "none",
+              transition: "color 0.2s",
+            }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.color = "#e8eaf0";
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.color = "#7b8299";
+            }}
           >
-            {isLogin ? "CREATE NEW AGENT CREDENTIALS [SIGN UP]" : "EXISTING AGENT? RETRIEVE CONNECTION [LOG IN]"}
+            {isLogin
+              ? "CREATE NEW AGENT CREDENTIALS"
+              : "EXISTING AGENT? LOG IN"}
+            <span style={{ color: "#c850f0", marginLeft: "6px" }}>
+              [{isLogin ? "SIGN UP" : "LOG IN"}]
+            </span>
           </button>
         </div>
       </div>
